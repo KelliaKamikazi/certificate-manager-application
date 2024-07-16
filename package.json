@@ -1,5 +1,5 @@
 {
-  "name": "certificate-manager",
+  "name": "certificate-manager-kellia",
   "version": "1.0.0",
   "description": "A certificate management application built with React and TypeScript",
   "main": "index.js",
@@ -11,7 +11,7 @@
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "keywords": ["certificate", "management", "react", "typescript"],
-  "author": "Your Name",
+  "author": "Kellia",
   "license": "ISC",
   "repository": {
     "type": "git",
