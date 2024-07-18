@@ -1,6 +1,17 @@
 import { StrictMode } from 'react';
 import { createRoot } from 'react-dom/client';
-import App from './App';
+import './index.css';
+import Title from './components/Title';
+import Sidebar from './components/Sidebar';
+
+const App: React.FC = () => {
+  return (
+    <div className="app">
+      <Title />
+      <Sidebar />
+    </div>
+  );
+};
 
 const rootElement = document.getElementById('root');
 

@@ -6,13 +6,26 @@
 }
 
 body {
-  font-family: Arial, sans-serif;
+  :root {
+    --primarycolor: #3f9ac9;
+    --secondary-color: #265c79;
+    --text-color: #333333;
+    --background-color: #f0f0f0;
+  }
+
+  font-family: 'PMNCaeciliaSansHead';
+  src: url('./styles/pmncaeciliasans-head-cufonfonts/PMNCaeciliaSansHeadBd.TTF')
+    format('truetype');
+  font-weight: bold;
+  font-style: normal;
   margin: 0;
   padding: 0;
   background-color: var(--background-color);
 }
 h1 {
+  color: var(--title-color);
   font-size: 24px;
   text-align: center;
   margin-top: 20px;
+  font-family: 'PMNCaeciliaSansHead', sans-serif;
 }

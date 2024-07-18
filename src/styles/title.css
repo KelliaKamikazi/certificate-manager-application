@@ -1,0 +1,26 @@
+
+@font-face {
+  font-family: 'PMNCaeciliaSansHead';
+  src: url('./pmncaeciliasans-head-cufonfonts/PMNCaeciliaSansHeadBd.TTF') format('truetype');
+  font-weight:100;
+  font-style:normal;
+}
+.title {
+  background: linear-gradient(to right, var(--primarycolor) 0%,var(--primarycolor) 25%,  white 25%,white 100%);
+    color: white;
+    font-size: 50px;
+    padding: 16px;
+    text-align: left;
+    font-family: 'PMNCaeciliaSansHead';
+    font-weight: 100;
+    
+  }
+.title h1{
+  font-family: 'PMNCaeciliaSansHead';
+  text-align: left;
+  margin-left: 120px;
+  margin-top: 10px;
+  font-size: 25px;
+  font-weight: 100;
+}
+  

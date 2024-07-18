@@ -1,0 +1,106 @@
+
+
+@font-face {
+    font-family: 'PMNCaeciliaSansHead';
+    src: url('./pmncaeciliasans-head-cufonfonts/PMNCaeciliaSansHeadBd.TTF') format('truetype');
+    font-weight: 100;
+    font-style: normal;
+}
+
+:root {
+    --primarycolor: #3F9AC9;
+    --secondary-color: #265C79;
+    --text-color: #333333;
+    --title-color:white;
+    --sidebar-background-color:#d6dde5;
+}
+* {
+    margin:0;
+    padding: 0;
+    box-sizing: border-box;
+    font: 'PMNCaeciliaSansHead';
+}
+
+/* sidebar.css */
+.sidebar {
+    background-color: var(--sidebar-background-color); /* Background color */
+    padding: 5px; /* Padding */
+    padding-top: 40px;
+    width: 25%; /* 30% of page width */
+    height: 100vh; /* Full height of the viewport */
+    position: fixed; /* Fix position to keep it on the side */
+}
+.sidebar-start {
+    display: flex;
+    align-items: center;
+    padding: 20px 0; /* Adjusted padding */
+    cursor: pointer;
+    margin-left: 10px; /* 10px from the start of the page */
+    position: relative; /* Positioning context for the ::before element */
+}
+
+
+.sidebar-start::before {
+    content: '';
+    position: absolute; /* Position it absolutely within the sidebar-start */
+    left: -15px; /* Adjust left position to align it correctly */
+    top: 50%; /* Center vertically */
+    transform: translateY(-50%); /* Adjust for vertical centering */
+    width: 12px; /* Thickness of the line */
+    height: 80%; /* Full height */
+    background-color: var(--primarycolor); /* Color of the line */
+    z-index:-1; /* Send it behind the text */
+}
+
+.home-icon {
+    width: 30px; /* Reduced icon size */
+    height: 30px;
+    margin-right: 8px; /* Adjusted margin */
+    margin-left: 10px;
+    fill:var(--secondarycolor);
+}
+.angledown-icon{
+    width: 30px; /* Reduced icon size */
+    height: 25px;
+    margin-right: 8px; /* Adjusted margin */
+    margin-left: 10px;
+    fill:var(--secondarycolor);
+}
+
+.sidebar-start span {
+    font-size: 20px; /* Decreased font size */
+    color: var(--primarycolor); /* Adjust text color as needed */
+}
+
+.sidebar-menu {
+    display: flex;
+    padding: 5px 0; /* Adjusted padding */
+    margin-left: 20px;
+    cursor: pointer;
+}
+
+.menu-icon {
+    fill: var(--secondary-color);
+    width: 20px; /* Reduced icon size */
+    height: 20px;
+    margin-right: 8px; /* Adjusted margin */
+    
+}
+
+.sidebar-menu span {
+    font-size: 15px; /* Decreased font size */
+    color: var(--secondary-color); /* Adjust text color as needed */
+}
+
+.sidebar-menu .submenu {
+    display: none;
+    flex-direction: column;
+    margin-top: 10px;
+    padding-left: 20px;
+    font-size: 15px;
+    color:var(--secondary-color)
+}
+
+.sidebar-menu.show .submenu {
+    display: flex; /* Corrected display property */
+}
