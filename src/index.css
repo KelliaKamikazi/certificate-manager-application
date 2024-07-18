@@ -1,13 +1,18 @@
+:root {
+  --primarycolor: #3f9ac9;
+  --secondary-color: #265c79;
+  --text-color: #333333;
+  --background-color: #f0f0f0;
+}
+
 body {
-    font-family: Arial, sans-serif;
-    margin: 0;
-    padding: 0;
-    background-color: #f0f0f0;
-  }
-  
-  h1 {
-    color: blue;
-    font-size: 24px;
-    text-align: center;
-    margin-top: 20px;
-  }
+  font-family: Arial, sans-serif;
+  margin: 0;
+  padding: 0;
+  background-color: var(--background-color);
+}
+h1 {
+  font-size: 24px;
+  text-align: center;
+  margin-top: 20px;
+}

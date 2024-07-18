@@ -9,82 +9,84 @@ const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 export default () => {
   return {
-  entry: './src/index.tsx',
-  devtool: 'source-map', // 'inline-source-map' for development, 'source-map' for production
-  mode: 'production', // Ensure we are in production mode
-  module: {
-    rules: [
-      {
-        test: /\.tsx?$/,
-        use: 'ts-loader',
-        exclude: /node_modules/,
-      },
-      {
-        test: /\.js$/,
-        enforce: 'pre',
-        use: 'source-map-loader',
-      },
-      {
-        test: /\.css$/i,
-        use: ['style-loader', 'css-loader'],
-      },
-      {
-        test: /\.(png|jpe?g|gif|svg)$/i,
-        use: [
-          {
-            loader: 'file-loader',
-            options: {
-              name: '[path][name].[ext]',
+    entry: './src/index.tsx',
+    devtool: 'source-map', // 'inline-source-map' for development, 'source-map' for production
+    mode: 'production', // Ensure we are in production mode
+    module: {
+      rules: [
+        {
+          test: /\.tsx?$/,
+          use: 'ts-loader',
+          exclude: /node_modules/,
+        },
+        {
+          test: /\.js$/,
+          enforce: 'pre',
+          use: 'source-map-loader',
+        },
+        {
+          test: /\.css$/i,
+          use: ['style-loader', 'css-loader'],
+        },
+        {
+          test: /\.(png|jpe?g|gif|svg)$/i,
+          use: [
+            {
+              loader: 'file-loader',
+              options: {
+                name: '[path][name].[ext]',
+              },
             },
-          },
-        ],
-      },
-    ],
-  },
-  resolve: {
-    extensions: ['.tsx', '.ts', '.js'],
-  },
-  output: {
-    filename: '[name].[contenthash].js',
-    path: path.resolve(__dirname, 'dist'),
-    clean: true,
-  },
-  optimization: {
-    splitChunks: {
-      chunks: 'all',
-      maxInitialRequests: Infinity,
-      minSize: 20000,
-      cacheGroups: {
-        vendor: {
-          test: /[\\/]node_modules[\\/]/,
-          name(module) {
-            // get the name. E.g. node_modules/packageName/not/this/part.js
-            // or node_modules/packageName
-            const packageName = module.context.match(/[\\/]node_modules[\\/](.*?)([\\/]|$)/)[1];
-            return `npm.${packageName.replace('@', '')}`;
+          ],
+        },
+      ],
+    },
+    resolve: {
+      extensions: ['.tsx', '.ts', '.js'],
+    },
+    output: {
+      filename: '[name].[contenthash].js',
+      path: path.resolve(__dirname, 'dist'),
+      clean: true,
+    },
+    optimization: {
+      splitChunks: {
+        chunks: 'all',
+        maxInitialRequests: Infinity,
+        minSize: 20000,
+        cacheGroups: {
+          vendor: {
+            test: /[\\/]node_modules[\\/]/,
+            name(module) {
+              // get the name. E.g. node_modules/packageName/not/this/part.js
+              // or node_modules/packageName
+              const packageName = module.context.match(
+                /[\\/]node_modules[\\/](.*?)([\\/]|$)/,
+              )[1];
+              return `npm.${packageName.replace('@', '')}`;
+            },
           },
         },
       },
+      minimize: true,
+      minimizer: [new TerserWebpackPlugin()],
     },
-    minimize: true,
-    minimizer: [new TerserWebpackPlugin()],
-  },
-  devServer: {
-    static: {
-      directory: path.join(__dirname, 'dist'),
+    devServer: {
+      static: {
+        directory: path.join(__dirname, 'dist'),
+      },
+      port: 3000,
+      hot: true,
     },
-    port: 3000,
-    hot: true,
-  },
-  plugins: [
-    new CleanWebpackPlugin(),
-    new HtmlWebpackPlugin({
-      template: './src/index.html',
-    }),
-    new BundleAnalyzerPlugin({
-      analyzerMode: 'static',
-      openAnalyzer: false,
-    }),
-  ],
-}
+    plugins: [
+      new CleanWebpackPlugin(),
+      new HtmlWebpackPlugin({
+        template: './src/index.html',
+      }),
+      new BundleAnalyzerPlugin({
+        analyzerMode: 'static',
+        openAnalyzer: false,
+      }),
+    ],
+  };
 };
