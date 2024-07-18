@@ -1,15 +1,21 @@
-import React from 'react';
 import { StrictMode } from 'react';
 import { createRoot } from 'react-dom/client';
 import App from './App';
-const container: HTMLElement | null = document.getElementById('root');
-if (container) {
-  const root = createRoot(container);
-  root.render(
+
+const rootElement = document.getElementById('root');
+
+if (!rootElement) {
+  throw new Error('Failed to find the root element');
+}
+
+const root = createRoot(rootElement);
+
+root.render(
+  process.env.DEV ? (
     <StrictMode>
       <App />
-    </StrictMode>,
-  );
-} else {
-  console.error('Failed to find the root element');
-}
+    </StrictMode>
+  ) : (
+    <App />
+  ),
+);

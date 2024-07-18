@@ -4,14 +4,20 @@ import { CleanWebpackPlugin } from 'clean-webpack-plugin';
 import TerserWebpackPlugin from 'terser-webpack-plugin';
 import { BundleAnalyzerPlugin } from 'webpack-bundle-analyzer';
 import { fileURLToPath } from 'url';
+import webpack from 'webpack';
+import dotenv from 'dotenv';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
+
+// Load environment variables from .env file
+dotenv.config();
+
 export default () => {
   return {
     entry: './src/index.tsx',
     devtool: 'source-map', // 'inline-source-map' for development, 'source-map' for production
-    mode: 'production', // Ensure we are in production mode
+    mode: 'development', // Ensure we are in development mode for easier debugging
     module: {
       rules: [
         {
@@ -77,6 +83,7 @@ export default () => {
       },
       port: 3000,
       hot: true,
+      historyApiFallback: true, // Ensures that all 404s fallback to /index.html
     },
     plugins: [
       new CleanWebpackPlugin(),
@@ -86,6 +93,9 @@ export default () => {
       new BundleAnalyzerPlugin({
         analyzerMode: 'static',
         openAnalyzer: false,
+      }),
+      new webpack.DefinePlugin({
+        'process.env': JSON.stringify(process.env),
       }),
     ],
   };
