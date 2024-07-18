@@ -1,48 +1,90 @@
-const path = require('path');
-const HtmlWebpackPlugin = require('html-webpack-plugin');
-const { CleanWebpackPlugin } = require('clean-webpack-plugin');
+import path from 'path';
+import HtmlWebpackPlugin from 'html-webpack-plugin';
+import { CleanWebpackPlugin } from 'clean-webpack-plugin';
+import TerserWebpackPlugin from 'terser-webpack-plugin';
+import { BundleAnalyzerPlugin } from 'webpack-bundle-analyzer';
+import { fileURLToPath } from 'url';
 
-module.exports = {
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
+export default () => {
+  return {
   entry: './src/index.tsx',
-  devtool: 'inline-source-map',
-  mode: 'development',
+  devtool: 'source-map', // 'inline-source-map' for development, 'source-map' for production
+  mode: 'production', // Ensure we are in production mode
   module: {
     rules: [
       {
-        test: /\.tsx?$/, // Matches .ts and .tsx files
-        use: 'ts-loader', // Uses ts-loader for TypeScript files
+        test: /\.tsx?$/,
+        use: 'ts-loader',
         exclude: /node_modules/,
       },
       {
-        test: /\.css$/, // Matches .css files
-        use: ['style-loader', 'css-loader'], // Uses style-loader and css-loader for CSS files
-        exclude: /node_modules/,
-      },
-      {
-        test: /\.js$/, // Matches .js files
+        test: /\.js$/,
         enforce: 'pre',
-        use: 'source-map-loader', // Uses source-map-loader to process source maps for JavaScript files
+        use: 'source-map-loader',
+      },
+      {
+        test: /\.css$/i,
+        use: ['style-loader', 'css-loader'],
+      },
+      {
+        test: /\.(png|jpe?g|gif|svg)$/i,
+        use: [
+          {
+            loader: 'file-loader',
+            options: {
+              name: '[path][name].[ext]',
+            },
+          },
+        ],
       },
     ],
   },
   resolve: {
-    extensions: ['.tsx', '.ts', '.js'], // Resolves these extensions
+    extensions: ['.tsx', '.ts', '.js'],
   },
   output: {
-    filename: 'bundle.js', // Output bundle filename
-    path: path.resolve(__dirname, 'dist'), // Output directory
+    filename: '[name].[contenthash].js',
+    path: path.resolve(__dirname, 'dist'),
+    clean: true,
+  },
+  optimization: {
+    splitChunks: {
+      chunks: 'all',
+      maxInitialRequests: Infinity,
+      minSize: 20000,
+      cacheGroups: {
+        vendor: {
+          test: /[\\/]node_modules[\\/]/,
+          name(module) {
+            // get the name. E.g. node_modules/packageName/not/this/part.js
+            // or node_modules/packageName
+            const packageName = module.context.match(/[\\/]node_modules[\\/](.*?)([\\/]|$)/)[1];
+            return `npm.${packageName.replace('@', '')}`;
+          },
+        },
+      },
+    },
+    minimize: true,
+    minimizer: [new TerserWebpackPlugin()],
   },
   devServer: {
     static: {
-      directory: path.join(__dirname, 'dist'), // Serves static files from the dist directory
+      directory: path.join(__dirname, 'dist'),
     },
-    port: 3000, // Development server port
-    hot: true, // Enables Hot Module Replacement
+    port: 3000,
+    hot: true,
   },
   plugins: [
-    new CleanWebpackPlugin(), // Cleans the dist directory before each build
+    new CleanWebpackPlugin(),
     new HtmlWebpackPlugin({
-      template: './src/index.html', // Template for the HTML file
+      template: './src/index.html',
+    }),
+    new BundleAnalyzerPlugin({
+      analyzerMode: 'static',
+      openAnalyzer: false,
     }),
   ],
+}
 };
