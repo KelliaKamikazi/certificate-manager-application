@@ -6,6 +6,7 @@ import { BundleAnalyzerPlugin } from 'webpack-bundle-analyzer';
 import { fileURLToPath } from 'url';
 import webpack from 'webpack';
 import dotenv from 'dotenv';
+import CopyWebpackPlugin from 'copy-webpack-plugin';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -93,6 +94,13 @@ export default () => {
       new BundleAnalyzerPlugin({
         analyzerMode: 'static',
         openAnalyzer: false,
+      }),
+      new CopyWebpackPlugin({
+        // New plugin
+        patterns: [
+          { from: 'public/favicon.ico', to: 'favicon.ico' }, // Copy favicon
+          { from: 'public/manifest.json', to: 'manifest.json' }, // Copy manifest
+        ],
       }),
       new webpack.DefinePlugin({
         'process.env': JSON.stringify(process.env),

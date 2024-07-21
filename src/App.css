@@ -1,0 +1,42 @@
+@font-face {
+  font-family: 'PMNCaeciliaSansHead';
+  src: url('./styles/items/Fonts/pmncaeciliasans-head-cufonfonts/PMNCaeciliaSansHeadBd.TTF')
+    format('truetype');
+  font-weight: bold;
+  font-style: normal;
+}
+
+:root {
+  --primarycolor: #3f9ac9;
+  --secondary-color: #265c79;
+  --text-color: #333333;
+  --background-color: #f0f0f0;
+  --title-color: white;
+  --sidebar-background-color: #d6dde5;
+  --black-color: black;
+}
+
+html,
+body {
+  font-family: 'PMNCaeciliaSansHead', sans-serif;
+  margin: 0;
+  padding: 0;
+  background-color: var(--background-color);
+}
+
+h1,
+h2 {
+  color: var(--text-color);
+  font-size: 24px;
+  text-align: center;
+  margin-top: 20px;
+}
+
+.app {
+  display: relative;
+}
+
+main {
+  flex-grow: 1;
+  margin-left: 250px; /* Adjust this value based on your sidebar width */
+}

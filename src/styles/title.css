@@ -2,7 +2,6 @@
   font-family: 'PMNCaeciliaSansHead';
   src: url('./items/Fonts/pmncaeciliasans-head-cufonfonts/PMNCaeciliaSansHeadBd.TTF')
     format('truetype');
-
   font-weight: 100;
   font-style: normal;
 }
@@ -11,10 +10,10 @@
     to right,
     var(--primarycolor) 0%,
     var(--primarycolor) 25%,
-    white 25%,
-    white 100%
+    var(--title-color) 25%,
+    var(--title-color) 100%
   );
-  color: white;
+  color: var(--title-color);
   font-size: 50px;
   padding: 16px;
   text-align: left;
@@ -28,4 +27,5 @@
   margin-top: 10px;
   font-size: 25px;
   font-weight: 100;
+  color: var(--title-color);
 }

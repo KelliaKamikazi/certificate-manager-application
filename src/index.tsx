@@ -1,17 +1,8 @@
 import { StrictMode } from 'react';
 import { createRoot } from 'react-dom/client';
+import { BrowserRouter } from 'react-router-dom';
+import App from './App';
 import './index.css';
-import Title from './components/Title';
-import Sidebar from './components/Sidebar';
-
-const App: React.FC = () => {
-  return (
-    <div className="app">
-      <Title />
-      <Sidebar />
-    </div>
-  );
-};
 
 const rootElement = document.getElementById('root');
 
@@ -22,11 +13,15 @@ if (!rootElement) {
 const root = createRoot(rootElement);
 
 root.render(
-  process.env.DEV ? (
+  process.env.NODE_ENV === 'development' ? (
     <StrictMode>
-      <App />
+      <BrowserRouter>
+        <App />
+      </BrowserRouter>
     </StrictMode>
   ) : (
-    <App />
+    <BrowserRouter>
+      <App />
+    </BrowserRouter>
   ),
 );

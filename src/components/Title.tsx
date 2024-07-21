@@ -1,5 +1,5 @@
 import React from 'react';
-import '../styles/Title.css';
+import '../styles/title.css';
 
 const Title: React.FC = () => {
   return (

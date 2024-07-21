@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
-import '../styles/sidebar.css'; // Assuming the CSS file is still named Navbar.css
+import { Link } from 'react-router-dom';
+import '../styles/sidebar.css';
 import homeIcon from '../styles/items/homeIcon.svg';
 import threelinemenu from '../styles/items/threelinesmenu.svg';
 import angledown from '../styles/items/angledown.svg';
@@ -14,12 +15,14 @@ const Sidebar: React.FC = () => {
   return (
     <div className="sidebar">
       <div className="sidebar-start">
-        <img
-          src={homeIcon}
-          alt="Home"
-          className="home-icon"
-        />
-        <span>Start</span>
+        <Link to="/">
+          <img
+            src={homeIcon}
+            alt="Home"
+            className="home-icon"
+          />
+          <span>Start</span>
+        </Link>
       </div>
       <div
         className={`sidebar-menu ${menuOpen ? 'show' : ''}`}
@@ -30,13 +33,18 @@ const Sidebar: React.FC = () => {
           alt="Menu"
           className="menu-icon"
         />
-
         <div>
           <span>Machine Learning</span>
           <div className="submenu">
-            <div>Example 1</div>
-            <div>Example 2</div>
-            <div>Example 3</div>
+            <Link to="/example1">
+              <span>Example 1</span>
+            </Link>
+            <Link to="/example2">
+              <span>Example 2</span>
+            </Link>
+            <Link to="/example3">
+              <span>Example 3</span>
+            </Link>
           </div>
         </div>
         <img
@@ -48,4 +56,5 @@ const Sidebar: React.FC = () => {
     </div>
   );
 };
+
 export default Sidebar;
