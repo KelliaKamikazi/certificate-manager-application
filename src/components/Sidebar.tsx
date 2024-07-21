@@ -26,7 +26,7 @@ const Sidebar: React.FC = () => {
       </div>
       <div
         className={`sidebar-menu ${menuOpen ? 'show' : ''}`}
-        onClick={handleMenuClick}
+        onClick={handleMenuClick} //if menu is clicked show the list
       >
         <img
           src={threelinemenu}
@@ -36,13 +36,22 @@ const Sidebar: React.FC = () => {
         <div>
           <span>Machine Learning</span>
           <div className="submenu">
-            <Link to="/example1">
+            <Link
+              to="/example1"
+              onClick={(e) => e.stopPropagation()} //event.stopProgation is stopping the menu from dispearing since every time components is switched from true to false
+            >
               <span>Example 1</span>
             </Link>
-            <Link to="/example2">
+            <Link
+              to="/example2"
+              onClick={(e) => e.stopPropagation()}
+            >
               <span>Example 2</span>
             </Link>
-            <Link to="/example3">
+            <Link
+              to="/example3"
+              onClick={(e) => e.stopPropagation()}
+            >
               <span>Example 3</span>
             </Link>
           </div>

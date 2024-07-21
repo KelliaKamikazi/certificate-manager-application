@@ -85,11 +85,23 @@
 .sidebar-menu span {
   font-size: 20px;
   color: var(--secondary-color);
+  transition: color 0.3s ease;
 }
+
+.sidebar-menu span:hover {
+  color: var(--primarycolor);
+}
+
 .sidebar-menu .submenu span {
   font-size: 16px;
   padding-right: 10px;
+  transition: color 0.3s ease;
 }
+
+.sidebar-menu .submenu span:hover {
+  color: var(--primarycolor);
+}
+
 .sidebar-menu .submenu {
   display: none;
   flex-direction: column;
