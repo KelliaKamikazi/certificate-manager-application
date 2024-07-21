@@ -1,10 +1,19 @@
 @font-face {
-  font-family: 'PMNCaeciliaSansHead';
-  src: url('./items/Fonts/pmncaeciliasans-head-cufonfonts/PMNCaeciliaSansHeadBd.TTF')
+  font-family: 'PMNCaeciliaSansHeadLight';
+  src: url('./items/Fonts/pmncaeciliasans-head-cufonfonts/PMNCaeciliaSansHeadLight.TTF')
     format('truetype');
   font-weight: 100;
   font-style: normal;
 }
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  text-decoration: none;
+  font-family: 'PMNCaeciliaSansHeadLight', sans-serif;
+}
+
 .title {
   background: linear-gradient(
     to right,
@@ -17,15 +26,14 @@
   font-size: 50px;
   padding: 16px;
   text-align: left;
-  font-family: 'PMNCaeciliaSansHead';
-  font-weight: 100;
+  font-weight: 100; /* Lighter weight */
 }
+
 .title h1 {
-  font-family: 'PMNCaeciliaSansHead';
   text-align: left;
-  margin-left: 120px;
-  margin-top: 10px;
-  font-size: 25px;
-  font-weight: 100;
+  margin-left: 70px;
+  margin-top: 5px;
+  font-size: 40px;
+  font-weight: 100; /* Lighter weight */
   color: var(--title-color);
 }
