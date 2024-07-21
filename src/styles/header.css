@@ -26,14 +26,34 @@
   font-size: 50px;
   padding: 16px;
   text-align: left;
-  font-weight: 100; /* Lighter weight */
+  font-weight: 100;
+  position: relative;
+}
+
+.title::before,
+.title::after {
+  content: '';
+  position: absolute;
+  left: 25%;
+  right: 0;
+  height: 1px;
+  background-color: var(--border-color);
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
+}
+
+.title::before {
+  top: 0;
+}
+
+.title::after {
+  bottom: 0;
 }
 
 .title h1 {
   text-align: left;
-  margin-left: 70px;
+  margin-left: 80px;
   margin-top: 5px;
   font-size: 40px;
-  font-weight: 100; /* Lighter weight */
+  font-weight: 100;
   color: var(--title-color);
 }

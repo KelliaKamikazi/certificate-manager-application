@@ -1,11 +1,12 @@
 import React from 'react';
-import '../styles/title.css';
+import '../styles/header.css';
 
 const Title: React.FC = () => {
   return (
-    <div className="title">
+    <header className="title">
       <h1>DCCS Tuzla</h1>
-    </div>
+    </header>
   );
 };
+
 export default Title;

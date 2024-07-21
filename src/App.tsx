@@ -1,6 +1,6 @@
 import React from 'react';
 import { Route, Routes } from 'react-router-dom';
-import Title from './components/Title';
+import Header from './components/Header';
 import Sidebar from './components/Sidebar';
 import Home from './components/Home';
 import Example1 from './components/Example1';
@@ -11,7 +11,7 @@ import './App.css';
 const App: React.FC = () => {
   return (
     <div className="app">
-      <Title />
+      <Header />
       <Sidebar />
       <main>
         <Routes>
