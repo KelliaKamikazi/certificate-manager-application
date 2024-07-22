@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useRef, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import '../styles/sidebar.css';
 import HomeIcon from './icons/HomeIcon';
@@ -10,16 +10,46 @@ const Sidebar: React.FC = () => {
   const [isSubmenuOpen, setIsSubmenuOpen] = useState(false);
   const [isSidebarVisible, setIsSidebarVisible] = useState(false);
 
+  const sidebarRef = useRef<HTMLDivElement>(null); // Ref to sidebar element
+  const submenuRef = useRef<HTMLDivElement>(null); // Ref to submenu element
+
+  // Toggle submenu
   const handleMenuClick = () => {
-    setIsSubmenuOpen(!isSubmenuOpen);
+    setIsSubmenuOpen((prev) => !prev);
   };
 
+  // Toggle sidebar visibility
   const handleSidebarOpen = () => {
-    setIsSidebarVisible((prevSidebar) => !prevSidebar);
+    setIsSidebarVisible((prev) => !prev);
   };
+
+  // Close submenu when clicking outside
+  useEffect(() => {
+    const handleClickOutside = (event: MouseEvent) => {
+      if (
+        sidebarRef.current &&
+        !sidebarRef.current.contains(event.target as Node) &&
+        submenuRef.current &&
+        !submenuRef.current.contains(event.target as Node)
+      ) {
+        setIsSubmenuOpen(false); // Close submenu
+      }
+    };
+
+    document.addEventListener('mousedown', handleClickOutside);
+    return () => {
+      document.removeEventListener('mousedown', handleClickOutside);
+    };
+  }, []);
 
   return (
     <>
+      <a
+        href="#main-content"
+        className="skip-link"
+      >
+        Skip to content
+      </a>
       <button
         className="sidebar-button-container"
         onClick={handleSidebarOpen}
@@ -29,7 +59,10 @@ const Sidebar: React.FC = () => {
 
       {isSidebarVisible && <div onClick={() => setIsSidebarVisible(false)} />}
 
-      <div className={`sidebar ${isSidebarVisible ? 'visible' : ''}`}>
+      <div
+        className={`sidebar ${isSidebarVisible ? 'visible' : ''}`}
+        ref={sidebarRef}
+      >
         <div className="sidebarStart">
           <Link to="/">
             <IconSvg
@@ -58,7 +91,10 @@ const Sidebar: React.FC = () => {
           <div>
             <span>Machine Learning</span>
             {isSubmenuOpen && (
-              <div className="submenu">
+              <div
+                className="submenu"
+                ref={submenuRef}
+              >
                 <Link to="/example1">
                   <span>Example 1</span>
                 </Link>
