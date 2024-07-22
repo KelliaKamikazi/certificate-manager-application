@@ -1,16 +1,16 @@
 .start {
   display: flex;
   align-items: center;
-  position: relative;
+  position: fixed;
   padding-left: 150px;
+  padding-top: 140px;
 }
 
 .start h1 {
   color: var(--black-color);
   text-align: left;
-  margin-left: 70px;
+  margin-left: 150px;
   font-size: 40px;
-  margin-top: 50px;
   font-weight: 700;
   font-style: normal;
 }

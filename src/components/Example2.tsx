@@ -1,7 +1,11 @@
 import '../styles/example2.css';
 
 const Example2: React.FC = () => {
-  return <h1>Example 2 Component</h1>;
+  return (
+    <div className="example">
+      <h1>Example2</h1>
+    </div>
+  );
 };
 
 export default Example2;
