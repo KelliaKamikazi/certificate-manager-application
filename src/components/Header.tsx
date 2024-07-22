@@ -1,7 +1,7 @@
 import React from 'react';
 import '../styles/header.css';
 
-const Title: React.FC = () => {
+const Header: React.FC = () => {
   return (
     <header className="title">
       <h1>DCCS Tuzla</h1>
@@ -9,4 +9,4 @@ const Title: React.FC = () => {
   );
 };
 
-export default Title;
+export default Header;
