@@ -4,7 +4,9 @@
 
 .header_title {
   font-family: 'PMNCaeciliaSansHeadLight', sans-serif;
-  text-align: left;
+  /* Ensure the header title is aligned to the left */
+  margin-bottom: 20px;
+  align-content: start;
 }
 
 h2 {
@@ -12,12 +14,13 @@ h2 {
 }
 
 .table_container {
-  border: 1px solid var(--title-color);
+  border: 1px solid var(--background-color);
   border-radius: 4px;
   overflow-x: auto;
   margin: 20px auto; /* Center the tables container */
   width: 60%;
   overflow-y: scroll;
+  max-height: 150px;
 }
 table {
   width: 100%;
@@ -25,10 +28,19 @@ table {
 }
 th,
 tr {
-  border: 1px solid var(--sidebar-background-color);
+  border: 0.6px solid var(--almost-black);
+}
+
+thead th {
+  position: -webkit-sticky; /* For Safari */
+  position: sticky;
+  top: 0;
+  background-color: var(--sidebar-background-color);
+  z-index: 1; /*for the head to stay at the top as i scroll*/
 }
 th,
 td {
   padding: 5px;
   text-align: left;
 }
+/*RESPONSIVENESS*/
