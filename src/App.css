@@ -34,7 +34,14 @@ h2 {
 }
 
 .app {
-  display: relative;
+  display: flex;
+  flex-direction: column;
+}
+
+.middle {
+  display: flex;
+  flex-direction: row;
+  height: 90vh;
 }
 
 main {

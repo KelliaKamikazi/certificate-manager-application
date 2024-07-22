@@ -1,68 +1,83 @@
 import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
 import '../styles/sidebar.css';
-import homeIcon from '../styles/items/homeIcon.svg';
-import threelinemenu from '../styles/items/threelinesmenu.svg';
-import angledown from '../styles/items/angledown.svg';
+import HomeIcon from './icons/HomeIcon';
+import ThreeLineMenu from './icons/threeLineMenu';
+import AngleDown from './icons/angledown';
+import IconSvg from './icons/icons';
 
 const Sidebar: React.FC = () => {
-  const [menuOpen, setMenuOpen] = useState(false);
+  const [isSubmenuOpen, setIsSubmenuOpen] = useState(false);
+  const [isSidebarVisible, setIsSidebarVisible] = useState(false);
 
   const handleMenuClick = () => {
-    setMenuOpen(!menuOpen);
+    setIsSubmenuOpen(!isSubmenuOpen);
+  };
+
+  const handleSidebarOpen = () => {
+    setIsSidebarVisible((prevSidebar) => !prevSidebar);
   };
 
   return (
-    <div className="sidebar">
-      <div className="sidebar-start">
-        <Link to="/">
-          <img
-            src={homeIcon}
-            alt="Home"
-            className="home-icon"
-          />
-          <span>Start</span>
-        </Link>
-      </div>
-      <div
-        className={`sidebar-menu ${menuOpen ? 'show' : ''}`}
-        onClick={handleMenuClick} //if menu is clicked show the list
+    <>
+      <button
+        className="sidebar-button-container"
+        onClick={handleSidebarOpen}
       >
-        <img
-          src={threelinemenu}
-          alt="Menu"
-          className="menu-icon"
-        />
-        <div>
-          <span>Machine Learning</span>
-          <div className="submenu">
-            <Link
-              to="/example1"
-              onClick={(e) => e.stopPropagation()} //event.stopProgation is stopping the menu from dispearing since every time components is switched from true to false
-            >
-              <span>Example 1</span>
-            </Link>
-            <Link
-              to="/example2"
-              onClick={(e) => e.stopPropagation()}
-            >
-              <span>Example 2</span>
-            </Link>
-            <Link
-              to="/example3"
-              onClick={(e) => e.stopPropagation()}
-            >
-              <span>Example 3</span>
-            </Link>
-          </div>
+        Sidebar opener
+      </button>
+
+      {isSidebarVisible && <div onClick={() => setIsSidebarVisible(false)} />}
+
+      <div className={`sidebar ${isSidebarVisible ? 'visible' : ''}`}>
+        <div className="sidebarStart">
+          <Link to="/">
+            <IconSvg
+              Icon={HomeIcon}
+              className="homeIcon"
+            />
+            <span>Start</span>
+          </Link>
         </div>
-        <img
-          src={angledown}
-          alt="Menu"
-          className="angledown-icon"
-        />
+        <div
+          className={`sidebarMenu ${isSubmenuOpen ? 'show' : ''}`}
+          onClick={handleMenuClick}
+          role="button"
+          aria-expanded={isSubmenuOpen}
+          tabIndex={0}
+          onKeyDown={(e) => {
+            if (e.key === 'Enter' || e.key === ' ') {
+              handleMenuClick();
+            }
+          }}
+        >
+          <IconSvg
+            Icon={ThreeLineMenu}
+            className="menuIcon"
+          />
+          <div>
+            <span>Machine Learning</span>
+            {isSubmenuOpen && (
+              <div className="submenu">
+                <Link to="/example1">
+                  <span>Example 1</span>
+                </Link>
+                <Link to="/example2">
+                  <span>Example 2</span>
+                </Link>
+                <Link to="/example3">
+                  <span>Example 3</span>
+                </Link>
+              </div>
+            )}
+          </div>
+          <IconSvg
+            Icon={AngleDown}
+            className="angledownIcon"
+          />
+        </div>
       </div>
-    </div>
+    </>
   );
 };
 

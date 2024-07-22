@@ -5,11 +5,12 @@
   font-weight: 100;
   font-style: normal;
 }
+
 * {
   margin: 0;
   padding: 0;
   box-sizing: border-box;
-  font: 'PMNCaeciliaSansHeadLight.TTF';
+  font-family: 'PMNCaeciliaSansHead', sans-serif;
   text-decoration: none;
   font-weight: normal;
 }
@@ -22,7 +23,8 @@
   height: 100vh;
   position: fixed;
 }
-.sidebar-start {
+
+.sidebarStart {
   display: flex;
   align-items: center;
   padding: 20px 0;
@@ -31,7 +33,7 @@
   position: relative;
 }
 
-.sidebar-start::before {
+.sidebarStart::before {
   content: '';
   position: absolute;
   left: -15px;
@@ -42,11 +44,13 @@
   background-color: var(--primarycolor);
   z-index: -1;
 }
-.sidebar-start span {
+
+.sidebarStart span {
   font-size: medium;
   margin-top: 12px;
 }
-.home-icon {
+
+.homeIcon {
   width: 30px;
   height: 25px;
   margin-right: 10px;
@@ -54,7 +58,8 @@
   fill: var(--secondarycolor);
   margin-top: 12px;
 }
-.angledown-icon {
+
+.angledownIcon {
   width: 25px;
   height: 30px;
   margin-right: 8px;
@@ -62,47 +67,47 @@
   fill: var(--secondarycolor);
 }
 
-.sidebar-start span {
+.sidebarStart span {
   font-size: 20px;
   color: var(--primarycolor);
   text-decoration: none;
 }
 
-.sidebar-menu {
+.sidebarMenu {
   display: flex;
   padding: 5px 0;
   margin-left: 20px;
   cursor: pointer;
 }
 
-.menu-icon {
+.menuIcon {
   fill: var(--secondary-color);
   width: 30px;
   height: 30px;
   margin-right: 10px;
 }
 
-.sidebar-menu span {
+.sidebarMenu span {
   font-size: 20px;
   color: var(--secondary-color);
   transition: color 0.3s ease;
 }
 
-.sidebar-menu span:hover {
+.sidebarMenu span:hover {
   color: var(--primarycolor);
 }
 
-.sidebar-menu .submenu span {
+.submenu span {
   font-size: 16px;
   padding-right: 10px;
   transition: color 0.3s ease;
 }
 
-.sidebar-menu .submenu span:hover {
+.submenu span:hover {
   color: var(--primarycolor);
 }
 
-.sidebar-menu .submenu {
+.submenu {
   display: none;
   flex-direction: column;
   margin-top: 20px;
@@ -111,6 +116,24 @@
   color: var(--secondary-color);
 }
 
-.sidebar-menu.show .submenu {
+.sidebarMenu.show .submenu {
   display: flex;
+}
+
+.sidebar-button-container {
+  display: none;
+  flex-direction: column;
+}
+
+@media (max-width: 834px) {
+  .sidebar-button-container {
+    display: flex;
+    margin-top: 10%;
+  }
+}
+@media (max-width: 430px) {
+  .sidebar-button-container {
+    display: flex;
+    margin-top: 10%;
+  }
 }
