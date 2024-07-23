@@ -6,6 +6,7 @@ import { BundleAnalyzerPlugin } from 'webpack-bundle-analyzer';
 import { fileURLToPath } from 'url';
 import webpack from 'webpack';
 import dotenv from 'dotenv';
+import CopyWebpackPlugin from 'copy-webpack-plugin';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -31,7 +32,23 @@ export default () => {
           use: 'source-map-loader',
         },
         {
+          test: /\.module\.css$/i,
+          use: [
+            'style-loader',
+            {
+              loader: 'css-loader',
+              options: {
+                modules: {
+                  localIdentName: '[name]__[local]--[hash:base64:5]', // Custom class name format
+                },
+                sourceMap: true, // Optional: useful for debugging
+              },
+            },
+          ],
+        },
+        {
           test: /\.css$/i,
+          exclude: /\.module\.css$/i,
           use: ['style-loader', 'css-loader'],
         },
         {
@@ -64,8 +81,6 @@ export default () => {
           vendor: {
             test: /[\\/]node_modules[\\/]/,
             name(module) {
-              // get the name. E.g. node_modules/packageName/not/this/part.js
-              // or node_modules/packageName
               const packageName = module.context.match(
                 /[\\/]node_modules[\\/](.*?)([\\/]|$)/,
               )[1];
@@ -93,6 +108,12 @@ export default () => {
       new BundleAnalyzerPlugin({
         analyzerMode: 'static',
         openAnalyzer: false,
+      }),
+      new CopyWebpackPlugin({
+        patterns: [
+          { from: 'public/favicon.ico', to: 'favicon.ico' },
+          { from: 'public/manifest.json', to: 'manifest.json' },
+        ],
       }),
       new webpack.DefinePlugin({
         'process.env': JSON.stringify(process.env),

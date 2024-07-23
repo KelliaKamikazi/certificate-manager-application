@@ -1,8 +1,19 @@
-const App = (): JSX.Element => {
+import Header from './components/Header';
+import Sidebar from './components/Sidebar';
+import AppRoutes from './Route';
+import './App.css';
+
+const App: React.FC = () => {
   return (
-    <>
-      <h1>Certificate Manager Application</h1>;
-    </>
+    <div className="app">
+      <Header />
+      <div className="middle">
+        <Sidebar />
+        <main className="main-content">
+          <AppRoutes />
+        </main>
+      </div>
+    </div>
   );
 };
 

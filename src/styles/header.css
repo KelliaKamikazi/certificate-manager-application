@@ -1,0 +1,90 @@
+@font-face {
+  font-family: 'PMNCaeciliaSansHeadLight';
+  src: url('./items/Fonts/pmncaeciliasans-head-cufonfonts/PMNCaeciliaSansHeadLight.TTF')
+    format('truetype');
+  font-weight: 100;
+  font-style: normal;
+}
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  text-decoration: none;
+  font-family: 'PMNCaeciliaSansHeadLight', sans-serif;
+}
+
+.title {
+  position: fixed; /* Fixed position */
+  top: 0;
+  width: 100%; /* Full width */
+  padding: 16px;
+  color: var(--title-color);
+  font-size: 50px;
+  font-weight: 100;
+  overflow: hidden;
+  background-color: var(--primarycolor);
+  z-index: 110; /* Ensure it stays on top of other elements */
+  display: flex;
+  align-items: center;
+  justify-content: flex-start; /* Align to the left */
+}
+
+.title::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  height: 100%;
+  width: 25%;
+  background-color: var(--primarycolor);
+  z-index: 1;
+  transition: all 0.3s ease;
+}
+
+.title::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 25%;
+  height: 100%;
+  width: 75%;
+  background-color: var(--title-color);
+  z-index: 0;
+  transition: all 0.3s ease;
+}
+
+.title h1 {
+  text-align: left;
+  margin-left: 80px;
+  margin-top: 5px;
+  font-size: 40px;
+  font-weight: 100;
+  color: var(--title-color);
+  position: relative;
+  z-index: 2;
+}
+/*From the screen with this 1111px the following happens*/
+@media (max-width: 1200px) {
+  .title {
+    background-color: var(--primarycolor);
+    justify-content: center;
+  }
+
+  .title::before,
+  .title::after {
+    width: 100%;
+    left: 0;
+  }
+  /*Cover becomes the primary blue*/
+  .title::after {
+    background-color: var(--primarycolor);
+    width: 100%;
+  }
+  /*Remove the margin set on the bigscreens */
+  .title h1 {
+    text-align: center;
+    margin-left: 0;
+    margin-right: 0;
+  }
+}
