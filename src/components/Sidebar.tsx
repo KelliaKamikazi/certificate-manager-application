@@ -1,4 +1,4 @@
-import React, { useState, useRef, useEffect } from 'react';
+import React, { useState, useRef, useEffect, useCallback } from 'react';
 import { Link } from 'react-router-dom';
 import '../styles/sidebar.css';
 import HomeIcon from './icons/HomeIcon';
@@ -14,14 +14,14 @@ const Sidebar: React.FC = () => {
   const sidebarRef = useRef<HTMLDivElement>(null); // Ref to sidebar element
 
   // Toggle submenu
-  const handleMenuClick = () => {
+  const handleMenuClick = useCallback(() => {
     setIsSubmenuOpen((prev) => !prev);
-  };
+  }, []);
 
   // Toggle sidebar visibility
-  const handleSidebarOpen = () => {
+  const handleSidebarOpen = useCallback(() => {
     setIsSidebarVisible((prev) => !prev);
-  };
+  }, []);
 
   // Close submenu when clicking outside
   useEffect(() => {
@@ -55,6 +55,16 @@ const Sidebar: React.FC = () => {
     };
   }, []);
 
+  // Handle sidebar overlay click
+  const handleSidebarOverlayClick = useCallback(() => {
+    setIsSidebarVisible(false);
+  }, []);
+
+  // Stop propagation in submenu
+  const handleSubmenuClick = useCallback((e: React.MouseEvent) => {
+    e.stopPropagation();
+  }, []);
+
   return (
     <>
       <a
@@ -67,7 +77,7 @@ const Sidebar: React.FC = () => {
       {isSidebarVisible && (
         <div
           className="sidebarOverlay"
-          onClick={() => setIsSidebarVisible(false)}
+          onClick={handleSidebarOverlayClick}
         />
       )}
       {isMobile && (
@@ -113,7 +123,7 @@ const Sidebar: React.FC = () => {
             {isSubmenuOpen && (
               <div
                 className="submenu"
-                onClick={(e) => e.stopPropagation()}
+                onClick={handleSubmenuClick}
               >
                 <Link to="/example1">
                   <span>Example 1</span>
