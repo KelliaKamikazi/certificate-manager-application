@@ -9,9 +9,9 @@ import IconSvg from './icons/icons';
 const Sidebar: React.FC = () => {
   const [isSubmenuOpen, setIsSubmenuOpen] = useState(false);
   const [isSidebarVisible, setIsSidebarVisible] = useState(false);
+  const [isMobile, setIsMobile] = useState(window.innerWidth < 1200);
 
   const sidebarRef = useRef<HTMLDivElement>(null); // Ref to sidebar element
-  const submenuRef = useRef<HTMLDivElement>(null); // Ref to submenu element
 
   // Toggle submenu
   const handleMenuClick = () => {
@@ -28,9 +28,7 @@ const Sidebar: React.FC = () => {
     const handleClickOutside = (event: MouseEvent) => {
       if (
         sidebarRef.current &&
-        !sidebarRef.current.contains(event.target as Node) &&
-        submenuRef.current &&
-        !submenuRef.current.contains(event.target as Node)
+        !sidebarRef.current.contains(event.target as Node)
       ) {
         setIsSubmenuOpen(false); // Close submenu
       }
@@ -42,6 +40,21 @@ const Sidebar: React.FC = () => {
     };
   }, []);
 
+  // Handle window resize
+  useEffect(() => {
+    const handleResize = () => {
+      setIsMobile(window.innerWidth < 1200);
+      if (window.innerWidth >= 1200) {
+        setIsSidebarVisible(false); // Ensure sidebar is hidden on larger screens
+      }
+    };
+
+    window.addEventListener('resize', handleResize);
+    return () => {
+      window.removeEventListener('resize', handleResize);
+    };
+  }, []);
+
   return (
     <>
       <a
@@ -50,14 +63,14 @@ const Sidebar: React.FC = () => {
       >
         Skip to content
       </a>
-      <button
-        className="sidebar-button-container"
-        onClick={handleSidebarOpen}
-      >
-        Sidebar opener
-      </button>
-
-      {isSidebarVisible && <div onClick={() => setIsSidebarVisible(false)} />}
+      {isMobile && (
+        <button
+          className="sidebar-button-container"
+          onClick={handleSidebarOpen}
+        >
+          <IconSvg Icon={ThreeLineMenu} />
+        </button>
+      )}
 
       <div
         className={`sidebar ${isSidebarVisible ? 'visible' : ''}`}
@@ -91,10 +104,7 @@ const Sidebar: React.FC = () => {
           <div>
             <span>Machine Learning</span>
             {isSubmenuOpen && (
-              <div
-                className="submenu"
-                ref={submenuRef}
-              >
+              <div className="submenu">
                 <Link to="/example1">
                   <span>Example 1</span>
                 </Link>
