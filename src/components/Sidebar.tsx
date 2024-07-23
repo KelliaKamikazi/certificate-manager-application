@@ -63,6 +63,13 @@ const Sidebar: React.FC = () => {
       >
         Skip to content
       </a>
+
+      {isSidebarVisible && (
+        <div
+          className="sidebarOverlay"
+          onClick={() => setIsSidebarVisible(false)}
+        />
+      )}
       {isMobile && (
         <button
           className="sidebar-button-container"

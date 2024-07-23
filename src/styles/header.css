@@ -24,7 +24,7 @@
   font-weight: 100;
   overflow: hidden;
   background-color: var(--primarycolor);
-  z-index: 10; /* Ensure it stays on top of other elements */
+  z-index: 110; /* Ensure it stays on top of other elements */
   display: flex;
   align-items: center;
   justify-content: flex-start; /* Align to the left */

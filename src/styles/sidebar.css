@@ -139,11 +139,20 @@
 .skip-link:focus {
   top: 0;
 }
+.sidebarOverlay {
+  position: fixed;
+  inset: 0;
+  z-index: 40;
+  background-color: black;
+  opacity: 50%;
+}
 
 /* Responsive styles */
 @media (max-width: 1200px) {
   .sidebar {
     display: none;
+    position: fixed;
+    z-index: 100;
   }
 
   .sidebar.visible {
