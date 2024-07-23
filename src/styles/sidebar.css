@@ -33,14 +33,13 @@
 
 .sidebarStart::before {
   content: '';
-  position: absolute;
-  left: -15px;
-  top: 50%;
+  position: fixed;
+  left: 0;
+  top: 18%;
   transform: translateY(-50%);
-  width: 15px;
-  height: 80%;
+  width: 0.8%;
+  height: 3.8rem;
   background-color: var(--primarycolor);
-  z-index: -1;
 }
 
 .sidebarStart span {

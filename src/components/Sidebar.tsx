@@ -111,7 +111,10 @@ const Sidebar: React.FC = () => {
           <div>
             <span>Machine Learning</span>
             {isSubmenuOpen && (
-              <div className="submenu">
+              <div
+                className="submenu"
+                onClick={(e) => e.stopPropagation()}
+              >
                 <Link to="/example1">
                   <span>Example 1</span>
                 </Link>
