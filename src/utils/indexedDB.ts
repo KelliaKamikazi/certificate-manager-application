@@ -1,14 +1,7 @@
 const DB_NAME = 'exampleDB';
 const DB_VERSION = 1;
 const STORE_NAME = 'certificates';
-
-interface Certificate {
-  id?: number;
-  supplier: string;
-  certificateType: string;
-  validFrom: string;
-  validTo: string;
-}
+import { Certificate, CertificateWithoutId } from '../components/data/data'; // Importing the types
 
 const openDB = (): Promise<IDBDatabase> => {
   return new Promise((resolve, reject) => {
@@ -34,12 +27,19 @@ const openDB = (): Promise<IDBDatabase> => {
   });
 };
 
-const addData = async (data: Certificate[]) => {
+const addData = async (data: CertificateWithoutId[]): Promise<void> => {
   const db = await openDB();
   const transaction = db.transaction(STORE_NAME, 'readwrite');
   const store = transaction.objectStore(STORE_NAME);
 
-  data.forEach((item) => store.add(item));
+  data.forEach((item) => {
+    // Convert Date objects to ISO strings before adding to the store
+    store.add({
+      ...item,
+      validFrom: item.validFrom.toISOString(),
+      validTo: item.validTo.toISOString(),
+    });
+  });
 
   return new Promise<void>((resolve, reject) => {
     transaction.oncomplete = () => resolve();
@@ -54,7 +54,15 @@ const getData = async (): Promise<Certificate[]> => {
   const request = store.getAll();
 
   return new Promise((resolve, reject) => {
-    request.onsuccess = () => resolve(request.result);
+    request.onsuccess = () => {
+      // Convert ISO strings back to Date objects
+      const result = request.result.map((item: any) => ({
+        ...item,
+        validFrom: new Date(item.validFrom),
+        validTo: new Date(item.validTo),
+      }));
+      resolve(result);
+    };
     request.onerror = () => reject(request.error);
   });
 };

@@ -1,34 +1,15 @@
 import React, { useEffect, useState } from 'react';
 import '../styles/example1.css';
 import { addData, getData } from '../utils/indexedDB';
+import { Certificate, CertificateWithoutId } from './data/data';
 
-interface Certificate {
-  id?: number;
-  supplier: string;
-  certificateType: string;
-  validFrom: string;
-  validTo: string;
-}
-
-const certificateNames: Certificate[] = [
-  {
-    supplier: 'Kellia AG, 1, Berlin',
-    certificateType: 'Permission of Printing',
-    validFrom: '21.08.2017',
-    validTo: '26.08.2017',
-  },
-  {
-    supplier: 'Kamikazi AG, 1, Berlin',
-    certificateType: 'Permission of Printing',
-    validFrom: '21.08.2017',
-    validTo: '26.08.2017',
-  },
-  {
-    supplier: 'Kellia Kamikazi AG, 1, Berlin',
-    certificateType: 'Permission of Printing',
-    validFrom: '21.08.2017',
-    validTo: '26.08.2017',
-  },
+const certificateNames: CertificateWithoutId[] = [
+  //   {
+  //     supplier: 'Kellia AG, 1, Berlin',
+  //     certificateType: 'Permission of Printing',
+  //     validFrom: new Date('2017-08-21'),
+  //     validTo: new Date('2017-08-21'),
+  //   },
 ];
 
 const Example1: React.FC = () => {
@@ -53,11 +34,9 @@ const Example1: React.FC = () => {
   }, []);
 
   return (
-    <>
-      <div className="header_title">
-        <h2>Example 1</h2>
-      </div>
-      <div className="table_container">
+    <div className="container">
+      <h2 className="header_h">Example 1</h2>
+      <div className="table-wrapper">
         <table>
           <thead>
             <tr>
@@ -74,14 +53,14 @@ const Example1: React.FC = () => {
                 <td></td>
                 <td>{cert.supplier}</td>
                 <td>{cert.certificateType}</td>
-                <td>{cert.validFrom}</td>
-                <td>{cert.validTo}</td>
+                <td>{cert.validFrom.toDateString()}</td>
+                <td>{cert.validTo.toDateString()}</td>
               </tr>
             ))}
           </tbody>
         </table>
       </div>
-    </>
+    </div>
   );
 };
 

@@ -1,10 +1,12 @@
 export interface Certificate {
-  id?: number; // Optional unique identifier
+  id: number;
   supplier: string;
   certificateType: string;
-  validFrom: string;
-  validTo: string;
+  validFrom: Date;
+  validTo: Date;
 }
 
+// Define a type without 'id' for data initialization
+export type CertificateWithoutId = Omit<Certificate, 'id'>;
 // Optionally initialize with empty data or defaults
-export const initialCertificateData: Certificate[] = [];
+export const initialCertificateData: CertificateWithoutId[] = [];
