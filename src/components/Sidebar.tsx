@@ -7,9 +7,9 @@ import AngleDown from './icons/angledown';
 import IconSvg from './icons/icons';
 
 const Sidebar: React.FC = () => {
-  const [isSubmenuOpen, setIsSubmenuOpen] = useState(false);
-  const [isSidebarVisible, setIsSidebarVisible] = useState(false);
-  const [isMobile, setIsMobile] = useState(window.innerWidth < 1200);
+  const [isSubmenuOpen, setIsSubmenuOpen] = useState<boolean>(false);
+  const [isSidebarVisible, setIsSidebarVisible] = useState<boolean>(false);
+  const [isMobile, setIsMobile] = useState<boolean>(window.innerWidth < 1200);
 
   const sidebarRef = useRef<HTMLDivElement>(null); // Ref to sidebar element
 
