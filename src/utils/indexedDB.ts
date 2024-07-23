@@ -1,4 +1,8 @@
-export interface Certificate {
+const DB_NAME = 'exampleDB';
+const DB_VERSION = 1;
+const STORE_NAME = 'certificates';
+
+interface Certificate {
   id?: number;
   supplier: string;
   certificateType: string;
@@ -6,14 +10,11 @@ export interface Certificate {
   validTo: string;
 }
 
-const DB_NAME = 'exampleDB';
-const STORE_NAME = 'certificates';
-
 const openDB = (): Promise<IDBDatabase> => {
   return new Promise((resolve, reject) => {
-    const request = indexedDB.open(DB_NAME, 1);
+    const request = indexedDB.open(DB_NAME, DB_VERSION);
 
-    request.onupgradeneeded = (event: IDBVersionChangeEvent) => {
+    request.onupgradeneeded = (event) => {
       const db = (event.target as IDBOpenDBRequest).result;
       if (!db.objectStoreNames.contains(STORE_NAME)) {
         db.createObjectStore(STORE_NAME, {
@@ -33,12 +34,12 @@ const openDB = (): Promise<IDBDatabase> => {
   });
 };
 
-export const initializeDatabase = async (certificates: Certificate[]) => {
+const addData = async (data: Certificate[]) => {
   const db = await openDB();
   const transaction = db.transaction(STORE_NAME, 'readwrite');
   const store = transaction.objectStore(STORE_NAME);
 
-  certificates.forEach((certificate) => store.put(certificate));
+  data.forEach((item) => store.add(item));
 
   return new Promise<void>((resolve, reject) => {
     transaction.oncomplete = () => resolve();
@@ -46,15 +47,16 @@ export const initializeDatabase = async (certificates: Certificate[]) => {
   });
 };
 
-// Function to get all certificates from IndexedDB
-export const getAllCertificates = async (): Promise<Certificate[]> => {
+const getData = async (): Promise<Certificate[]> => {
   const db = await openDB();
   const transaction = db.transaction(STORE_NAME, 'readonly');
   const store = transaction.objectStore(STORE_NAME);
+  const request = store.getAll();
 
   return new Promise((resolve, reject) => {
-    const request = store.getAll();
     request.onsuccess = () => resolve(request.result);
     request.onerror = () => reject(request.error);
   });
 };
+
+export { addData, getData };

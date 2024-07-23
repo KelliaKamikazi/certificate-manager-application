@@ -1,23 +1,55 @@
 import React, { useEffect, useState } from 'react';
-import { initializeDatabase, getAllCertificates } from '../utils/indexedDB'; // Import your functions
-import { Certificate, certificateData } from './data/data'; // Import your data and type
+import '../styles/example1.css';
+import { addData, getData } from '../utils/indexedDB';
+
+interface Certificate {
+  id?: number;
+  supplier: string;
+  certificateType: string;
+  validFrom: string;
+  validTo: string;
+}
+
+const certificateNames: Certificate[] = [
+  {
+    supplier: 'Kellia AG, 1, Berlin',
+    certificateType: 'Permission of Printing',
+    validFrom: '21.08.2017',
+    validTo: '26.08.2017',
+  },
+  {
+    supplier: 'Kamikazi AG, 1, Berlin',
+    certificateType: 'Permission of Printing',
+    validFrom: '21.08.2017',
+    validTo: '26.08.2017',
+  },
+  {
+    supplier: 'Kellia Kamikazi AG, 1, Berlin',
+    certificateType: 'Permission of Printing',
+    validFrom: '21.08.2017',
+    validTo: '26.08.2017',
+  },
+];
 
 const Example1: React.FC = () => {
   const [certificates, setCertificates] = useState<Certificate[]>([]);
 
   useEffect(() => {
-    const loadCertificates = async () => {
-      try {
-        // Initialize database with the static data
-        await initializeDatabase(certificateData);
-        const data = await getAllCertificates();
-        setCertificates(data);
-      } catch (error) {
-        console.error('Failed to load certificates:', error);
-      }
+    const initializeDB = async () => {
+      await addData(certificateNames);
     };
 
-    loadCertificates();
+    initializeDB().catch(console.error);
+  }, []);
+
+  useEffect(() => {
+    const fetchData = async () => {
+      const data = await getData();
+      // Ensure data is correctly typed
+      setCertificates(data as Certificate[]);
+    };
+
+    fetchData().catch(console.error);
   }, []);
 
   return (
@@ -37,8 +69,8 @@ const Example1: React.FC = () => {
             </tr>
           </thead>
           <tbody>
-            {certificates.map((cert) => (
-              <tr key={cert.id}>
+            {certificates.map((cert, index) => (
+              <tr key={index}>
                 <td></td>
                 <td>{cert.supplier}</td>
                 <td>{cert.certificateType}</td>
