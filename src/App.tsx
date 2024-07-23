@@ -9,7 +9,7 @@ const App: React.FC = () => {
       <Header />
       <div className="middle">
         <Sidebar />
-        <main>
+        <main className="main-content">
           <AppRoutes />
         </main>
       </div>

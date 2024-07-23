@@ -1,9 +1,8 @@
 .start {
   display: flex;
   align-items: center;
-  position: fixed;
-  padding-left: 150px;
   padding-top: 140px;
+  padding-left: 150px;
 }
 
 .start h1 {
@@ -16,12 +15,10 @@
 }
 
 /* Responsive styles */
-@media (max-width: 800px) {
+@media (max-width: 1200px) {
   .start {
-    display: flex;
-    align-items: center;
-    position: flex;
-
-    padding-top: 30px;
+    padding-left: 15px;
+    padding-top: 140px;
+    justify-content: center;
   }
 }
