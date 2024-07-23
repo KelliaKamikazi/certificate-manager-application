@@ -1,10 +1,9 @@
 .container {
-  display: relative;
+  display: flex;
 }
 
 .header_title {
   font-family: 'PMNCaeciliaSansHeadLight', sans-serif;
-  /* Ensure the header title is aligned to the left */
   margin-bottom: 20px;
   align-content: start;
 }
