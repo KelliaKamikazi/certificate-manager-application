@@ -1,16 +1,11 @@
-.container {
-  display: flex;
-  flex-direction: column;
-}
 .header_title {
   font-family: 'PMNCaeciliaSansHeadLight', sans-serif;
   margin-bottom: 20px;
   margin-left: 30px;
-  position: flex;
-  z-index: 2;
+  text-align: left;
 }
 
-h2 {
+.header_title h2 {
   color: var(--almost-black);
 }
 
@@ -18,19 +13,22 @@ h2 {
   border: 1px solid var(--background-color);
   border-radius: 4px;
   overflow-x: auto;
-  margin: 20px auto; /* Center the tables container */
-  width: 60%;
-  overflow-y: scroll;
+  margin: 20px auto;
+  width: 70%; /* Adjust width to avoid overflowing under the sidebar */
   max-height: 150px;
+  overflow-y: auto; /* Ensure vertical scrolling is enabled */
 }
+
 table {
   width: 100%;
   border-collapse: collapse;
-  z-index: inherit;
 }
+
 th,
-tr {
+td {
   border: 0.6px solid var(--almost-black);
+  padding: 8px; /* Adjust padding for better fit */
+  text-align: left;
 }
 
 thead th {
@@ -38,10 +36,9 @@ thead th {
   position: sticky;
   top: 0;
   background-color: var(--sidebar-background-color);
-  z-index: 1; /*for the head to stay at the top as i scroll*/
+  z-index: 1; /* Ensure the header stays at the top when scrolling */
 }
-th,
-td {
-  padding: 5px;
-  text-align: left;
+
+tbody tr:nth-child(odd) {
+  background-color: #f9f9f9; /* Add alternating row colors for better readability */
 }

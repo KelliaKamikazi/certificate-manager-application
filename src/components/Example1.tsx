@@ -53,7 +53,7 @@ const Example1: React.FC = () => {
   }, []);
 
   return (
-    <div className="container">
+    <>
       <div className="header_title">
         <h2>Example 1</h2>
       </div>
@@ -81,7 +81,7 @@ const Example1: React.FC = () => {
           </tbody>
         </table>
       </div>
-    </div>
+    </>
   );
 };
 
