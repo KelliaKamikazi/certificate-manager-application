@@ -8,5 +8,19 @@ export interface Certificate {
 
 // Define a type without 'id' for data initialization
 export type CertificateWithoutId = Omit<Certificate, 'id'>;
-// Optionally initialize with empty data or defaults
-export const initialCertificateData: CertificateWithoutId[] = [];
+
+// Sample data initialization
+export const sampleCertificates: CertificateWithoutId[] = [
+  // {
+  //   supplier: 'Kellia AG, 1, Berlin',
+  //   certificateType: 'Permission of Printing',
+  //   validFrom: new Date('2017-08-21'),
+  //   validTo: new Date('2017-08-21'),
+  // },
+  // {
+  //   supplier: 'Kamikazi AG, 1, Berlin',
+  //   certificateType: 'Permission of Printing',
+  //   validFrom: new Date('2017-08-21'),
+  //   validTo: new Date('2017-08-21'),
+  // },
+];

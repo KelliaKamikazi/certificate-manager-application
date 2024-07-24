@@ -1,3 +1,4 @@
+// ../utils/indexedDB.ts
 const DB_NAME = 'exampleDB';
 const DB_VERSION = 1;
 const STORE_NAME = 'certificates';
@@ -32,14 +33,21 @@ const addData = async (data: CertificateWithoutId[]): Promise<void> => {
   const transaction = db.transaction(STORE_NAME, 'readwrite');
   const store = transaction.objectStore(STORE_NAME);
 
-  data.forEach((item) => {
-    // Convert Date objects to ISO strings before adding to the store
-    store.add({
-      ...item,
-      validFrom: item.validFrom.toISOString(),
-      validTo: item.validTo.toISOString(),
+  // Create a promise for each add operation
+  const promises = data.map((item) => {
+    return new Promise<void>((resolve, reject) => {
+      const addRequest = store.add({
+        ...item,
+        validFrom: item.validFrom.toISOString(),
+        validTo: item.validTo.toISOString(),
+      });
+
+      addRequest.onsuccess = () => resolve();
+      addRequest.onerror = () => reject(addRequest.error);
     });
   });
+
+  await Promise.all(promises);
 
   return new Promise<void>((resolve, reject) => {
     transaction.oncomplete = () => resolve();

@@ -1,23 +1,14 @@
 import React, { useEffect, useState } from 'react';
 import '../styles/example1.css';
 import { addData, getData } from '../utils/indexedDB';
-import { Certificate, CertificateWithoutId } from './data/data';
-
-const certificateNames: CertificateWithoutId[] = [
-  //   {
-  //     supplier: 'Kellia AG, 1, Berlin',
-  //     certificateType: 'Permission of Printing',
-  //     validFrom: new Date('2017-08-21'),
-  //     validTo: new Date('2017-08-21'),
-  //   },
-];
+import { Certificate, sampleCertificates } from './data/data';
 
 const Example1: React.FC = () => {
   const [certificates, setCertificates] = useState<Certificate[]>([]);
 
   useEffect(() => {
     const initializeDB = async () => {
-      await addData(certificateNames);
+      await addData(sampleCertificates);
     };
 
     initializeDB().catch(console.error);
@@ -26,8 +17,7 @@ const Example1: React.FC = () => {
   useEffect(() => {
     const fetchData = async () => {
       const data = await getData();
-      // Ensure data is correctly typed
-      setCertificates(data as Certificate[]);
+      setCertificates(data);
     };
 
     fetchData().catch(console.error);
@@ -48,8 +38,8 @@ const Example1: React.FC = () => {
             </tr>
           </thead>
           <tbody>
-            {certificates.map((cert, index) => (
-              <tr key={index}>
+            {certificates.map((cert) => (
+              <tr key={cert.id}>
                 <td></td>
                 <td>{cert.supplier}</td>
                 <td>{cert.certificateType}</td>
