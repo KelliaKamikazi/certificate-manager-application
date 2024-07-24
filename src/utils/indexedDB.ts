@@ -2,7 +2,7 @@
 const DB_NAME = 'exampleDB';
 const DB_VERSION = 1;
 const STORE_NAME = 'certificates';
-import { Certificate, CertificateWithoutId } from '../components/data/data'; // Importing the types
+import { Certificate } from '../components/data/data'; // Importing the types
 
 const openDB = (): Promise<IDBDatabase> => {
   return new Promise((resolve, reject) => {
@@ -28,12 +28,12 @@ const openDB = (): Promise<IDBDatabase> => {
   });
 };
 
-const addData = async (data: CertificateWithoutId[]): Promise<void> => {
+const addData = async (data: Certificate[]): Promise<void> => {
   const db = await openDB();
   const transaction = db.transaction(STORE_NAME, 'readwrite');
   const store = transaction.objectStore(STORE_NAME);
 
-  // Create a promise for each add operation
+  // Create a promise for each add operation(prevents overlapping IDs)
   const promises = data.map((item) => {
     return new Promise<void>((resolve, reject) => {
       const addRequest = store.add({

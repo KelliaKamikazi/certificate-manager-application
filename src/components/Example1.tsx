@@ -1,18 +1,10 @@
 import React, { useEffect, useState } from 'react';
 import '../styles/example1.css';
-import { addData, getData } from '../utils/indexedDB';
-import { Certificate, sampleCertificates } from './data/data';
+import { getData } from '../utils/indexedDB';
+import { Certificate } from './data/data';
 
 const Example1: React.FC = () => {
   const [certificates, setCertificates] = useState<Certificate[]>([]);
-
-  useEffect(() => {
-    const initializeDB = async () => {
-      await addData(sampleCertificates);
-    };
-
-    initializeDB().catch(console.error);
-  }, []);
 
   useEffect(() => {
     const fetchData = async () => {
