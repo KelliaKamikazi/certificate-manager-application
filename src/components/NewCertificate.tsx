@@ -1,4 +1,61 @@
-const CreateCertificate: React.FC = () => {
+import closeIcon from './icons/closeIcon';
+import IconSvg from './icons/icons';
+import searchIcon from './icons/searchIcon';
+import '../styles/newCertificate.css';
+import { getDocument, GlobalWorkerOptions } from 'pdfjs-dist';
+import { useEffect, useState } from 'react';
+
+// Set the worker source for pdf.js
+GlobalWorkerOptions.workerSrc = `//cdnjs.cloudflare.com/ajax/libs/pdf.js/${require('pdfjs-dist/package.json').version}/pdf.worker.min.js`;
+
+const NewCertificate = () => {
+  const [preview, setPreview] = useState<string | ArrayBuffer | null>(null);
+
+  const handleFile = (event: React.ChangeEvent<HTMLInputElement>) => {
+    const file = event.target.files?.[0];
+    if (file && file.type === 'application/pdf') {
+      const reader = new FileReader();
+      reader.onloadend = () => {
+        setPreview(reader.result);
+      };
+      reader.readAsDataURL(file);
+    } else {
+      alert('Only Pdf are to be select, thank you!');
+    }
+  };
+
+  useEffect(() => {
+    if (preview && typeof preview === 'string') {
+      const container = document.getElementById('pdf-preview');
+      if (container) {
+        const loadingTask = getDocument(preview);
+        loadingTask.promise.then((pdf) => {
+          // Clear the container before rendering new PDF
+          container.innerHTML = '';
+
+          for (let pageNum = 1; pageNum <= pdf.numPages; pageNum++) {
+            pdf.getPage(pageNum).then((page) => {
+              const viewport = page.getViewport({ scale: 1 });
+              const canvas = document.createElement('canvas');
+              const context = canvas.getContext('2d');
+              if (context) {
+                canvas.height = viewport.height;
+                canvas.width = viewport.width;
+
+                container.appendChild(canvas);
+
+                const renderContext = {
+                  canvasContext: context,
+                  viewport: viewport,
+                };
+                page.render(renderContext);
+              }
+            });
+          }
+        });
+      }
+    }
+  }, [preview]);
   return (
     <div className="new-cert-form">
       <form>
@@ -13,12 +70,12 @@ const CreateCertificate: React.FC = () => {
                 />
                 <div>
                   <IconSvg
-                    Icon={SearchIcon}
+                    Icon={searchIcon}
                     className="input-icon input-icon-search"
                   />
                   <div className="vertical-bar"></div>
                   <IconSvg
-                    Icon={CloseIcon}
+                    Icon={closeIcon}
                     className="input-icon"
                   />
                 </div>
@@ -33,9 +90,9 @@ const CreateCertificate: React.FC = () => {
                   className="form-input form-input-select"
                 >
                   <option value="">Select your option</option>
-                  <option value="option 1">option 1</option>
-                  <option value="option 2">option 2</option>
-                  <option value="option 3">option 3</option>
+                  <option value="option 1">Printing of Permission</option>
+                  <option value="option 2">Printing of Permission</option>
+                  <option value="option 3">Printing of Permission</option>
                 </select>
               </div>
             </div>
@@ -71,7 +128,7 @@ const CreateCertificate: React.FC = () => {
             <input
               type="file"
               className="upload-input"
-              onChange={handleFileChange}
+              onChange={handleFile}
               style={{ display: 'none' }}
             />
             <div
@@ -101,4 +158,4 @@ const CreateCertificate: React.FC = () => {
   );
 };
 
-export default CreateCertificate;
+export default NewCertificate;

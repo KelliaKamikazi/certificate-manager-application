@@ -77,6 +77,24 @@ thead th {
 .table-wrapper::-webkit-scrollbar-track {
   background: var(--background-color); /* Color of the scrollbar track */
 }
+.btn-create {
+  font-size: 1.3rem;
+  padding: 1rem 2rem;
+  height: 2.8rem;
+  width: auto;
+  background-color: var(--button-color1);
+  border: none;
+  border-radius: 0.25rem;
+  cursor: pointer;
+  color: var(--title-color);
+  margin-left: 6.1rem;
+  display: flex;
+  align-items: center;
+}
+.btn-create-large:hover {
+  background-color: var(--button-color);
+}
+
 /* Media query for screens smaller than 1200px */
 @media (max-width: 1200px) {
   .table-wrapper {

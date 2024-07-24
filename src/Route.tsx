@@ -1,5 +1,6 @@
 import React, { Suspense, lazy } from 'react';
 import { Route, Routes } from 'react-router-dom';
+import NewCertificate from './components/NewCertificate';
 
 // Lazy load route components
 const Home = lazy(() => import('./components/Home'));
@@ -22,6 +23,10 @@ const AppRoutes: React.FC = () => {
         <Route
           path="/example1"
           element={<Example1 />}
+        />
+        <Route
+          path="/NewCertificate"
+          element={<NewCertificate />}
         />
         <Route
           path="/example2"

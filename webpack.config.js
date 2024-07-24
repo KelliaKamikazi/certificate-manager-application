@@ -25,6 +25,8 @@ export default () => {
           test: /\.tsx?$/,
           use: 'ts-loader',
           exclude: /node_modules/,
+          test: /pdf\.worker\.min\.js$/,
+          use: { loader: 'worker-loader', options: { inline: true } },
         },
         {
           test: /\.js$/,
