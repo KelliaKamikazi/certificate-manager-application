@@ -2,21 +2,17 @@ import closeIcon from './icons/closeIcon';
 import IconSvg from './icons/icons';
 import searchIcon from './icons/searchIcon';
 import '../styles/newCertificate.css';
-import { getDocument, GlobalWorkerOptions } from 'pdfjs-dist';
-import { useEffect, useState } from 'react';
-
-// Set the worker source for pdf.js
-GlobalWorkerOptions.workerSrc = `//cdnjs.cloudflare.com/ajax/libs/pdf.js/${require('pdfjs-dist/package.json').version}/pdf.worker.min.js`;
+import { useState } from 'react';
 
 const NewCertificate = () => {
-  const [preview, setPreview] = useState<string | ArrayBuffer | null>(null);
+  const [preview, setPreview] = useState<string | undefined>(undefined);
 
   const handleFile = (event: React.ChangeEvent<HTMLInputElement>) => {
     const file = event.target.files?.[0];
     if (file && file.type === 'application/pdf') {
       const reader = new FileReader();
       reader.onloadend = () => {
-        setPreview(reader.result);
+        setPreview(reader.result as string);
       };
       reader.readAsDataURL(file);
     } else {
@@ -24,38 +20,6 @@ const NewCertificate = () => {
     }
   };
 
-  useEffect(() => {
-    if (preview && typeof preview === 'string') {
-      const container = document.getElementById('pdf-preview');
-      if (container) {
-        const loadingTask = getDocument(preview);
-        loadingTask.promise.then((pdf) => {
-          // Clear the container before rendering new PDF
-          container.innerHTML = '';
-
-          for (let pageNum = 1; pageNum <= pdf.numPages; pageNum++) {
-            pdf.getPage(pageNum).then((page) => {
-              const viewport = page.getViewport({ scale: 1 });
-              const canvas = document.createElement('canvas');
-              const context = canvas.getContext('2d');
-              if (context) {
-                canvas.height = viewport.height;
-                canvas.width = viewport.width;
-
-                container.appendChild(canvas);
-
-                const renderContext = {
-                  canvasContext: context,
-                  viewport: viewport,
-                };
-                page.render(renderContext);
-              }
-            });
-          }
-        });
-      }
-    }
-  }, [preview]);
   return (
     <div className="new-cert-form">
       <form>
@@ -135,6 +99,7 @@ const NewCertificate = () => {
               className="file-preview-panel"
               id="pdf-preview"
             >
+              <iframe src={preview}></iframe>
               {preview ? null : <span></span>}
             </div>
           </div>
