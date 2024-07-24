@@ -57,7 +57,7 @@ tbody tr:nth-child(odd) {
 }
 
 thead th {
-  position: -webkit-sticky; /* For Safari */
+  position: -webkit-sticky;
   position: sticky;
   top: 0;
   background-color: var(--sidebar-background-color);
