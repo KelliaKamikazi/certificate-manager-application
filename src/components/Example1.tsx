@@ -4,7 +4,6 @@ import { Certificate } from './data/data';
 import { Link } from 'react-router-dom';
 import IconSvg from './icons/icons';
 import gearIcon from './icons/gearIcon';
-import { getData, deleteData } from '../utils/indexedDB';
 
 const Example1: React.FC = () => {
   const [certificates, setCertificates] = useState<Certificate[]>([]);
@@ -56,7 +55,9 @@ const Example1: React.FC = () => {
         <table>
           <thead>
             <tr>
-              <th></th>
+              <th className="gearIcon">
+                <IconSvg Icon={gearIcon} />
+              </th>
               <th>Supplier</th>
               <th>Certificate type</th>
               <th>Valid from</th>

@@ -164,3 +164,9 @@ thead th {
     padding-left: 0; /* Remove left padding */
   }
 }
+.gearIcon {
+  width: 30px;
+  height: 25px;
+  fill: var(--secondarycolor);
+  margin-top: 12px;
+}
