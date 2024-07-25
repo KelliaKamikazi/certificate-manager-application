@@ -1,4 +1,4 @@
-import React, { useState, useRef, useEffect, useCallback } from 'react';
+import React, { useState, useRef, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import '../styles/sidebar.css';
 import HomeIcon from './icons/HomeIcon';
@@ -14,14 +14,14 @@ const Sidebar: React.FC = () => {
   const sidebarRef = useRef<HTMLDivElement>(null); // Ref to sidebar element
 
   // Toggle submenu
-  const handleMenuClick = useCallback(() => {
+  const handleMenuClick = () => {
     setIsSubmenuOpen((prev) => !prev);
-  }, []);
+  };
 
   // Toggle sidebar visibility
-  const handleSidebarOpen = useCallback(() => {
+  const handleSidebarOpen = () => {
     setIsSidebarVisible((prev) => !prev);
-  }, []);
+  };
 
   // Close submenu when clicking outside
   useEffect(() => {
@@ -56,14 +56,14 @@ const Sidebar: React.FC = () => {
   }, []);
 
   // Handle sidebar overlay click
-  const handleSidebarOverlayClick = useCallback(() => {
+  const handleSidebarOverlayClick = () => {
     setIsSidebarVisible(false);
-  }, []);
+  };
 
   // Stop propagation in submenu
-  const handleSubmenuClick = useCallback((e: React.MouseEvent) => {
+  const handleSubmenuClick = (e: React.MouseEvent) => {
     e.stopPropagation();
-  }, []);
+  };
 
   return (
     <>
