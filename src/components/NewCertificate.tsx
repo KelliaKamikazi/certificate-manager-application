@@ -3,10 +3,50 @@ import IconSvg from './icons/icons';
 import searchIcon from './icons/searchIcon';
 import '../styles/newCertificate.css';
 import { useState } from 'react';
+import '../utils/indexedDB';
+import '../components/data/data';
+import { Certificate } from '../components/data/data';
+import { addData } from '../utils/indexedDB';
 
 const NewCertificate = () => {
+  //set States for the data
+  const [supplier, setSupplier] = useState('');
+  const [certificateType, setCertificateType] = useState('');
+  const [validTo, setValidTo] = useState('');
+  const [validFrom, setValidFrom] = useState('');
   const [preview, setPreview] = useState<string | undefined>(undefined);
+  //handleSaving files
+  const handleSaving = async (event: React.FormEvent) => {
+    event.preventDefault();
+    if (!supplier || !certificateType || !validTo || !validFrom) {
+      alert('All fields are required');
+      return;
+    }
+    const newCertificate: Certificate = {
+      supplier,
+      certificateType,
+      validFrom: new Date(validFrom),
+      validTo: new Date(validTo),
+    };
 
+    try {
+      await addData([newCertificate]);
+      alert('Certificate was saved successfully');
+      resetFields();
+    } catch (error) {
+      console.error('Failed to add the certificate');
+      alert('Certificate not added');
+    }
+  };
+  const resetFields = () => {
+    setSupplier('');
+    setCertificateType('');
+    setValidTo('');
+    setValidFrom('');
+    setPreview(undefined);
+  };
+
+  //function to handle the File (pdf) upload
   const handleFile = (event: React.ChangeEvent<HTMLInputElement>) => {
     const file = event.target.files?.[0];
     if (file && file.type === 'application/pdf') {
@@ -22,7 +62,7 @@ const NewCertificate = () => {
 
   return (
     <div className="new-cert-form">
-      <form>
+      <form onSubmit={handleSaving}>
         <div className="form-container">
           <div className="left-side">
             <div className="form-input-container">
@@ -31,6 +71,8 @@ const NewCertificate = () => {
                 <input
                   type="text"
                   className="form-input"
+                  value={supplier}
+                  onChange={(e) => setSupplier(e.target.value)}
                 />
                 <div>
                   <IconSvg
@@ -52,11 +94,19 @@ const NewCertificate = () => {
                   name="suppliers"
                   id="suppliers"
                   className="form-input form-input-select"
+                  value={certificateType}
+                  onChange={(e) => setCertificateType(e.target.value)}
                 >
                   <option value="">Select your option</option>
-                  <option value="option 1">Printing of Permission</option>
-                  <option value="option 2">Printing of Permission</option>
-                  <option value="option 3">Printing of Permission</option>
+                  <option value="Printing of Permission">
+                    Printing of Permission
+                  </option>
+                  <option value="Printing of Permission">
+                    Printing of Permission
+                  </option>
+                  <option value="Printing of Permission">
+                    Printing of Permission
+                  </option>
                 </select>
               </div>
             </div>
@@ -65,6 +115,8 @@ const NewCertificate = () => {
               <input
                 type="date"
                 className="form-input"
+                value={validFrom}
+                onChange={(e) => setValidFrom(e.target.value)}
               />
             </div>
             <div className="form-input-container">
@@ -73,6 +125,8 @@ const NewCertificate = () => {
                 <input
                   type="date"
                   className="form-input"
+                  value={validTo}
+                  onChange={(e) => setValidTo(e.target.value)}
                 />
               </div>
             </div>
@@ -114,6 +168,7 @@ const NewCertificate = () => {
           <button
             type="reset"
             className="reset-cert-btn"
+            onClick={resetFields}
           >
             Reset
           </button>
