@@ -4,5 +4,11 @@ export interface Certificate {
   certificateType: string;
   validFrom: Date;
   validTo: Date;
+  preview?: string;
 }
 export const sampleCertificates: Certificate[] = [];
+
+export enum Certificate_Type {
+  PERMISSION_OF_PRINTING = 'Permission of Printing',
+  CCC_CERTIFICATE = 'CCC Certificate',
+}

@@ -2,22 +2,61 @@ import closeIcon from './icons/closeIcon';
 import IconSvg from './icons/icons';
 import searchIcon from './icons/searchIcon';
 import '../styles/newCertificate.css';
-import { useState } from 'react';
+import { useState, ChangeEvent, FormEvent } from 'react';
 import '../utils/indexedDB';
 import '../components/data/data';
-import { Certificate } from '../components/data/data';
+import { Certificate, Certificate_Type } from '../components/data/data';
 import { addData } from '../utils/indexedDB';
 
-const NewCertificate = () => {
-  //set States for the data
-  const [supplier, setSupplier] = useState('');
-  const [certificateType, setCertificateType] = useState('');
-  const [validTo, setValidTo] = useState('');
-  const [validFrom, setValidFrom] = useState('');
-  const [preview, setPreview] = useState<string | undefined>(undefined);
-  //handleSaving files
-  const handleSaving = async (event: React.FormEvent) => {
+const NewCertificate: React.FC = () => {
+  // Set States for the data
+  const [certificate, setCertificate] = useState({
+    supplier: '',
+    certificateType: '',
+    validTo: '',
+    validFrom: '',
+    preview: undefined as string | undefined,
+  });
+
+  const handleInputChange = (
+    e: ChangeEvent<HTMLInputElement | HTMLSelectElement>,
+  ) => {
+    const { name, value } = e.target;
+    setCertificate((prevData) => ({
+      ...prevData,
+      [name]: value,
+    }));
+  };
+
+  const handleFileChange = (e: ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (file && file.type === 'application/pdf') {
+      const reader = new FileReader();
+      reader.onloadend = () => {
+        setCertificate((prevData) => ({
+          ...prevData,
+          preview: reader.result as string,
+        }));
+      };
+      reader.readAsDataURL(file);
+    } else {
+      alert('Only PDF files are allowed');
+    }
+  };
+
+  const handleResetFields = () => {
+    setCertificate({
+      supplier: '',
+      certificateType: '',
+      validTo: '',
+      validFrom: '',
+      preview: undefined,
+    });
+  };
+
+  const handleSaving = async (event: FormEvent) => {
     event.preventDefault();
+    const { supplier, certificateType, validTo, validFrom } = certificate;
     if (!supplier || !certificateType || !validTo || !validFrom) {
       alert('All fields are required');
       return;
@@ -32,31 +71,10 @@ const NewCertificate = () => {
     try {
       await addData([newCertificate]);
       alert('Certificate was saved successfully');
-      resetFields();
+      handleResetFields();
     } catch (error) {
-      console.error('Failed to add the certificate');
+      console.error('Failed to add the certificate', error);
       alert('Certificate not added');
-    }
-  };
-  const resetFields = () => {
-    setSupplier('');
-    setCertificateType('');
-    setValidTo('');
-    setValidFrom('');
-    setPreview(undefined);
-  };
-
-  //function to handle the File (pdf) upload
-  const handleFile = (event: React.ChangeEvent<HTMLInputElement>) => {
-    const file = event.target.files?.[0];
-    if (file && file.type === 'application/pdf') {
-      const reader = new FileReader();
-      reader.onloadend = () => {
-        setPreview(reader.result as string);
-      };
-      reader.readAsDataURL(file);
-    } else {
-      alert('Only Pdf are to be select, thank you!');
     }
   };
 
@@ -71,8 +89,9 @@ const NewCertificate = () => {
                 <input
                   type="text"
                   className="form-input"
-                  value={supplier}
-                  onChange={(e) => setSupplier(e.target.value)}
+                  name="supplier"
+                  value={certificate.supplier}
+                  onChange={handleInputChange}
                 />
                 <div>
                   <IconSvg
@@ -91,21 +110,18 @@ const NewCertificate = () => {
               <div className="form-input-container">
                 <label className="form-input-label">Certificate type</label>
                 <select
-                  name="suppliers"
+                  name="certificateType"
                   id="suppliers"
                   className="form-input form-input-select"
-                  value={certificateType}
-                  onChange={(e) => setCertificateType(e.target.value)}
+                  value={certificate.certificateType}
+                  onChange={handleInputChange}
                 >
                   <option value="">Select your option</option>
-                  <option value="Printing of Permission">
+                  <option value={Certificate_Type.PERMISSION_OF_PRINTING}>
                     Printing of Permission
                   </option>
-                  <option value="Printing of Permission">
-                    Printing of Permission
-                  </option>
-                  <option value="Printing of Permission">
-                    Printing of Permission
+                  <option value={Certificate_Type.CCC_CERTIFICATE}>
+                    OHSAS 18001
                   </option>
                 </select>
               </div>
@@ -115,8 +131,9 @@ const NewCertificate = () => {
               <input
                 type="date"
                 className="form-input"
-                value={validFrom}
-                onChange={(e) => setValidFrom(e.target.value)}
+                name="validFrom"
+                value={certificate.validFrom}
+                onChange={handleInputChange}
               />
             </div>
             <div className="form-input-container">
@@ -125,8 +142,9 @@ const NewCertificate = () => {
                 <input
                   type="date"
                   className="form-input"
-                  value={validTo}
-                  onChange={(e) => setValidTo(e.target.value)}
+                  name="validTo"
+                  value={certificate.validTo}
+                  onChange={handleInputChange}
                 />
               </div>
             </div>
@@ -146,15 +164,15 @@ const NewCertificate = () => {
             <input
               type="file"
               className="upload-input"
-              onChange={handleFile}
+              onChange={handleFileChange}
               style={{ display: 'none' }}
             />
             <div
               className="file-preview-panel"
               id="pdf-preview"
             >
-              <iframe src={preview}></iframe>
-              {preview ? null : <span></span>}
+              <iframe src={certificate.preview}></iframe>
+              {certificate.preview ? null : <span></span>}
             </div>
           </div>
         </div>
@@ -168,7 +186,7 @@ const NewCertificate = () => {
           <button
             type="reset"
             className="reset-cert-btn"
-            onClick={resetFields}
+            onClick={handleResetFields}
           >
             Reset
           </button>
