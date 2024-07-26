@@ -76,12 +76,14 @@ const Example1: React.FC = () => {
                     {openDropdownId === cert.id && (
                       <div className="dropdown-menu">
                         <div className="dropdown-options">
-                          <button
-                            className="dropdown-button"
-                            onClick={() => {}}
-                          >
-                            Edit
-                          </button>
+                          <Link to="/NewCertificate">
+                            <button
+                              className="dropdown-button"
+                              onClick={() => {}}
+                            >
+                              Edit
+                            </button>
+                          </Link>
                           <button
                             className="dropdown-button"
                             onClick={() => handleDeleteClick(cert.id)}
