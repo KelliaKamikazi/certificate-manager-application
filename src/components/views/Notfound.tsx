@@ -1,3 +1,4 @@
+import '../../styles/notfound.css';
 const NotFound: React.FC = () => {
   return (
     <div>

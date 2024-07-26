@@ -1,4 +1,4 @@
-import '../styles/example2.css';
+import '../../styles/example2.css';
 
 const Example2: React.FC = () => {
   return (

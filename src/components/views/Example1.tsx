@@ -1,10 +1,10 @@
 import React, { useEffect, useState } from 'react';
-import '../styles/example1.css';
-import { Certificate } from './data/data';
-import { Link } from 'react-router-dom';
-import IconSvg from './icons/icons';
-import gearIcon from './icons/gearIcon';
-import { getData, deleteData } from '../utils/indexedDB';
+import '../../styles/example1.css';
+import { Certificate } from '../data/data';
+import { Link, useNavigate } from 'react-router-dom';
+import IconSvg from '../icons/icons';
+import gearIcon from '../icons/gearIcon';
+import { getData, deleteData } from '../../utils/indexedDB';
 
 const Example1: React.FC = () => {
   const [certificates, setCertificates] = useState<Certificate[]>([]);
@@ -22,6 +22,7 @@ const Example1: React.FC = () => {
   const toggleDropdown = (certId: number | undefined) => {
     setOpenDropdownId(openDropdownId === certId ? undefined : certId);
   };
+  const navigate = useNavigate();
 
   const confirmAndDelete = async (id: number) => {
     if (window.confirm('Are you sure you want to delete this certificate?')) {
@@ -41,6 +42,14 @@ const Example1: React.FC = () => {
   const handleDeleteClick = (id: number | undefined) => {
     if (id !== undefined) {
       confirmAndDelete(id);
+    } else {
+      alert('Certificate ID is undefined');
+    }
+  };
+
+  const handleEditClick = (id: number | undefined) => {
+    if (id !== undefined) {
+      navigate('/NewCertificate', { state: { certificateId: id } });
     } else {
       alert('Certificate ID is undefined');
     }
@@ -79,7 +88,7 @@ const Example1: React.FC = () => {
                           <Link to="/NewCertificate">
                             <button
                               className="dropdown-button"
-                              onClick={() => {}}
+                              onClick={() => handleEditClick(cert.id)}
                             >
                               Edit
                             </button>

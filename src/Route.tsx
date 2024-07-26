@@ -1,10 +1,10 @@
 import { Route, Routes } from 'react-router-dom';
-import NewCertificate from './components/NewCertificate';
-import Home from './components/Home';
-import Example1 from './components/Example1';
-import Example2 from './components/Example2';
-import Example3 from './components/Example3';
-import NotFound from './components/Notfound';
+import NewCertificate from './components/views/NewCertificate';
+import Home from './components/views/Home';
+import Example1 from '../src/components/views/Example1';
+import Example2 from '../src/components/views/Example2';
+import Example3 from '../src/components/views/Example3';
+import NotFound from '../src/components/views/Notfound';
 
 const AppRoutes: React.FC = () => {
   return (

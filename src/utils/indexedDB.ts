@@ -1,4 +1,3 @@
-// ../utils/indexedDB.ts
 const DB_NAME = 'exampleDB';
 const DB_VERSION = 1;
 const STORE_NAME = 'certificates';
@@ -27,17 +26,18 @@ const openDB = (): Promise<IDBDatabase> => {
     };
   });
 };
-
+//CRUD OPERATIONS
 const addData = async (data: Certificate[]): Promise<void> => {
   const db = await openDB();
   const transaction = db.transaction(STORE_NAME, 'readwrite');
   const store = transaction.objectStore(STORE_NAME);
 
-  // Create a promise for each add operation(prevents overlapping IDs)
+  // Create a promise for each add operation (prevents overlapping IDs)
   const promises = data.map((item) => {
     return new Promise<void>((resolve, reject) => {
       const addRequest = store.add({
         ...item,
+        id: item.id || Date.now(),
         validFrom: item.validFrom.toISOString(),
         validTo: item.validTo.toISOString(),
       });
@@ -75,4 +75,40 @@ const getData = async (): Promise<Certificate[]> => {
   });
 };
 
-export { addData, getData };
+const updateData = async (data: Certificate): Promise<void> => {
+  const db = await openDB();
+  const transaction = db.transaction(STORE_NAME, 'readwrite');
+  const store = transaction.objectStore(STORE_NAME);
+
+  return new Promise<void>((resolve, reject) => {
+    const updateRequest = store.put({
+      ...data,
+      validFrom: data.validFrom.toISOString(),
+      validTo: data.validTo.toISOString(),
+    });
+
+    updateRequest.onsuccess = () => resolve();
+    updateRequest.onerror = () => reject(updateRequest.error);
+
+    transaction.oncomplete = () => resolve();
+    transaction.onerror = () => reject(transaction.error);
+  });
+};
+
+const deleteData = async (id: number): Promise<void> => {
+  const db = await openDB();
+  const transaction = db.transaction(STORE_NAME, 'readwrite');
+  const store = transaction.objectStore(STORE_NAME);
+
+  return new Promise<void>((resolve, reject) => {
+    const deleteRequest = store.delete(id);
+
+    deleteRequest.onsuccess = () => resolve();
+    deleteRequest.onerror = () => reject(deleteRequest.error);
+
+    transaction.oncomplete = () => resolve();
+    transaction.onerror = () => reject(transaction.error);
+  });
+};
+
+export { addData, getData, updateData, deleteData };
