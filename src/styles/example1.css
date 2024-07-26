@@ -142,6 +142,10 @@ thead th {
 
 .dropdown-button:hover {
   background-color: var(--sidebar-background-color);
+  color: var(--secondarycolor);
+}
+.dropdown-button Link {
+  background-color: var(--sidebar-background-color);
 }
 
 .dropdown-button:not(:last-child) {

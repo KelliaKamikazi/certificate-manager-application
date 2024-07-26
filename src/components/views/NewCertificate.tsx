@@ -1,12 +1,12 @@
-import closeIcon from './icons/closeIcon';
-import IconSvg from './icons/icons';
-import searchIcon from './icons/searchIcon';
-import '../styles/newCertificate.css';
+import closeIcon from '../icons/closeIcon';
+import IconSvg from '../icons/icons';
+import searchIcon from '../icons/searchIcon';
+import '../../styles/newCertificate.css';
 import { useState, ChangeEvent, FormEvent } from 'react';
-import '../utils/indexedDB';
-import '../components/data/data';
-import { Certificate, Certificate_Type } from '../components/data/data';
-import { addData } from '../utils/indexedDB';
+import '../../utils/indexedDB';
+import '../data/data';
+import { Certificate, Certificate_Type } from '../data/data';
+import { addData } from '../../utils/indexedDB';
 
 const NewCertificate: React.FC = () => {
   // Set States for the data
