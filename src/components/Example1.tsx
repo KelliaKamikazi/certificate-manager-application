@@ -33,7 +33,7 @@ const Example1: React.FC = () => {
         );
       } catch (error) {
         console.error('Failed to delete the certificate', error);
-        alert('Certificate not deleted');
+        alert('The certificate was not successfully deleted');
       }
     }
   };
