@@ -78,6 +78,8 @@ const NewCertificate: React.FC = () => {
     }
   };
 
+  console.log(certificate);
+
   return (
     <div className="new-cert-form">
       <form onSubmit={handleSaving}>
@@ -93,7 +95,7 @@ const NewCertificate: React.FC = () => {
             />
             <div className="form-input-container">
               <Textfield
-                name="valueFrom"
+                name="validFrom"
                 type="date"
                 value={certificate.validFrom}
                 onChange={handleInputChange}
@@ -101,7 +103,7 @@ const NewCertificate: React.FC = () => {
             </div>
             <div className="form-input-container">
               <Textfield
-                name="valueTo"
+                name="validTo"
                 type="date"
                 value={certificate.validTo}
                 onChange={handleInputChange}
