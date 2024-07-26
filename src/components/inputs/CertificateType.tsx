@@ -1,4 +1,5 @@
 import { Certificate_Type } from '../data/data';
+import '../../styles/newCertificate.css';
 
 interface CertificateTypeProps {
   value: string;

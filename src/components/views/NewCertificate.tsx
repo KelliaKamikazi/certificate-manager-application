@@ -1,12 +1,12 @@
-import closeIcon from '../icons/closeIcon';
-import IconSvg from '../icons/icons';
-import searchIcon from '../icons/searchIcon';
 import '../../styles/newCertificate.css';
 import { useState, ChangeEvent, FormEvent } from 'react';
 import '../../utils/indexedDB';
 import '../data/data';
-import { Certificate, Certificate_Type } from '../data/data';
+import { Certificate } from '../data/data';
 import { addData } from '../../utils/indexedDB';
+import { SupplierField } from '../inputs/SupplierField';
+import { CertificateType } from '../inputs/CertificateType';
+import { Textfield } from '../base/Textfield';
 
 const NewCertificate: React.FC = () => {
   // Set States for the data
@@ -83,70 +83,29 @@ const NewCertificate: React.FC = () => {
       <form onSubmit={handleSaving}>
         <div className="form-container">
           <div className="left-side">
+            <SupplierField
+              supplier={certificate.supplier}
+              onChange={handleInputChange}
+            />
+            <CertificateType
+              value={certificate.certificateType}
+              onChange={handleInputChange}
+            />
             <div className="form-input-container">
-              <label className="form-input-label">Supplier</label>
-              <div className="form-input-container form-input-multiple">
-                <input
-                  type="text"
-                  className="form-input"
-                  name="supplier"
-                  value={certificate.supplier}
-                  onChange={handleInputChange}
-                />
-                <div>
-                  <IconSvg
-                    Icon={searchIcon}
-                    className="input-icon input-icon-search"
-                  />
-                  <div className="vertical-bar"></div>
-                  <IconSvg
-                    Icon={closeIcon}
-                    className="input-icon"
-                  />
-                </div>
-              </div>
-            </div>
-            <div className="form-input-container">
-              <div className="form-input-container">
-                <label className="form-input-label">Certificate type</label>
-                <select
-                  name="certificateType"
-                  id="suppliers"
-                  className="form-input form-input-select"
-                  value={certificate.certificateType}
-                  onChange={handleInputChange}
-                >
-                  <option value="">Select your option</option>
-                  <option value={Certificate_Type.PERMISSION_OF_PRINTING}>
-                    Printing of Permission
-                  </option>
-                  <option value={Certificate_Type.CCC_CERTIFICATE}>
-                    OHSAS 18001
-                  </option>
-                </select>
-              </div>
-            </div>
-            <div className="form-input-container">
-              <label className="form-input-label">Valid from</label>
-              <input
+              <Textfield
+                name="valueFrom"
                 type="date"
-                className="form-input"
-                name="validFrom"
                 value={certificate.validFrom}
                 onChange={handleInputChange}
               />
             </div>
             <div className="form-input-container">
-              <label className="form-input-label">Valid to</label>
-              <div className="form-input-container">
-                <input
-                  type="date"
-                  className="form-input"
-                  name="validTo"
-                  value={certificate.validTo}
-                  onChange={handleInputChange}
-                />
-              </div>
+              <Textfield
+                name="valueTo"
+                type="date"
+                value={certificate.validTo}
+                onChange={handleInputChange}
+              />
             </div>
           </div>
           <div className="right-side">
