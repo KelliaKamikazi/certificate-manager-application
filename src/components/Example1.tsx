@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react';
 import '../styles/example1.css';
 import { getData } from '../utils/indexedDB';
 import { Certificate } from './data/data';
+import { Link } from 'react-router-dom';
 
 const Example1: React.FC = () => {
   const [certificates, setCertificates] = useState<Certificate[]>([]);
@@ -18,6 +19,9 @@ const Example1: React.FC = () => {
   return (
     <div className="container">
       <h2 className="header_h">Example 1</h2>
+      <Link to="/NewCertificate">
+        <button className="btn-create">New Certificate</button>
+      </Link>
       <div className="table-wrapper">
         <table>
           <thead>
