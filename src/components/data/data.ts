@@ -6,6 +6,7 @@ export interface Certificate {
   validTo: Date;
   preview?: string;
 }
+
 export const sampleCertificates: Certificate[] = [];
 
 export enum Certificate_Type {

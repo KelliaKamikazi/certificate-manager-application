@@ -1,15 +1,15 @@
-import '../../styles/newCertificate.css';
-import { useState, ChangeEvent, FormEvent } from 'react';
+import '../../styles/certificateForm.css';
+import { useState, ChangeEvent, FormEvent, useEffect } from 'react';
 import '../../utils/indexedDB';
-import '../data/data';
 import { Certificate } from '../data/data';
-import { addData } from '../../utils/indexedDB';
+import { addData, getCertificateById, updateData } from '../../utils/indexedDB';
 import { SupplierField } from '../inputs/SupplierField';
 import { CertificateType } from '../inputs/CertificateType';
 import { Textfield } from '../base/Textfield';
+import { useParams } from 'react-router-dom';
 
-const NewCertificate: React.FC = () => {
-  // Set States for the data
+const CertificateForm: React.FC = () => {
+  const { certificateId } = useParams<{ certificateId: string }>();
   const [certificate, setCertificate] = useState({
     supplier: '',
     certificateType: '',
@@ -17,6 +17,65 @@ const NewCertificate: React.FC = () => {
     validFrom: '',
     preview: undefined as string | undefined,
   });
+  useEffect(() => {
+    if (certificateId && certificateId !== '0') {
+      const fetchCertificate = async () => {
+        const id = Number(certificateId);
+        const fetchedCertificate = await getCertificateById(id);
+        if (fetchedCertificate) {
+          setCertificate({
+            ...fetchedCertificate,
+            validFrom: new Date(fetchedCertificate.validFrom)
+              .toISOString()
+              .split('T')[0],
+            validTo: new Date(fetchedCertificate.validTo)
+              .toISOString()
+              .split('T')[0],
+            preview: fetchedCertificate.preview,
+          });
+        }
+      };
+      fetchCertificate();
+    }
+  }, [certificateId]);
+
+  const handleSaving = async (event: FormEvent) => {
+    event.preventDefault();
+    const { supplier, certificateType, validTo, validFrom } = certificate;
+    if (!supplier || !certificateType || !validTo || !validFrom) {
+      alert('All fields are required');
+      return;
+    }
+
+    const validFromDate = new Date(validFrom);
+    const validToDate = new Date(validTo);
+
+    if (validFromDate > validToDate) {
+      alert('Valid From date cannot be later than Valid To date');
+      return;
+    }
+
+    const newCertificate: Certificate = {
+      supplier,
+      certificateType,
+      validFrom: validFromDate,
+      validTo: validToDate,
+      preview: certificate.preview,
+    };
+
+    try {
+      if (certificateId && certificateId !== '0') {
+        await updateData({ ...newCertificate, id: Number(certificateId) });
+        alert('Certificate was updated successfully');
+      } else {
+        await addData([newCertificate]);
+        alert('Certificate was saved successfully');
+      }
+      handleResetFields();
+    } catch (error) {
+      alert('Certificate not added/updated');
+    }
+  };
 
   const handleInputChange = (
     e: ChangeEvent<HTMLInputElement | HTMLSelectElement>,
@@ -27,7 +86,6 @@ const NewCertificate: React.FC = () => {
       [name]: value,
     }));
   };
-
   const handleFileChange = (e: ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (file && file.type === 'application/pdf') {
@@ -43,7 +101,6 @@ const NewCertificate: React.FC = () => {
       alert('Only PDF files are allowed');
     }
   };
-
   const handleResetFields = () => {
     setCertificate({
       supplier: '',
@@ -53,32 +110,6 @@ const NewCertificate: React.FC = () => {
       preview: undefined,
     });
   };
-
-  const handleSaving = async (event: FormEvent) => {
-    event.preventDefault();
-    const { supplier, certificateType, validTo, validFrom } = certificate;
-    if (!supplier || !certificateType || !validTo || !validFrom) {
-      alert('All fields are required');
-      return;
-    }
-    const newCertificate: Certificate = {
-      supplier,
-      certificateType,
-      validFrom: new Date(validFrom),
-      validTo: new Date(validTo),
-    };
-
-    try {
-      await addData([newCertificate]);
-      alert('Certificate was saved successfully');
-      handleResetFields();
-    } catch (error) {
-      console.error('Failed to add the certificate', error);
-      alert('Certificate not added');
-    }
-  };
-
-  console.log(certificate);
 
   return (
     <div className="new-cert-form">
@@ -94,6 +125,7 @@ const NewCertificate: React.FC = () => {
               onChange={handleInputChange}
             />
             <div className="form-input-container">
+              <label className="form-input-label">Valid from</label>
               <Textfield
                 name="validFrom"
                 type="date"
@@ -102,6 +134,7 @@ const NewCertificate: React.FC = () => {
               />
             </div>
             <div className="form-input-container">
+              <label className="form-input-label">Valid to</label>
               <Textfield
                 name="validTo"
                 type="date"
@@ -133,7 +166,7 @@ const NewCertificate: React.FC = () => {
               id="pdf-preview"
             >
               <iframe src={certificate.preview}></iframe>
-              {certificate.preview ? null : <span></span>}
+              {certificate.preview ? null : <span>No pdf Available</span>}
             </div>
           </div>
         </div>
@@ -157,4 +190,4 @@ const NewCertificate: React.FC = () => {
   );
 };
 
-export default NewCertificate;
+export default CertificateForm;

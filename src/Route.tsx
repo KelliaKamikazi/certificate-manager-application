@@ -1,5 +1,5 @@
 import { Route, Routes } from 'react-router-dom';
-import NewCertificate from './components/views/NewCertificate';
+import CertificateForm from './components/views/CertificateForm';
 import Home from './components/views/Home';
 import Example1 from '../src/components/views/Example1';
 import Example2 from '../src/components/views/Example2';
@@ -18,8 +18,8 @@ const AppRoutes: React.FC = () => {
         element={<Example1 />}
       />
       <Route
-        path="/NewCertificate"
-        element={<NewCertificate />}
+        path="/CertificateForm/:certificateId"
+        element={<CertificateForm />}
       />
       <Route
         path="/example2"

@@ -3,7 +3,7 @@ import searchIcon from '../icons/searchIcon';
 import closeIcon from '../icons/closeIcon';
 import { ChangeEvent } from 'react';
 import { Textfield } from '../base/Textfield';
-import '../../styles/newCertificate.css';
+import '../../styles/certificateForm.css';
 
 interface SupplierFieldProps {
   supplier: string;

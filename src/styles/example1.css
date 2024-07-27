@@ -17,7 +17,7 @@
   margin-top: 1rem;
   border: 1px solid var(--background-color);
   border-radius: 0.25rem;
-  overflow-y: auto; /* Allow vertical scrolling */
+  /* overflow-y: auto;  */
   margin-bottom: 20px;
   padding: 0 6rem;
   max-height: 60vh;
@@ -81,7 +81,7 @@ thead th {
   font-size: 1.3rem;
   padding: 1rem 2rem;
   height: 2.8rem;
-  width: auto;
+  width: 13rem;
   background-color: var(--button-color1);
   border: none;
   border-radius: 0.25rem;
@@ -163,10 +163,4 @@ thead th {
     text-align: center; /* Center the header text */
     padding-left: 0; /* Remove left padding */
   }
-}
-.gearIcon {
-  width: 30px;
-  height: 25px;
-  fill: var(--secondarycolor);
-  margin-top: 12px;
 }
