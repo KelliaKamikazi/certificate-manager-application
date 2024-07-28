@@ -6,7 +6,9 @@ export interface TextfieldProps {
   name: string;
   value: string;
   type: string;
-  onChange: (e: ChangeEvent<HTMLInputElement>) => void;
+  onChange?: (e: ChangeEvent<HTMLInputElement>) => void;
+  placeholder?: string;
+  className?: string;
 }
 
 export function Textfield(props: TextfieldProps) {
@@ -20,6 +22,7 @@ export function Textfield(props: TextfieldProps) {
           name={props.name}
           value={props.value}
           onChange={props.onChange}
+          placeholder={props.placeholder}
         />
       </div>
     );
@@ -31,6 +34,7 @@ export function Textfield(props: TextfieldProps) {
       name={props.name}
       value={props.value}
       onChange={props.onChange}
+      placeholder={props.placeholder}
     />
   );
 }

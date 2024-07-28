@@ -126,6 +126,7 @@ const CertificateForm: React.FC = () => {
               <label className="form-input-label">Valid from</label>
               <Textfield
                 name="validFrom"
+                className="form-input"
                 type="date"
                 value={certificate.validFrom}
                 onChange={handleInputChange}
@@ -135,6 +136,7 @@ const CertificateForm: React.FC = () => {
               <label className="form-input-label">Valid to</label>
               <Textfield
                 name="validTo"
+                className="form-input"
                 type="date"
                 value={certificate.validTo}
                 onChange={handleInputChange}
