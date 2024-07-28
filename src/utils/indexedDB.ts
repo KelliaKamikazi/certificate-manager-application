@@ -37,6 +37,11 @@ const addData = async (data: Certificate[]): Promise<void> => {
     return new Promise<void>((resolve, reject) => {
       const addRequest = store.add({
         ...item,
+        supplier: {
+          name: item.supplier.name,
+          s_index: item.supplier.s_index,
+          city: item.supplier.city,
+        },
         validFrom: item.validFrom.toISOString(),
         validTo: item.validTo.toISOString(),
       });
@@ -64,6 +69,11 @@ const getData = async (): Promise<Certificate[]> => {
     request.onsuccess = () => {
       const result = request.result.map((item: any) => ({
         ...item,
+        supplier: {
+          name: item.supplier.name,
+          s_index: item.supplier.s_index,
+          city: item.supplier.city,
+        },
         validFrom: new Date(item.validFrom),
         validTo: new Date(item.validTo),
       }));
@@ -84,6 +94,11 @@ const getCertificateById = async (id: number): Promise<Certificate | null> => {
       if (request.result) {
         const result = {
           ...request.result,
+          supplier: {
+            name: request.result.supplier.name,
+            s_index: request.result.supplier.s_index,
+            city: request.result.supplier.city,
+          },
           validFrom: new Date(request.result.validFrom),
           validTo: new Date(request.result.validTo),
         };
@@ -104,6 +119,11 @@ const updateData = async (data: Certificate): Promise<void> => {
   return new Promise<void>((resolve, reject) => {
     const updateRequest = store.put({
       ...data,
+      supplier: {
+        name: data.supplier.name,
+        s_index: data.supplier.s_index,
+        city: data.supplier.city,
+      },
       validFrom: data.validFrom.toISOString(),
       validTo: data.validTo.toISOString(),
     });

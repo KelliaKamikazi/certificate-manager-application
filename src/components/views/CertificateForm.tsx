@@ -1,7 +1,7 @@
 import '../../styles/certificateForm.css';
 import { useState, ChangeEvent, FormEvent, useEffect } from 'react';
 import '../../utils/indexedDB';
-import { Certificate } from '../data/data';
+import { Certificate, Supplier } from '../data/data';
 import { addData, getCertificateById, updateData } from '../../utils/indexedDB';
 import { SupplierField } from '../inputs/SupplierField';
 import { CertificateType } from '../inputs/CertificateType';
@@ -11,12 +11,13 @@ import { useParams } from 'react-router-dom';
 const CertificateForm: React.FC = () => {
   const { certificateId } = useParams<{ certificateId: string }>();
   const [certificate, setCertificate] = useState({
-    supplier: '',
+    supplier: { name: '' },
     certificateType: '',
     validTo: '',
     validFrom: '',
     preview: undefined as string | undefined,
   });
+
   useEffect(() => {
     if (certificateId && certificateId !== '0') {
       const fetchCertificate = async () => {
@@ -42,7 +43,7 @@ const CertificateForm: React.FC = () => {
   const handleSaving = async (event: FormEvent) => {
     event.preventDefault();
     const { supplier, certificateType, validTo, validFrom } = certificate;
-    if (!supplier || !certificateType || !validTo || !validFrom) {
+    if (!supplier.name || !certificateType || !validTo || !validFrom) {
       alert('All fields are required');
       return;
     }
@@ -86,6 +87,14 @@ const CertificateForm: React.FC = () => {
       [name]: value,
     }));
   };
+
+  const handleSupplierChange = (supplier: Supplier) => {
+    setCertificate((prevData) => ({
+      ...prevData,
+      supplier,
+    }));
+  };
+
   const handleFileChange = (e: ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (file && file.type === 'application/pdf') {
@@ -101,9 +110,10 @@ const CertificateForm: React.FC = () => {
       alert('Only PDF files are allowed');
     }
   };
+
   const handleResetFields = () => {
     setCertificate({
-      supplier: '',
+      supplier: { name: '' },
       certificateType: '',
       validTo: '',
       validFrom: '',
@@ -118,7 +128,7 @@ const CertificateForm: React.FC = () => {
           <div className="left-side">
             <SupplierField
               supplier={certificate.supplier}
-              onChange={handleInputChange}
+              onChange={handleSupplierChange}
             />
             <CertificateType
               value={certificate.certificateType}
