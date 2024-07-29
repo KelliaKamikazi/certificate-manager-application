@@ -1,27 +1,36 @@
 import '../../styles/supplierLookup.css';
 import { Textfield } from '../base/Textfield';
 import '../../styles/globalbtn.css';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { Supplier } from '../data/data';
 import { Link } from 'react-router-dom';
 import { searchSuppliers } from '../../utils/indexedDB';
 
-interface supplierLookupProps {
+interface SupplierLookupProps {
   onClose?: () => void;
+  onSupplierSelect: (supplier: Supplier) => void;
 }
-const SupplierLookup: React.FC<supplierLookupProps> = ({ onClose }) => {
+
+const SupplierLookup: React.FC<SupplierLookupProps> = ({
+  onClose,
+  onSupplierSelect,
+}) => {
   const hardcodedSuppliers: Supplier[] = [
     { name: 'Andemis', s_index: 1, city: 'San Francisco' },
     { name: 'Rodri', s_index: 2, city: 'Macu pici' },
     { name: 'Mathew', s_index: 3, city: 'Kigali' },
   ];
+
   const [name, setName] = useState('');
   const [sIndex, setSIndex] = useState<number | null>(null);
   const [city, setCity] = useState('');
   const [suppliers, setSuppliers] = useState<Supplier[]>(hardcodedSuppliers);
+  const [filteredSuppliers, setFilteredSuppliers] =
+    useState<Supplier[]>(hardcodedSuppliers);
   const [selectedSupplierIndex, setSelectedSupplierIndex] = useState<
     number | null
   >(null);
+
   const handleNameChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     setName(event.target.value);
   };
@@ -35,7 +44,7 @@ const SupplierLookup: React.FC<supplierLookupProps> = ({ onClose }) => {
   };
 
   const handleSearch = async (event: React.FormEvent) => {
-    event.preventDefault();
+    event.preventDefault(); // Prevent form default submission behavior
     try {
       const results = await searchSuppliers(name, sIndex, city);
       setSuppliers(results);
@@ -43,11 +52,14 @@ const SupplierLookup: React.FC<supplierLookupProps> = ({ onClose }) => {
       console.error('Failed to search suppliers', error);
     }
   };
+
   const handleReset = () => {
     setName('');
     setSIndex(null);
     setCity('');
     setSuppliers(hardcodedSuppliers);
+    setFilteredSuppliers(hardcodedSuppliers);
+    setSelectedSupplierIndex(null);
   };
 
   const handleClose = () => {
@@ -57,6 +69,27 @@ const SupplierLookup: React.FC<supplierLookupProps> = ({ onClose }) => {
   const handleSelectSupplier = (index: number) => {
     setSelectedSupplierIndex(index);
   };
+
+  const handleSubmit = () => {
+    if (selectedSupplierIndex !== null) {
+      const selectedSupplier = filteredSuppliers[selectedSupplierIndex];
+      onSupplierSelect(selectedSupplier);
+      handleClose();
+    }
+  };
+
+  useEffect(() => {
+    const filtered = suppliers.filter((supplier) => {
+      return (
+        (!name || supplier.name.toLowerCase().includes(name.toLowerCase())) &&
+        (sIndex === null || supplier.s_index === sIndex) &&
+        (!city ||
+          (supplier.city &&
+            supplier.city.toLowerCase().includes(city.toLowerCase())))
+      );
+    });
+    setFilteredSuppliers(filtered);
+  }, [name, sIndex, city, suppliers]);
 
   return (
     <div className="modal-backdrop">
@@ -121,7 +154,7 @@ const SupplierLookup: React.FC<supplierLookupProps> = ({ onClose }) => {
                 Search
               </button>
               <button
-                type="reset"
+                type="button"
                 className="btn neutral-btn"
                 onClick={handleReset}
               >
@@ -144,13 +177,13 @@ const SupplierLookup: React.FC<supplierLookupProps> = ({ onClose }) => {
               </tr>
             </thead>
             <tbody>
-              {suppliers.map((supplier, index) => (
+              {filteredSuppliers.map((supplier, index) => (
                 <tr key={supplier.s_index}>
                   <td>
                     <input
                       type="radio"
                       name="supplier"
-                      checked={selectedSupplierIndex === index}
+                      checked={index === selectedSupplierIndex}
                       onChange={() => handleSelectSupplier(index)}
                     />
                   </td>
@@ -162,9 +195,15 @@ const SupplierLookup: React.FC<supplierLookupProps> = ({ onClose }) => {
             </tbody>
           </table>
           <div className="buttons-container">
-            <button className="btn yellow-btn">Select</button>
             <button
-              type="reset"
+              type="button"
+              className="btn yellow-btn"
+              onClick={handleSubmit}
+            >
+              Select
+            </button>
+            <button
+              type="button"
               onClick={handleReset}
               className="btn neutral-btn"
             >

@@ -5,7 +5,6 @@ import { ChangeEvent, useState } from 'react';
 import { Textfield } from '../base/Textfield';
 import { Supplier } from '../data/data';
 import '../../styles/certificateForm.css';
-import { Link } from 'react-router-dom';
 import SupplierLookup from '../views/SupplierLookup';
 
 interface SupplierFieldProps {
@@ -31,6 +30,11 @@ export function SupplierField(props: SupplierFieldProps) {
     setShowModal(false);
   };
 
+  const handleSupplierSelect = (selectedSupplier: Supplier) => {
+    props.onChange(selectedSupplier);
+    closeModal();
+  };
+
   return (
     <div className="form-input-container">
       <label className="form-input-label">Supplier</label>
@@ -42,13 +46,11 @@ export function SupplierField(props: SupplierFieldProps) {
           onChange={handleInputChange}
         />
         <div>
-          <Link to="/supplierLookup">
-            <IconSvg
-              Icon={searchIcon}
-              onClick={showTheModal}
-              className="input-icon input-icon-search"
-            />
-          </Link>
+          <IconSvg
+            Icon={searchIcon}
+            onClick={showTheModal}
+            className="input-icon input-icon-search"
+          />
           <div className="vertical-bar"></div>
           <IconSvg
             Icon={closeIcon}
@@ -56,7 +58,12 @@ export function SupplierField(props: SupplierFieldProps) {
           />
         </div>
       </div>
-      {showModal && <SupplierLookup onClose={closeModal} />}
+      {showModal && (
+        <SupplierLookup
+          onClose={closeModal}
+          onSupplierSelect={handleSupplierSelect}
+        />
+      )}
     </div>
   );
 }

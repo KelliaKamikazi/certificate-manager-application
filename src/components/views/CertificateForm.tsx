@@ -8,7 +8,13 @@ import { CertificateType } from '../inputs/CertificateType';
 import { Textfield } from '../base/Textfield';
 import { useParams } from 'react-router-dom';
 
-const CertificateForm: React.FC = () => {
+interface CertificateFormProps {
+  selectedSupplier: Supplier | null;
+}
+
+const CertificateForm: React.FC<CertificateFormProps> = ({
+  selectedSupplier,
+}) => {
   const { certificateId } = useParams<{ certificateId: string }>();
   const [certificate, setCertificate] = useState(INITIAL_CERTIFICATE);
 
@@ -34,6 +40,15 @@ const CertificateForm: React.FC = () => {
     }
   }, [certificateId]);
 
+  useEffect(() => {
+    if (selectedSupplier) {
+      setCertificate((prevData) => ({
+        ...prevData,
+        supplier: selectedSupplier,
+      }));
+    }
+  }, [selectedSupplier]);
+
   const handleSaving = async (event: FormEvent) => {
     event.preventDefault();
     const { supplier, certificateType, validTo, validFrom } = certificate;
@@ -41,10 +56,8 @@ const CertificateForm: React.FC = () => {
       alert('All fields are required');
       return;
     }
-
     const validFromDate = new Date(validFrom);
     const validToDate = new Date(validTo);
-
     if (validFromDate > validToDate) {
       alert('Valid From date cannot be later than Valid To date');
       return;

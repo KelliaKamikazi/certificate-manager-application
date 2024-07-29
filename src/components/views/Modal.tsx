@@ -1,3 +1,4 @@
+import '../../styles/modal.css';
 const Modal: React.FC = () => {
   return (
     <div className="modalBackground">
