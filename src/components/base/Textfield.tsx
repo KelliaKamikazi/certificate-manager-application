@@ -4,7 +4,7 @@ import '../../styles/certificateForm.css';
 export interface TextfieldProps {
   label?: string;
   name: string;
-  value: string;
+  value: string | number;
   type: string;
   onChange?: (e: ChangeEvent<HTMLInputElement>) => void;
   placeholder?: string;

@@ -1,7 +1,32 @@
 const DB_NAME = 'exampleDB';
 const DB_VERSION = 1;
 const STORE_NAME = 'certificates';
-import { Certificate } from '../components/data/data';
+import { Certificate, Supplier } from '../components/data/data';
+
+export const searchSuppliers = async (
+  name: string,
+  s_index: number | null,
+  city: string,
+): Promise<Supplier[]> => {
+  const db = await openDB();
+  const transaction = db.transaction('suppliers', 'readonly');
+  const store = transaction.objectStore('suppliers');
+
+  const request = store.getAll();
+  return new Promise((resolve, reject) => {
+    request.onsuccess = () => {
+      const result = request.result.filter((supplier: Supplier) => {
+        return (
+          supplier.name.includes(name) &&
+          (s_index === null || supplier.s_index === s_index) &&
+          supplier.city?.includes(city)
+        );
+      });
+      resolve(result);
+    };
+    request.onerror = () => reject(request.error);
+  });
+};
 
 const openDB = (): Promise<IDBDatabase> => {
   return new Promise((resolve, reject) => {
