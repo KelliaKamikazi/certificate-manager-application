@@ -1,23 +1,36 @@
 import IconSvg from '../icons/icons';
 import searchIcon from '../icons/searchIcon';
 import closeIcon from '../icons/closeIcon';
-import { ChangeEvent } from 'react';
+import { ChangeEvent, useState } from 'react';
 import { Textfield } from '../base/Textfield';
 import { Supplier } from '../data/data';
 import '../../styles/certificateForm.css';
 import { Link } from 'react-router-dom';
+import SupplierLookup from '../views/SupplierLookup';
 
 interface SupplierFieldProps {
   supplier: Supplier;
+  onClose?: () => void;
   onChange: (supplier: Supplier) => void;
 }
 
 export function SupplierField(props: SupplierFieldProps) {
+  const [showModal, setShowModal] = useState(false);
+
   const handleInputChange = (e: ChangeEvent<HTMLInputElement>) => {
     const { value } = e.target;
     const newSupplier = { ...props.supplier, name: value };
     props.onChange(newSupplier);
   };
+
+  const showTheModal = () => {
+    setShowModal(true);
+  };
+
+  const closeModal = () => {
+    setShowModal(false);
+  };
+
   return (
     <div className="form-input-container">
       <label className="form-input-label">Supplier</label>
@@ -32,6 +45,7 @@ export function SupplierField(props: SupplierFieldProps) {
           <Link to="/supplierLookup">
             <IconSvg
               Icon={searchIcon}
+              onClick={showTheModal}
               className="input-icon input-icon-search"
             />
           </Link>
@@ -42,6 +56,7 @@ export function SupplierField(props: SupplierFieldProps) {
           />
         </div>
       </div>
+      {showModal && <SupplierLookup onClose={closeModal} />}
     </div>
   );
 }
