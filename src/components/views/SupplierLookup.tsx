@@ -7,7 +7,7 @@ import { Link } from 'react-router-dom';
 import { searchSuppliers } from '../../utils/indexedDB';
 
 interface SupplierLookupProps {
-  onClose?: () => void;
+  onClose: () => void;
   onSupplierSelect: (supplier: Supplier) => void;
 }
 
@@ -44,7 +44,7 @@ const SupplierLookup: React.FC<SupplierLookupProps> = ({
   };
 
   const handleSearch = async (event: React.FormEvent) => {
-    event.preventDefault(); // Prevent form default submission behavior
+    event.preventDefault();
     try {
       const results = await searchSuppliers(name, sIndex, city);
       setSuppliers(results);
@@ -92,127 +92,130 @@ const SupplierLookup: React.FC<SupplierLookupProps> = ({
   }, [name, sIndex, city, suppliers]);
 
   return (
-    <div className="modal-backdrop">
-      <form
-        className="supplier-container"
-        onSubmit={handleSearch}
-      >
-        <div className="top-bar">
-          <h2 className="top-bar-title">Search for suppliers</h2>
-          <Link to="/CertificateForm/0">
-            <div
-              className="x-btn"
-              onClick={handleClose}
-            >
-              X
-            </div>
-          </Link>
-        </div>
-        <div className="search-supplier-inputs-container">
-          <div className="top-bar-title-container">
-            <div className="top-bar-title">▼ Search criteria</div>
-          </div>
-          <div className="form-inputs">
-            <div className="inputs-container-supplier">
-              <div className="input-container">
-                <label className="input-label">Supplier name</label>
-                <Textfield
-                  name="supplierName"
-                  type="text"
-                  value={name}
-                  onChange={handleNameChange}
-                  placeholder="ANDEMIS"
-                  className="input-container"
-                />
-              </div>
-              <div className="input-container">
-                <label className="input-label">Supplier index</label>
-                <Textfield
-                  name="supplierIndex"
-                  type="number"
-                  value={sIndex !== null ? sIndex : ''}
-                  onChange={handleIndexChange}
-                  className="input-container"
-                />
-              </div>
-              <div className="input-container">
-                <label className="input-label">City</label>
-                <Textfield
-                  name="supplierCity"
-                  type="text"
-                  value={city}
-                  onChange={handleCityChange}
-                  className="input-container"
-                />
-              </div>
-            </div>
-            <div className="buttons-container">
+    <dialog open>
+      <div className="modal-backdrop">
+        <form
+          className="supplier-container"
+          onSubmit={handleSearch}
+        >
+          <div className="top-bar">
+            <h2 className="top-bar-title">Search for suppliers</h2>
+            <Link to="/CertificateForm/0">
               <div
-                className="btn blue-btn"
-                onClick={() => console.log('clicked search')}
+                className="x-btn"
+                onClick={onClose}
               >
-                Search
+                X
               </div>
+            </Link>
+          </div>
+          <div className="search-supplier-inputs-container">
+            <div className="top-bar-title-container">
+              <div className="top-bar-title">▼ Search criteria</div>
+            </div>
+            <div className="form-inputs">
+              <div className="inputs-container-supplier">
+                <div className="input-container">
+                  <label className="input-label">Supplier name</label>
+                  <Textfield
+                    name="supplierName"
+                    type="text"
+                    value={name}
+                    onChange={handleNameChange}
+                    placeholder="ANDEMIS"
+                    className="input-container"
+                  />
+                </div>
+                <div className="input-container">
+                  <label className="input-label">Supplier index</label>
+                  <Textfield
+                    name="supplierIndex"
+                    type="number"
+                    value={sIndex !== null ? sIndex : ''}
+                    onChange={handleIndexChange}
+                    className="input-container"
+                  />
+                </div>
+                <div className="input-container">
+                  <label className="input-label">City</label>
+                  <Textfield
+                    name="supplierCity"
+                    type="text"
+                    value={city}
+                    onChange={handleCityChange}
+                    className="input-container"
+                  />
+                </div>
+              </div>
+              <div className="buttons-container">
+                <button
+                  type="button"
+                  className="btn yellow-btn"
+                  onClick={handleSearch}
+                >
+                  Search
+                </button>
+                <button
+                  type="button"
+                  className="btn neutral-btn"
+                  onClick={handleReset}
+                >
+                  Reset
+                </button>
+              </div>
+            </div>
+          </div>
+          <div className="suppliers-results-container">
+            <div className="top-bar-title-container">
+              <div className="top-bar-title">▼ Supplier list</div>
+            </div>
+            <table>
+              <thead>
+                <tr>
+                  <th></th>
+                  <th>Supplier name</th>
+                  <th>Supplier index</th>
+                  <th>City</th>
+                </tr>
+              </thead>
+              <tbody>
+                {filteredSuppliers.map((supplier, index) => (
+                  <tr key={supplier.supplierIndex}>
+                    <td>
+                      <input
+                        type="radio"
+                        name="supplier"
+                        checked={index === selectedSupplierIndex}
+                        onChange={() => handleSelectSupplier(index)}
+                      />
+                    </td>
+                    <td>{supplier.name}</td>
+                    <td>{supplier.supplierIndex}</td>
+                    <td>{supplier.city}</td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+            <div className="buttons-container">
               <button
                 type="button"
-                className="btn neutral-btn"
-                onClick={handleReset}
+                className="btn yellow-btn"
+                onClick={handleSubmit}
               >
-                Reset
+                Select
+              </button>
+              <button
+                type="button"
+                onClick={onClose}
+                className="btn neutral-btn"
+              >
+                Cancel
               </button>
             </div>
           </div>
-        </div>
-        <div className="suppliers-results-container">
-          <div className="top-bar-title-container">
-            <div className="top-bar-title">▼ Supplier list</div>
-          </div>
-          <table>
-            <thead>
-              <tr>
-                <th></th>
-                <th>Supplier name</th>
-                <th>Supplier index</th>
-                <th>City</th>
-              </tr>
-            </thead>
-            <tbody>
-              {filteredSuppliers.map((supplier, index) => (
-                <tr key={supplier.supplierIndex}>
-                  <td>
-                    <input
-                      type="radio"
-                      name="supplier"
-                      checked={index === selectedSupplierIndex}
-                      onChange={() => handleSelectSupplier(index)}
-                    />
-                  </td>
-                  <td>{supplier.name}</td>
-                  <td>{supplier.supplierIndex}</td>
-                  <td>{supplier.city}</td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
-          <div className="buttons-container">
-            <button
-              type="button"
-              className="btn yellow-btn"
-              onClick={handleSubmit}
-            >
-              Select
-            </button>
-            <button
-              type="button"
-              onClick={handleReset}
-              className="btn neutral-btn"
-            >
-              Cancel
-            </button>
-          </div>
-        </div>
-      </form>
-    </div>
+        </form>
+      </div>
+    </dialog>
   );
 };
 

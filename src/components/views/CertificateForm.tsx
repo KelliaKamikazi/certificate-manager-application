@@ -7,16 +7,12 @@ import { SupplierField } from '../inputs/SupplierField';
 import { CertificateType } from '../inputs/CertificateType';
 import { Textfield } from '../base/Textfield';
 import { useParams } from 'react-router-dom';
+import SupplierLookup from './SupplierLookup';
 
-interface CertificateFormProps {
-  selectedSupplier: Supplier | null;
-}
-
-const CertificateForm: React.FC<CertificateFormProps> = ({
-  selectedSupplier,
-}) => {
+const CertificateForm: React.FC = () => {
   const { certificateId } = useParams<{ certificateId: string }>();
   const [certificate, setCertificate] = useState(INITIAL_CERTIFICATE);
+  const [showSupplierLookup, setShowSupplierLookup] = useState(false);
 
   useEffect(() => {
     if (certificateId && certificateId !== '0') {
@@ -39,15 +35,6 @@ const CertificateForm: React.FC<CertificateFormProps> = ({
       fetchCertificate();
     }
   }, [certificateId]);
-
-  useEffect(() => {
-    if (selectedSupplier) {
-      setCertificate((prevData) => ({
-        ...prevData,
-        supplier: selectedSupplier,
-      }));
-    }
-  }, [selectedSupplier]);
 
   const handleSaving = async (event: FormEvent) => {
     event.preventDefault();
@@ -124,12 +111,22 @@ const CertificateForm: React.FC<CertificateFormProps> = ({
 
   return (
     <div className="new-cert-form">
+      {showSupplierLookup && (
+        <SupplierLookup
+          onClose={() => setShowSupplierLookup(false)}
+          onSupplierSelect={(supplier) => {
+            handleSupplierChange(supplier);
+            setShowSupplierLookup(false);
+          }}
+        />
+      )}
       <form onSubmit={handleSaving}>
         <div className="form-container">
           <div className="left-side">
             <SupplierField
               supplier={certificate.supplier}
               onChange={handleSupplierChange}
+              onOpenLookup={() => setShowSupplierLookup(true)}
             />
             <CertificateType
               value={certificate.certificateType}

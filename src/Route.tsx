@@ -5,18 +5,8 @@ import Example1 from '../src/components/views/Example1';
 import Example2 from '../src/components/views/Example2';
 import Example3 from '../src/components/views/Example3';
 import NotFound from '../src/components/views/Notfound';
-import SupplierLookup from './components/views/SupplierLookup';
-import { Supplier } from './components/data/data';
-import { useState } from 'react';
 
 const AppRoutes: React.FC = () => {
-  const [selectedSupplier, setSelectedSupplier] = useState<Supplier | null>(
-    null,
-  );
-
-  const handleSupplierSelect = (supplier: Supplier) => {
-    setSelectedSupplier(supplier);
-  };
   return (
     <Routes>
       <Route
@@ -29,11 +19,7 @@ const AppRoutes: React.FC = () => {
       />
       <Route
         path="/CertificateForm/:certificateId"
-        element={<CertificateForm selectedSupplier={selectedSupplier} />}
-      />
-      <Route
-        path="/supplierLookup"
-        element={<SupplierLookup onSupplierSelect={handleSupplierSelect} />}
+        element={<CertificateForm />}
       />
       <Route
         path="/example2"
