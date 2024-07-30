@@ -60,6 +60,11 @@ const Example1: React.FC = () => {
     navigate(`/CertificateForm/0`);
   };
 
+  const handleEdit = (cert: Certificate) => () => handleEditClick(cert.id);
+  const handleDelete = (cert: Certificate) => () => handleDeleteClick(cert.id);
+  const handleToggleDropdown = (cert: Certificate) => () =>
+    toggleDropdown(cert.id);
+
   return (
     <div className="container">
       <h2 className="header_h">Example 1</h2>
@@ -88,20 +93,20 @@ const Example1: React.FC = () => {
                     <IconSvg
                       Icon={gearIcon}
                       className="gear-icon cursor-pointer"
-                      onClick={() => toggleDropdown(cert.id)}
+                      onClick={handleToggleDropdown(cert)}
                     />
                     {openDropdownId === cert.id && (
                       <div className="dropdown-menu">
                         <div className="dropdown-options">
                           <button
                             className="dropdown-button"
-                            onClick={() => handleEditClick(cert.id)}
+                            onClick={handleEdit(cert)}
                           >
                             Edit
                           </button>
                           <button
                             className="dropdown-button"
-                            onClick={() => handleDeleteClick(cert.id)}
+                            onClick={handleDelete(cert)}
                           >
                             Delete
                           </button>

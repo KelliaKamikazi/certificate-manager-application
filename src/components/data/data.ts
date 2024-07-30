@@ -4,7 +4,7 @@ export interface Certificate {
   certificateType: string;
   validFrom: Date;
   validTo: Date;
-  preview?: string;
+  pdfUrl?: string;
 }
 export interface Supplier {
   name: string;

@@ -15,7 +15,7 @@ const CertificateForm: React.FC = () => {
     certificateType: '',
     validTo: '',
     validFrom: '',
-    preview: undefined as string | undefined,
+    pdfUrl: undefined as string | undefined,
   });
 
   useEffect(() => {
@@ -32,7 +32,7 @@ const CertificateForm: React.FC = () => {
             validTo: new Date(fetchedCertificate.validTo)
               .toISOString()
               .split('T')[0],
-            preview: fetchedCertificate.preview,
+            pdfUrl: fetchedCertificate.pdfUrl,
           });
         }
       };
@@ -61,7 +61,7 @@ const CertificateForm: React.FC = () => {
       certificateType,
       validFrom: validFromDate,
       validTo: validToDate,
-      preview: certificate.preview,
+      pdfUrl: certificate.pdfUrl,
     };
 
     try {
@@ -102,7 +102,7 @@ const CertificateForm: React.FC = () => {
       reader.onloadend = () => {
         setCertificate((prevData) => ({
           ...prevData,
-          preview: reader.result as string,
+          pdfUrl: reader.result as string,
         }));
       };
       reader.readAsDataURL(file);
@@ -117,7 +117,7 @@ const CertificateForm: React.FC = () => {
       certificateType: '',
       validTo: '',
       validFrom: '',
-      preview: undefined,
+      pdfUrl: undefined,
     });
   };
 
@@ -175,8 +175,8 @@ const CertificateForm: React.FC = () => {
               className="file-preview-panel"
               id="pdf-preview"
             >
-              <iframe src={certificate.preview}></iframe>
-              {certificate.preview ? null : <span>No pdf Available</span>}
+              <iframe src={certificate.pdfUrl}></iframe>
+              {certificate.pdfUrl ? null : <span>No pdf Available</span>}
             </div>
           </div>
         </div>
