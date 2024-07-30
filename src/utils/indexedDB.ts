@@ -39,7 +39,7 @@ const addData = async (data: Certificate[]): Promise<void> => {
         ...item,
         supplier: {
           name: item.supplier.name,
-          s_index: item.supplier.s_index,
+          s_index: item.supplier.supplierIndex,
           city: item.supplier.city,
         },
         validFrom: item.validFrom.toISOString(),
@@ -121,7 +121,7 @@ const updateData = async (data: Certificate): Promise<void> => {
       ...data,
       supplier: {
         name: data.supplier.name,
-        s_index: data.supplier.s_index,
+        s_index: data.supplier.supplierIndex,
         city: data.supplier.city,
       },
       validFrom: data.validFrom.toISOString(),

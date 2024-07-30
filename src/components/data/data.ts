@@ -8,7 +8,7 @@ export interface Certificate {
 }
 export interface Supplier {
   name: string;
-  s_index?: number;
+  supplierIndex?: number;
   city?: string;
 }
 export const sampleCertificates: Certificate[] = [];
