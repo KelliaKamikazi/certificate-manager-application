@@ -11,6 +11,7 @@ export interface Supplier {
   supplierIndex?: number;
   city?: string;
 }
+
 export const sampleCertificates: Certificate[] = [];
 
 export enum Certificate_Type {
