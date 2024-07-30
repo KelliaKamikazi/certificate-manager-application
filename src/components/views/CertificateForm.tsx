@@ -1,4 +1,7 @@
+import React, { useState, ChangeEvent, FormEvent, useEffect } from 'react';
+import { useTranslation } from 'react-i18next';
 import '../../styles/certificateForm.css';
+<<<<<<< HEAD
 import {
   useState,
   ChangeEvent,
@@ -8,6 +11,9 @@ import {
 } from 'react';
 import '../../utils/indexedDB';
 import { Certificate, Supplier, INITIAL_CERTIFICATE } from '../data/data';
+=======
+import { Certificate, Supplier } from '../data/data';
+>>>>>>> fff1e45 (task8-KAN-72 rename and move the language folder to be global)
 import { addData, getCertificateById, updateData } from '../../utils/indexedDB';
 import { SupplierField } from '../inputs/SupplierField';
 import { CertificateType } from '../inputs/CertificateType';
@@ -16,6 +22,7 @@ import { useParams } from 'react-router-dom';
 import SupplierLookup from './SupplierLookup';
 
 const CertificateForm: React.FC = () => {
+  const { t } = useTranslation();
   const { certificateId } = useParams<{ certificateId: string }>();
   const [certificate, setCertificate] = useState(INITIAL_CERTIFICATE);
   const [showSupplierLookup, setShowSupplierLookup] = useState(false);
@@ -46,13 +53,13 @@ const CertificateForm: React.FC = () => {
     event.preventDefault();
     const { supplier, certificateType, validTo, validFrom } = certificate;
     if (!supplier.name || !certificateType || !validTo || !validFrom) {
-      alert('All fields are required');
+      alert(t('all_fields_required'));
       return;
     }
     const validFromDate = new Date(validFrom);
     const validToDate = new Date(validTo);
     if (validFromDate > validToDate) {
-      alert('Valid From date cannot be later than Valid To date');
+      alert(t('valid_from_later_than_valid_to'));
       return;
     }
 
@@ -68,14 +75,14 @@ const CertificateForm: React.FC = () => {
     try {
       if (certificateId && certificateId !== '0') {
         await updateData({ ...newCertificate, id: Number(certificateId) });
-        alert('Certificate was updated successfully');
+        alert(t('certificate_updated_successfully'));
       } else {
         await addData([newCertificate]);
-        alert('Certificate was saved successfully');
+        alert(t('certificate_saved_successfully'));
       }
       handleResetFields();
     } catch (error) {
-      alert('Certificate not added/updated');
+      alert(t('certificate_not_added_updated'));
     }
   };
 
@@ -108,7 +115,7 @@ const CertificateForm: React.FC = () => {
       };
       reader.readAsDataURL(file);
     } else {
-      alert('Only PDF files are allowed');
+      alert(t('only_pdf_files_allowed'));
     }
   };
 
@@ -145,7 +152,7 @@ const CertificateForm: React.FC = () => {
               onChange={handleInputChange}
             />
             <div className="form-input-container">
-              <label className="form-input-label">Valid from</label>
+              <label className="form-input-label">{t('valid_from')}</label>
               <Textfield
                 name="validFrom"
                 className="form-input"
@@ -155,7 +162,7 @@ const CertificateForm: React.FC = () => {
               />
             </div>
             <div className="form-input-container">
-              <label className="form-input-label">Valid to</label>
+              <label className="form-input-label">{t('valid_to')}</label>
               <Textfield
                 name="validTo"
                 className="form-input"
@@ -175,7 +182,7 @@ const CertificateForm: React.FC = () => {
                 )?.click()
               }
             >
-              Upload
+              {t('upload')}
             </button>
             <input
               type="file"
@@ -187,8 +194,15 @@ const CertificateForm: React.FC = () => {
               className="file-preview-panel"
               id="pdf-preview"
             >
+<<<<<<< HEAD
               <iframe src={certificate.pdfUrl}></iframe>
               {certificate.pdfUrl ? null : <span>No pdf Available</span>}
+=======
+              <iframe src={certificate.preview}></iframe>
+              {certificate.preview ? null : (
+                <span>{t('no_pdf_available')}</span>
+              )}
+>>>>>>> fff1e45 (task8-KAN-72 rename and move the language folder to be global)
             </div>
           </div>
         </div>
@@ -197,14 +211,14 @@ const CertificateForm: React.FC = () => {
             type="submit"
             className="submit-cert-btn"
           >
-            Save
+            {t('save')}
           </button>
           <button
             type="reset"
             className="reset-cert-btn"
             onClick={handleResetFields}
           >
-            Reset
+            {t('reset')}
           </button>
         </div>
       </form>

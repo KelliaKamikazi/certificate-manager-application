@@ -1,18 +1,21 @@
 import React, { useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import '../../styles/header.css';
 
 const Header: React.FC = () => {
+  const { t, i18n } = useTranslation();
   const [language, setLanguage] = useState('English');
 
   const changeLanguage = (lang: string) => {
     setLanguage(lang);
+    i18n.changeLanguage(lang === 'English' ? 'en' : 'de');
   };
 
   return (
     <header className="title">
-      <h1>DCCS Tuzla</h1>
+      <h1>{t('title')}</h1>
       <div className="lang-dropdown-container">
-        <span>Language:</span>
+        <span>{t('language')}:</span>
         <div className="languages">
           <button className="lang-button">{language} ▼</button>
           <div className="dropdown-content">
