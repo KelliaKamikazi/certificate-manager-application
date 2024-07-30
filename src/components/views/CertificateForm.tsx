@@ -1,7 +1,7 @@
 import '../../styles/certificateForm.css';
 import { useState, ChangeEvent, FormEvent, useEffect } from 'react';
 import '../../utils/indexedDB';
-import { Certificate, Supplier } from '../data/data';
+import { Certificate, Supplier, INITIAL_CERTIFICATE } from '../data/data';
 import { addData, getCertificateById, updateData } from '../../utils/indexedDB';
 import { SupplierField } from '../inputs/SupplierField';
 import { CertificateType } from '../inputs/CertificateType';
@@ -10,13 +10,7 @@ import { useParams } from 'react-router-dom';
 
 const CertificateForm: React.FC = () => {
   const { certificateId } = useParams<{ certificateId: string }>();
-  const [certificate, setCertificate] = useState({
-    supplier: { name: '' },
-    certificateType: '',
-    validTo: '',
-    validFrom: '',
-    pdfUrl: undefined as string | undefined,
-  });
+  const [certificate, setCertificate] = useState(INITIAL_CERTIFICATE);
 
   useEffect(() => {
     if (certificateId && certificateId !== '0') {
@@ -112,13 +106,7 @@ const CertificateForm: React.FC = () => {
   };
 
   const handleResetFields = () => {
-    setCertificate({
-      supplier: { name: '' },
-      certificateType: '',
-      validTo: '',
-      validFrom: '',
-      pdfUrl: undefined,
-    });
+    setCertificate(INITIAL_CERTIFICATE);
   };
 
   return (

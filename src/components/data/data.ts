@@ -11,7 +11,13 @@ export interface Supplier {
   supplierIndex?: number;
   city?: string;
 }
-
+export const INITIAL_CERTIFICATE = {
+  supplier: { name: '' },
+  certificateType: '',
+  validTo: '',
+  validFrom: '',
+  pdfUrl: undefined as string | undefined,
+};
 export const sampleCertificates: Certificate[] = [];
 
 export enum Certificate_Type {
