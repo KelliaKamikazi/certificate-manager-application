@@ -1,11 +1,23 @@
 export interface Certificate {
   id?: number;
-  supplier: string;
+  supplier: Supplier;
   certificateType: string;
   validFrom: Date;
   validTo: Date;
-  preview?: string;
+  pdfUrl?: string;
 }
+export interface Supplier {
+  name: string;
+  supplierIndex?: number;
+  city?: string;
+}
+export const INITIAL_CERTIFICATE = {
+  supplier: { name: '' },
+  certificateType: '',
+  validTo: '',
+  validFrom: '',
+  pdfUrl: undefined as string | undefined,
+};
 export const sampleCertificates: Certificate[] = [];
 
 export enum Certificate_Type {

@@ -1,7 +1,7 @@
 const DB_NAME = 'exampleDB';
 const DB_VERSION = 1;
 const STORE_NAME = 'certificates';
-import { Certificate } from '../components/data/data'; // Importing the types
+import { Certificate } from '../components/data/data';
 
 const openDB = (): Promise<IDBDatabase> => {
   return new Promise((resolve, reject) => {
@@ -26,18 +26,22 @@ const openDB = (): Promise<IDBDatabase> => {
     };
   });
 };
-//CRUD OPERATIONS
+
+// CRUD OPERATIONS
 const addData = async (data: Certificate[]): Promise<void> => {
   const db = await openDB();
   const transaction = db.transaction(STORE_NAME, 'readwrite');
   const store = transaction.objectStore(STORE_NAME);
 
-  // Create a promise for each add operation (prevents overlapping IDs)
   const promises = data.map((item) => {
     return new Promise<void>((resolve, reject) => {
       const addRequest = store.add({
         ...item,
-        id: item.id || Date.now(),
+        supplier: {
+          name: item.supplier.name,
+          s_index: item.supplier.supplierIndex,
+          city: item.supplier.city,
+        },
         validFrom: item.validFrom.toISOString(),
         validTo: item.validTo.toISOString(),
       });
@@ -63,13 +67,45 @@ const getData = async (): Promise<Certificate[]> => {
 
   return new Promise((resolve, reject) => {
     request.onsuccess = () => {
-      // Convert ISO strings back to Date objects
       const result = request.result.map((item: any) => ({
         ...item,
+        supplier: {
+          name: item.supplier.name,
+          s_index: item.supplier.s_index,
+          city: item.supplier.city,
+        },
         validFrom: new Date(item.validFrom),
         validTo: new Date(item.validTo),
       }));
       resolve(result);
+    };
+    request.onerror = () => reject(request.error);
+  });
+};
+
+const getCertificateById = async (id: number): Promise<Certificate | null> => {
+  const db = await openDB();
+  const transaction = db.transaction(STORE_NAME, 'readonly');
+  const store = transaction.objectStore(STORE_NAME);
+  const request = store.get(id);
+
+  return new Promise((resolve, reject) => {
+    request.onsuccess = () => {
+      if (request.result) {
+        const result = {
+          ...request.result,
+          supplier: {
+            name: request.result.supplier.name,
+            s_index: request.result.supplier.s_index,
+            city: request.result.supplier.city,
+          },
+          validFrom: new Date(request.result.validFrom),
+          validTo: new Date(request.result.validTo),
+        };
+        resolve(result);
+      } else {
+        resolve(null);
+      }
     };
     request.onerror = () => reject(request.error);
   });
@@ -83,6 +119,11 @@ const updateData = async (data: Certificate): Promise<void> => {
   return new Promise<void>((resolve, reject) => {
     const updateRequest = store.put({
       ...data,
+      supplier: {
+        name: data.supplier.name,
+        s_index: data.supplier.supplierIndex,
+        city: data.supplier.city,
+      },
       validFrom: data.validFrom.toISOString(),
       validTo: data.validTo.toISOString(),
     });
@@ -111,4 +152,4 @@ const deleteData = async (id: number): Promise<void> => {
   });
 };
 
-export { addData, getData, updateData, deleteData };
+export { addData, getData, getCertificateById, updateData, deleteData };

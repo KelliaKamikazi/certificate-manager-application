@@ -1,13 +1,18 @@
 import React, { useEffect, useState } from 'react';
 import '../../styles/example1.css';
 import { Certificate } from '../data/data';
-import { Link, useNavigate } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 import IconSvg from '../icons/icons';
 import gearIcon from '../icons/gearIcon';
 import { getData, deleteData } from '../../utils/indexedDB';
 
 const Example1: React.FC = () => {
   const [certificates, setCertificates] = useState<Certificate[]>([]);
+  const [openDropdownId, setOpenDropdownId] = useState<number | undefined>(
+    undefined,
+  );
+  const navigate = useNavigate();
+
   useEffect(() => {
     const fetchData = async () => {
       const data = await getData();
@@ -15,14 +20,10 @@ const Example1: React.FC = () => {
     };
     fetchData().catch(console.error);
   }, []);
-  //For the dropdown
-  const [openDropdownId, setOpenDropdownId] = useState<number | undefined>(
-    undefined,
-  );
+
   const toggleDropdown = (certId: number | undefined) => {
     setOpenDropdownId(openDropdownId === certId ? undefined : certId);
   };
-  const navigate = useNavigate();
 
   const confirmAndDelete = async (id: number) => {
     if (window.confirm('Are you sure you want to delete this certificate?')) {
@@ -49,18 +50,30 @@ const Example1: React.FC = () => {
 
   const handleEditClick = (id: number | undefined) => {
     if (id !== undefined) {
-      navigate('/NewCertificate', { state: { certificateId: id } });
+      navigate(`/CertificateForm/${id}`);
     } else {
       alert('Certificate ID is undefined');
     }
   };
 
+  const handleCreateClick = () => {
+    navigate(`/CertificateForm/0`);
+  };
+
+  const handleEdit = (cert: Certificate) => () => handleEditClick(cert.id);
+  const handleDelete = (cert: Certificate) => () => handleDeleteClick(cert.id);
+  const handleToggleDropdown = (cert: Certificate) => () =>
+    toggleDropdown(cert.id);
+
   return (
     <div className="container">
       <h2 className="header_h">Example 1</h2>
-      <Link to="/NewCertificate">
-        <button className="btn-create">New Certificate</button>
-      </Link>
+      <button
+        className="btn-create"
+        onClick={handleCreateClick}
+      >
+        New Certificate
+      </button>
       <div className="table-wrapper">
         <table>
           <thead>
@@ -80,22 +93,20 @@ const Example1: React.FC = () => {
                     <IconSvg
                       Icon={gearIcon}
                       className="gear-icon cursor-pointer"
-                      onClick={() => toggleDropdown(cert.id)}
+                      onClick={handleToggleDropdown(cert)}
                     />
                     {openDropdownId === cert.id && (
                       <div className="dropdown-menu">
                         <div className="dropdown-options">
-                          <Link to="/NewCertificate">
-                            <button
-                              className="dropdown-button"
-                              onClick={() => handleEditClick(cert.id)}
-                            >
-                              Edit
-                            </button>
-                          </Link>
                           <button
                             className="dropdown-button"
-                            onClick={() => handleDeleteClick(cert.id)}
+                            onClick={handleEdit(cert)}
+                          >
+                            Edit
+                          </button>
+                          <button
+                            className="dropdown-button"
+                            onClick={handleDelete(cert)}
                           >
                             Delete
                           </button>
@@ -104,10 +115,10 @@ const Example1: React.FC = () => {
                     )}
                   </div>
                 </td>
-                <td>{cert.supplier}</td>
+                <td>{cert.supplier.name}</td>
                 <td>{cert.certificateType}</td>
-                <td>{cert.validFrom.toDateString()}</td>
-                <td>{cert.validTo.toDateString()}</td>
+                <td>{new Date(cert.validFrom).toDateString()}</td>
+                <td>{new Date(cert.validTo).toDateString()}</td>
               </tr>
             ))}
           </tbody>
@@ -116,4 +127,5 @@ const Example1: React.FC = () => {
     </div>
   );
 };
+
 export default Example1;

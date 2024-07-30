@@ -3,23 +3,30 @@ import searchIcon from '../icons/searchIcon';
 import closeIcon from '../icons/closeIcon';
 import { ChangeEvent } from 'react';
 import { Textfield } from '../base/Textfield';
-import '../../styles/newCertificate.css';
+import { Supplier } from '../data/data';
+import '../../styles/certificateForm.css';
 
 interface SupplierFieldProps {
-  supplier: string;
-  onChange: (e: ChangeEvent<HTMLInputElement>) => void;
+  supplier: Supplier;
+  onChange: (supplier: Supplier) => void;
 }
 
 export function SupplierField(props: SupplierFieldProps) {
+  const handleInputChange = (e: ChangeEvent<HTMLInputElement>) => {
+    const { value } = e.target;
+    const newSupplier = { ...props.supplier, name: value };
+    props.onChange(newSupplier);
+  };
+
   return (
     <div className="form-input-container">
       <label className="form-input-label">Supplier</label>
       <div className="form-input-container form-input-multiple">
         <Textfield
           name="supplier"
-          type="select"
-          value={props.supplier}
-          onChange={props.onChange}
+          type="text"
+          value={props.supplier.name}
+          onChange={handleInputChange}
         />
         <div>
           <IconSvg

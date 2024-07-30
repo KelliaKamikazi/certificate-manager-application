@@ -1,5 +1,5 @@
 import { ChangeEvent } from 'react';
-import '../../styles/newCertificate.css';
+import '../../styles/certificateForm.css';
 
 export interface TextfieldProps {
   label?: string;
