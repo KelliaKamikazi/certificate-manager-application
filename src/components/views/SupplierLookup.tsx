@@ -5,6 +5,7 @@ import { useState, useEffect } from 'react';
 import { Supplier } from '../data/data';
 import { Link } from 'react-router-dom';
 import { searchSuppliers } from '../../utils/indexedDB';
+import SupplierTable from '../inputs/SupplierTable';
 
 interface SupplierLookupProps {
   onClose: () => void;
@@ -166,36 +167,11 @@ const SupplierLookup: React.FC<SupplierLookupProps> = ({
             </div>
           </div>
           <div className="suppliers-results-container">
-            <div className="top-bar-title-container">
-              <div className="top-bar-title">▼ Supplier list</div>
-            </div>
-            <table>
-              <thead>
-                <tr>
-                  <th></th>
-                  <th>Supplier name</th>
-                  <th>Supplier index</th>
-                  <th>City</th>
-                </tr>
-              </thead>
-              <tbody>
-                {filteredSuppliers.map((supplier, index) => (
-                  <tr key={supplier.supplierIndex}>
-                    <td>
-                      <input
-                        type="radio"
-                        name="supplier"
-                        checked={index === selectedSupplierIndex}
-                        onChange={() => handleSelectSupplier(index)}
-                      />
-                    </td>
-                    <td>{supplier.name}</td>
-                    <td>{supplier.supplierIndex}</td>
-                    <td>{supplier.city}</td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
+            <SupplierTable
+              suppliers={filteredSuppliers}
+              selectedSupplierIndex={selectedSupplierIndex}
+              onSelectSupplier={handleSelectSupplier}
+            />
             <div className="buttons-container">
               <button
                 type="button"
