@@ -16,9 +16,9 @@ const SupplierLookup: React.FC<SupplierLookupProps> = ({
   onSupplierSelect,
 }) => {
   const hardcodedSuppliers: Supplier[] = [
-    { name: 'Andemis', s_index: 1, city: 'San Francisco' },
-    { name: 'Rodri', s_index: 2, city: 'Macu pici' },
-    { name: 'Mathew', s_index: 3, city: 'Kigali' },
+    { name: 'Andemis', supplierIndex: 1, city: 'San Francisco' },
+    { name: 'Rodri', supplierIndex: 2, city: 'Macu pici' },
+    { name: 'Mathew', supplierIndex: 3, city: 'Kigali' },
   ];
 
   const [name, setName] = useState('');
@@ -82,7 +82,7 @@ const SupplierLookup: React.FC<SupplierLookupProps> = ({
     const filtered = suppliers.filter((supplier) => {
       return (
         (!name || supplier.name.toLowerCase().includes(name.toLowerCase())) &&
-        (sIndex === null || supplier.s_index === sIndex) &&
+        (sIndex === null || supplier.supplierIndex === sIndex) &&
         (!city ||
           (supplier.city &&
             supplier.city.toLowerCase().includes(city.toLowerCase())))
@@ -147,12 +147,12 @@ const SupplierLookup: React.FC<SupplierLookupProps> = ({
               </div>
             </div>
             <div className="buttons-container">
-              <button
-                type="submit"
+              <div
                 className="btn blue-btn"
+                onClick={() => console.log('clicked search')}
               >
                 Search
-              </button>
+              </div>
               <button
                 type="button"
                 className="btn neutral-btn"
@@ -178,7 +178,7 @@ const SupplierLookup: React.FC<SupplierLookupProps> = ({
             </thead>
             <tbody>
               {filteredSuppliers.map((supplier, index) => (
-                <tr key={supplier.s_index}>
+                <tr key={supplier.supplierIndex}>
                   <td>
                     <input
                       type="radio"
@@ -188,7 +188,7 @@ const SupplierLookup: React.FC<SupplierLookupProps> = ({
                     />
                   </td>
                   <td>{supplier.name}</td>
-                  <td>{supplier.s_index}</td>
+                  <td>{supplier.supplierIndex}</td>
                   <td>{supplier.city}</td>
                 </tr>
               ))}

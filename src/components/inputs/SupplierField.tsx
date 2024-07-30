@@ -15,13 +15,12 @@ interface SupplierFieldProps {
 
 export function SupplierField(props: SupplierFieldProps) {
   const [showModal, setShowModal] = useState(false);
-
+  //replace with an actual new supplier
   const handleInputChange = (e: ChangeEvent<HTMLInputElement>) => {
     const { value } = e.target;
     const newSupplier = { ...props.supplier, name: value };
     props.onChange(newSupplier);
   };
-
   const showTheModal = () => {
     setShowModal(true);
   };

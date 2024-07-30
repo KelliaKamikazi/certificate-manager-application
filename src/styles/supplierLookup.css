@@ -77,11 +77,6 @@
 .suppliers-results-container {
   padding: 10px;
   border: thin solid var(--border-color);
-  /* padding: 10px;
-  border: thin solid var(--border-color);
-  display: flex;
-  flex-direction: column;
-  align-items: start; */
 }
 
 .suppliers-results-container table {

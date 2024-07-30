@@ -18,7 +18,7 @@ export const searchSuppliers = async (
       const result = request.result.filter((supplier: Supplier) => {
         return (
           supplier.name.includes(name) &&
-          (s_index === null || supplier.s_index === s_index) &&
+          (s_index === null || supplier.supplierIndex === s_index) &&
           supplier.city?.includes(city)
         );
       });
