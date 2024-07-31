@@ -1,10 +1,9 @@
 import '../../styles/supplierLookup.css';
 import { Textfield } from '../base/Textfield';
 import '../../styles/globalbtn.css';
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
 import { Supplier } from '../data/data';
 import { Link } from 'react-router-dom';
-import { searchSuppliers } from '../../utils/indexedDB';
 import SupplierTable from '../inputs/SupplierTable';
 
 interface SupplierLookupProps {
@@ -16,18 +15,10 @@ const SupplierLookup: React.FC<SupplierLookupProps> = ({
   onClose,
   onSupplierSelect,
 }) => {
-  const hardcodedSuppliers: Supplier[] = [
-    { name: 'Andemis', supplierIndex: 1, city: 'San Francisco' },
-    { name: 'Rodri', supplierIndex: 2, city: 'Macu pici' },
-    { name: 'Mathew', supplierIndex: 3, city: 'Kigali' },
-  ];
-
   const [name, setName] = useState('');
-  const [sIndex, setSIndex] = useState<number | null>(null);
+  const [supplierIndex, setSIndex] = useState<number | null>(null);
   const [city, setCity] = useState('');
-  const [suppliers, setSuppliers] = useState<Supplier[]>(hardcodedSuppliers);
-  const [filteredSuppliers, setFilteredSuppliers] =
-    useState<Supplier[]>(hardcodedSuppliers);
+  const [filteredSuppliers, setFilteredSuppliers] = useState<Supplier[]>([]);
   const [selectedSupplierIndex, setSelectedSupplierIndex] = useState<
     number | null
   >(null);
@@ -44,22 +35,32 @@ const SupplierLookup: React.FC<SupplierLookupProps> = ({
     setCity(event.target.value);
   };
 
-  const handleSearch = async (event: React.FormEvent) => {
+  const handleSearch = (event: React.FormEvent) => {
     event.preventDefault();
-    try {
-      const results = await searchSuppliers(name, sIndex, city);
-      setSuppliers(results);
-    } catch (error) {
-      console.error('Failed to search suppliers', error);
-    }
+    const hardcodedSuppliers: Supplier[] = [
+      { name: 'Andemis', supplierIndex: 1, city: 'San Francisco' },
+      { name: 'Anna', supplierIndex: 2, city: 'Machu Picchu' },
+      { name: 'Mathew', supplierIndex: 3, city: 'Kigali' },
+    ];
+
+    const filtered = hardcodedSuppliers.filter((supplier) => {
+      return (
+        (!name || supplier.name.toLowerCase().includes(name.toLowerCase())) &&
+        (supplierIndex === null || supplier.supplierIndex === supplierIndex) &&
+        (!city ||
+          (supplier.city &&
+            supplier.city.toLowerCase().includes(city.toLowerCase())))
+      );
+    });
+
+    setFilteredSuppliers(filtered);
   };
 
   const handleReset = () => {
     setName('');
     setSIndex(null);
     setCity('');
-    setSuppliers(hardcodedSuppliers);
-    setFilteredSuppliers(hardcodedSuppliers);
+    setFilteredSuppliers([]);
     setSelectedSupplierIndex(null);
   };
 
@@ -78,19 +79,6 @@ const SupplierLookup: React.FC<SupplierLookupProps> = ({
       handleClose();
     }
   };
-
-  useEffect(() => {
-    const filtered = suppliers.filter((supplier) => {
-      return (
-        (!name || supplier.name.toLowerCase().includes(name.toLowerCase())) &&
-        (sIndex === null || supplier.supplierIndex === sIndex) &&
-        (!city ||
-          (supplier.city &&
-            supplier.city.toLowerCase().includes(city.toLowerCase())))
-      );
-    });
-    setFilteredSuppliers(filtered);
-  }, [name, sIndex, city, suppliers]);
 
   return (
     <dialog open>
@@ -132,7 +120,7 @@ const SupplierLookup: React.FC<SupplierLookupProps> = ({
                   <Textfield
                     name="supplierIndex"
                     type="number"
-                    value={sIndex !== null ? sIndex : ''}
+                    value={supplierIndex !== null ? supplierIndex : ''}
                     onChange={handleIndexChange}
                     className="input-container"
                   />
@@ -150,9 +138,8 @@ const SupplierLookup: React.FC<SupplierLookupProps> = ({
               </div>
               <div className="buttons-container">
                 <button
-                  type="button"
+                  type="submit"
                   className="btn yellow-btn"
-                  onClick={handleSearch}
                 >
                   Search
                 </button>
