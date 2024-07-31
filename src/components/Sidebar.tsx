@@ -15,17 +15,13 @@ const Sidebar: React.FC = () => {
 
   const sidebarRef = useRef<HTMLDivElement>(null); // Ref to sidebar element
 
-  // Toggle submenu
   const handleMenuClick = () => {
     setIsSubmenuOpen((prev) => !prev);
   };
 
-  // Toggle sidebar visibility
   const handleSidebarOpen = () => {
     setIsSidebarVisible((prev) => !prev);
   };
-
-  // Close submenu when clicking outside
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
       if (

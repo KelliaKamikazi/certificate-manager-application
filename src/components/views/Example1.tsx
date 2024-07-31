@@ -20,7 +20,7 @@ const Example1: React.FC = () => {
       const data = await getData();
       setCertificates(data);
     };
-    fetchData().catch(console.error);
+    fetchData();
   }, []);
 
   const toggleDropdown = (certId: number | undefined) => {
