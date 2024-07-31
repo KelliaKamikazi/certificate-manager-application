@@ -5,7 +5,7 @@ import { Certificate, Supplier } from '../components/data/data';
 
 export const searchSuppliers = async (
   name: string,
-  s_index: number | null,
+  supplierIndex: number | null,
   city: string,
 ): Promise<Supplier[]> => {
   const db = await openDB();
@@ -18,7 +18,8 @@ export const searchSuppliers = async (
       const result = request.result.filter((supplier: Supplier) => {
         return (
           supplier.name.includes(name) &&
-          (s_index === null || supplier.supplierIndex === s_index) &&
+          (supplierIndex === null ||
+            supplier.supplierIndex === supplierIndex) &&
           supplier.city?.includes(city)
         );
       });
@@ -64,7 +65,7 @@ const addData = async (data: Certificate[]): Promise<void> => {
         ...item,
         supplier: {
           name: item.supplier.name,
-          s_index: item.supplier.supplierIndex,
+          supplierIndex: item.supplier.supplierIndex,
           city: item.supplier.city,
         },
         validFrom: item.validFrom.toISOString(),
@@ -96,7 +97,7 @@ const getData = async (): Promise<Certificate[]> => {
         ...item,
         supplier: {
           name: item.supplier.name,
-          s_index: item.supplier.s_index,
+          supplierIndex: item.supplier.supplierIndex,
           city: item.supplier.city,
         },
         validFrom: new Date(item.validFrom),
@@ -121,7 +122,7 @@ const getCertificateById = async (id: number): Promise<Certificate | null> => {
           ...request.result,
           supplier: {
             name: request.result.supplier.name,
-            s_index: request.result.supplier.s_index,
+            supplierIndex: request.result.supplier.supplierIndex,
             city: request.result.supplier.city,
           },
           validFrom: new Date(request.result.validFrom),
@@ -146,7 +147,7 @@ const updateData = async (data: Certificate): Promise<void> => {
       ...data,
       supplier: {
         name: data.supplier.name,
-        s_index: data.supplier.supplierIndex,
+        supplierIndex: data.supplier.supplierIndex,
         city: data.supplier.city,
       },
       validFrom: data.validFrom.toISOString(),
