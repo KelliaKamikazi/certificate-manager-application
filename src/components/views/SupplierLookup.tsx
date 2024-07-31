@@ -3,7 +3,7 @@ import { Textfield } from '../base/Textfield';
 import '../../styles/globalbtn.css';
 import { useState } from 'react';
 import { Supplier } from '../data/data';
-import { Link } from 'react-router-dom';
+
 import SupplierTable from '../inputs/SupplierTable';
 
 interface SupplierLookupProps {
@@ -89,14 +89,13 @@ const SupplierLookup: React.FC<SupplierLookupProps> = ({
         >
           <div className="top-bar">
             <h2 className="top-bar-title">Search for suppliers</h2>
-            <Link to="/CertificateForm/0">
-              <div
-                className="x-btn"
-                onClick={onClose}
-              >
-                X
-              </div>
-            </Link>
+
+            <div
+              className="x-btn"
+              onClick={onClose}
+            >
+              X
+            </div>
           </div>
           <div className="search-supplier-inputs-container">
             <div className="top-bar-title-container">

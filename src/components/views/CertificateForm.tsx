@@ -108,16 +108,17 @@ const CertificateForm: React.FC = () => {
   const handleResetFields = () => {
     setCertificate(INITIAL_CERTIFICATE);
   };
+  const handleSupplierOnSelect = (supplier: Supplier) => {
+    handleSupplierChange(supplier);
+    setShowSupplierLookup(false);
+  };
 
   return (
     <div className="new-cert-form">
       {showSupplierLookup && (
         <SupplierLookup
           onClose={() => setShowSupplierLookup(false)}
-          onSupplierSelect={(supplier) => {
-            handleSupplierChange(supplier);
-            setShowSupplierLookup(false);
-          }}
+          onSupplierSelect={handleSupplierOnSelect}
         />
       )}
       <form onSubmit={handleSaving}>
