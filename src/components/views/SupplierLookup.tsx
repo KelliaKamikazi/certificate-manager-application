@@ -16,12 +16,14 @@ const SupplierLookup: React.FC<SupplierLookupProps> = ({
   onSupplierSelect,
 }) => {
   const [name, setName] = useState('');
-  const [supplierIndex, setSupplierIndex] = useState<number | null>(null);
+  const [supplierIndex, setSupplierIndex] = useState<number | undefined>(
+    undefined,
+  );
   const [city, setCity] = useState('');
   const [filteredSuppliers, setFilteredSuppliers] = useState<Supplier[]>([]);
-  const [selectedSupplierName, setSelectedSupplierName] = useState<
-    string | null
-  >(null);
+  const [selectedSupplierIndex, setSelectedSupplierIndex] = useState<
+    number | undefined
+  >(undefined);
 
   const handleNameChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     setName(event.target.value);
@@ -29,7 +31,7 @@ const SupplierLookup: React.FC<SupplierLookupProps> = ({
 
   const handleIndexChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     setSupplierIndex(
-      event.target.value ? parseInt(event.target.value, 10) : null,
+      event.target.value ? parseInt(event.target.value, 10) : undefined,
     );
   };
 
@@ -49,24 +51,24 @@ const SupplierLookup: React.FC<SupplierLookupProps> = ({
 
   const handleReset = () => {
     setName('');
-    setSupplierIndex(null);
+    setSupplierIndex(undefined);
     setCity('');
     setFilteredSuppliers([]);
-    setSelectedSupplierName(null);
+    setSelectedSupplierIndex(undefined);
   };
 
   const handleClose = () => {
     if (onClose) onClose();
   };
 
-  const handleSelectSupplier = (name: string) => {
-    setSelectedSupplierName(name);
+  const handleSelectSupplier = (index: number | undefined) => {
+    setSelectedSupplierIndex(index);
   };
 
   const handleSubmit = () => {
-    if (selectedSupplierName) {
+    if (selectedSupplierIndex) {
       const selectedSupplier = filteredSuppliers.find(
-        (supplier) => supplier.name === selectedSupplierName,
+        (supplier) => supplier.supplierIndex === selectedSupplierIndex,
       );
       if (selectedSupplier) {
         onSupplierSelect(selectedSupplier);
@@ -112,7 +114,7 @@ const SupplierLookup: React.FC<SupplierLookupProps> = ({
                   <Textfield
                     name="supplierIndex"
                     type="number"
-                    value={supplierIndex !== null ? supplierIndex : ''}
+                    value={supplierIndex !== undefined ? supplierIndex : ''}
                     onChange={handleIndexChange}
                     className="input-container"
                   />
@@ -148,7 +150,7 @@ const SupplierLookup: React.FC<SupplierLookupProps> = ({
           <div className="suppliers-results-container">
             <SupplierTable
               suppliers={filteredSuppliers}
-              selectSupplierName={selectedSupplierName}
+              selectSupplierIndex={selectedSupplierIndex}
               onSelectSupplier={handleSelectSupplier}
             />
             <div className="buttons-container">

@@ -187,7 +187,7 @@ const deleteData = async (id: number): Promise<void> => {
 // CRUD Operations for Suppliers
 export const searchSuppliers = async (
   name: string,
-  supplierIndex: number | null,
+  supplierIndex: number | undefined,
   city: string,
 ): Promise<Supplier[]> => {
   const db = await openDB();

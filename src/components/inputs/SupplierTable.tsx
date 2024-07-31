@@ -3,13 +3,13 @@ import { Supplier } from '../data/data';
 
 interface SupplierTableProps {
   suppliers: Supplier[];
-  selectSupplierName: string | null;
-  onSelectSupplier: (name: string) => void;
+  selectSupplierIndex: number | undefined;
+  onSelectSupplier: (index: number | undefined) => void;
 }
 
 const SupplierTable: React.FC<SupplierTableProps> = ({
   suppliers,
-  selectSupplierName,
+  selectSupplierIndex,
   onSelectSupplier,
 }) => {
   return (
@@ -33,8 +33,8 @@ const SupplierTable: React.FC<SupplierTableProps> = ({
                 <input
                   type="radio"
                   name="supplier"
-                  checked={supplier.name === selectSupplierName}
-                  onChange={() => onSelectSupplier(supplier.name)}
+                  checked={supplier.supplierIndex === selectSupplierIndex}
+                  onChange={() => onSelectSupplier(supplier.supplierIndex)}
                 />
               </td>
               <td>{supplier.name}</td>

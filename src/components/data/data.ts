@@ -8,7 +8,7 @@ export interface Certificate {
 }
 export interface Supplier {
   name: string;
-  supplierIndex?: number;
+  supplierIndex?: number | undefined;
   city?: string;
 }
 export const INITIAL_CERTIFICATE = {
