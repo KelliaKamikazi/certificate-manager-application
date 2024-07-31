@@ -5,8 +5,10 @@ import HomeIcon from './icons/HomeIcon';
 import ThreeLineMenu from './icons/threeLineMenu';
 import AngleDown from './icons/angledown';
 import IconSvg from './icons/icons';
+import { useTranslation } from 'react-i18next';
 
 const Sidebar: React.FC = () => {
+  const { t } = useTranslation();
   const [isSubmenuOpen, setIsSubmenuOpen] = useState<boolean>(false);
   const [isSidebarVisible, setIsSidebarVisible] = useState<boolean>(false);
   const [isMobile, setIsMobile] = useState<boolean>(window.innerWidth < 1200);
@@ -71,7 +73,7 @@ const Sidebar: React.FC = () => {
         href="#main-content"
         className="skip-link"
       >
-        Skip to content
+        {t('skipToContent')}
       </a>
 
       {isSidebarVisible && (
@@ -99,7 +101,7 @@ const Sidebar: React.FC = () => {
               Icon={HomeIcon}
               className="homeIcon"
             />
-            <span>Start</span>
+            <span>{t('start')}</span>
           </Link>
         </div>
         <div
@@ -119,20 +121,20 @@ const Sidebar: React.FC = () => {
             className="menuIcon"
           />
           <div>
-            <span>Machine Learning</span>
+            <span>{t('machineLearning')}</span>
             {isSubmenuOpen && (
               <div
                 className="submenu"
                 onClick={handleSubmenuClick}
               >
                 <Link to="/example1">
-                  <span>Example 1</span>
+                  <span>{t('Example1')}</span>
                 </Link>
                 <Link to="/example2">
-                  <span>Example 2</span>
+                  <span>{t('Example2')}</span>
                 </Link>
                 <Link to="/example3">
-                  <span>Example 3</span>
+                  <span>{t('Example3')}</span>
                 </Link>
               </div>
             )}

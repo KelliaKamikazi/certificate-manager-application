@@ -32,13 +32,16 @@
   "supplierIndex": "Lieferantenindex",
   "city": "Stadt",
   "Machine Learning": "Maschinelles Lernen ",
-  "example1": "Beispiel1",
-  "example2": "Beispiel2",
-  "example3": "Beispiel3",
+  "Example1": "Beispiel1",
+  "Example2": "Beispiel2",
+  "Example3": "Beispiel3",
   "example1_header": "Beispiel 1",
   "new_certificate": "Neues Zertifikat",
   "confirm_delete": "Sind Sie sicher, dass Sie dieses Zertifikat löschen möchten?",
   "delete_success": "Zertifikat wurde erfolgreich gelöscht",
   "delete_failure": "Das Zertifikat wurde nicht erfolgreich gelöscht",
-  "undefined_id": "Zertifikat-ID ist undefiniert"
+  "undefined_id": "Zertifikat-ID ist undefiniert",
+  "skipToContent": "Zum Inhalt springen",
+  "start": "Start",
+  "machineLearning": "Maschinelles Lernen"
 }

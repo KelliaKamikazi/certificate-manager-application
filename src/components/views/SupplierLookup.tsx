@@ -1,6 +1,7 @@
 import '../../styles/supplierLookup.css';
 import { Textfield } from '../base/Textfield';
 import '../../styles/globalbtn.css';
+<<<<<<< HEAD
 import { useState } from 'react';
 import { Supplier } from '../data/data';
 import SupplierTable from '../inputs/SupplierTable';
@@ -77,6 +78,10 @@ const SupplierLookup: React.FC<SupplierLookupProps> = ({
     }
   };
 
+=======
+
+const SupplierLookup: React.FC = () => {
+>>>>>>> 6584033 (task8-KAN-72-Adjust the language dropdown)
   return (
     <dialog open>
       <div className="modal-backdrop">
