@@ -68,8 +68,8 @@
 
 .upload-btn {
   padding: 9px 50px;
-  background-color: #6698ce;
-  color: white;
+  background-color: var(--primarycolor);
+  color: var(--title-color);
   border: none;
   cursor: pointer;
   margin-bottom: 0.5rem;

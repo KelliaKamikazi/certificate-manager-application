@@ -8,7 +8,9 @@ import '../../styles/certificateForm.css';
 
 interface SupplierFieldProps {
   supplier: Supplier;
+  onClose?: () => void;
   onChange: (supplier: Supplier) => void;
+  onOpenLookup: () => void;
 }
 
 export function SupplierField(props: SupplierFieldProps) {
@@ -17,7 +19,6 @@ export function SupplierField(props: SupplierFieldProps) {
     const newSupplier = { ...props.supplier, name: value };
     props.onChange(newSupplier);
   };
-
   return (
     <div className="form-input-container">
       <label className="form-input-label">Supplier</label>
@@ -28,17 +29,15 @@ export function SupplierField(props: SupplierFieldProps) {
           value={props.supplier.name}
           onChange={handleInputChange}
         />
-        <div>
-          <IconSvg
-            Icon={searchIcon}
-            className="input-icon input-icon-search"
-          />
-          <div className="vertical-bar"></div>
-          <IconSvg
-            Icon={closeIcon}
-            className="input-icon"
-          />
-        </div>
+        <button
+          type="button"
+          onClick={props.onOpenLookup}
+        >
+          <IconSvg Icon={searchIcon} />
+        </button>
+        <button type="button">
+          <IconSvg Icon={closeIcon} />
+        </button>
       </div>
     </div>
   );

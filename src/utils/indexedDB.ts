@@ -1,19 +1,52 @@
+import { Certificate, Supplier } from '../components/data/data';
 const DB_NAME = 'exampleDB';
 const DB_VERSION = 1;
-const STORE_NAME = 'certificates';
-import { Certificate } from '../components/data/data';
+const STORE_CERTIFICATES = 'certificates';
+const STORE_SUPPLIERS = 'suppliers';
 
 const openDB = (): Promise<IDBDatabase> => {
   return new Promise((resolve, reject) => {
     const request = indexedDB.open(DB_NAME, DB_VERSION);
 
-    request.onupgradeneeded = (event) => {
+    request.onupgradeneeded = (event: IDBVersionChangeEvent) => {
       const db = (event.target as IDBOpenDBRequest).result;
-      if (!db.objectStoreNames.contains(STORE_NAME)) {
-        db.createObjectStore(STORE_NAME, {
+      if (!db.objectStoreNames.contains(STORE_CERTIFICATES)) {
+        db.createObjectStore(STORE_CERTIFICATES, {
           keyPath: 'id',
           autoIncrement: true,
         });
+      }
+      if (!db.objectStoreNames.contains(STORE_SUPPLIERS)) {
+        const supplierStore = db.createObjectStore(STORE_SUPPLIERS, {
+          keyPath: 'supplierIndex',
+          autoIncrement: false,
+        });
+
+        supplierStore.transaction.oncomplete = () => {
+          const supplierTransaction = db.transaction(
+            STORE_SUPPLIERS,
+            'readwrite',
+          );
+          const supplierStoreTransaction =
+            supplierTransaction.objectStore(STORE_SUPPLIERS);
+
+          const suppliers: Supplier[] = [
+            { supplierIndex: 1, name: 'ANDEMIS GmbH', city: 'Stuttgart' },
+            { supplierIndex: 2, name: 'IMLER AG', city: 'Berlin' },
+          ];
+
+          suppliers.forEach((supplier) => {
+            supplierStoreTransaction.add(supplier);
+          });
+
+          supplierTransaction.oncomplete = () => {
+            console.log('Suppliers added successfully');
+          };
+
+          supplierTransaction.onerror = (e) => {
+            console.error('Error adding suppliers:', e);
+          };
+        };
       }
     };
 
@@ -27,21 +60,26 @@ const openDB = (): Promise<IDBDatabase> => {
   });
 };
 
-// CRUD OPERATIONS
+const initDB = async (): Promise<boolean> => {
+  try {
+    await openDB();
+    return true;
+  } catch (error) {
+    console.error('Error during initDB', error);
+    return false;
+  }
+};
+
+// CRUD Operations for Certificates
 const addData = async (data: Certificate[]): Promise<void> => {
   const db = await openDB();
-  const transaction = db.transaction(STORE_NAME, 'readwrite');
-  const store = transaction.objectStore(STORE_NAME);
+  const transaction = db.transaction(STORE_CERTIFICATES, 'readwrite');
+  const store = transaction.objectStore(STORE_CERTIFICATES);
 
   const promises = data.map((item) => {
     return new Promise<void>((resolve, reject) => {
       const addRequest = store.add({
         ...item,
-        supplier: {
-          name: item.supplier.name,
-          s_index: item.supplier.supplierIndex,
-          city: item.supplier.city,
-        },
         validFrom: item.validFrom.toISOString(),
         validTo: item.validTo.toISOString(),
       });
@@ -61,19 +99,14 @@ const addData = async (data: Certificate[]): Promise<void> => {
 
 const getData = async (): Promise<Certificate[]> => {
   const db = await openDB();
-  const transaction = db.transaction(STORE_NAME, 'readonly');
-  const store = transaction.objectStore(STORE_NAME);
+  const transaction = db.transaction(STORE_CERTIFICATES, 'readonly');
+  const store = transaction.objectStore(STORE_CERTIFICATES);
   const request = store.getAll();
 
   return new Promise((resolve, reject) => {
     request.onsuccess = () => {
       const result = request.result.map((item: any) => ({
         ...item,
-        supplier: {
-          name: item.supplier.name,
-          s_index: item.supplier.s_index,
-          city: item.supplier.city,
-        },
         validFrom: new Date(item.validFrom),
         validTo: new Date(item.validTo),
       }));
@@ -85,8 +118,8 @@ const getData = async (): Promise<Certificate[]> => {
 
 const getCertificateById = async (id: number): Promise<Certificate | null> => {
   const db = await openDB();
-  const transaction = db.transaction(STORE_NAME, 'readonly');
-  const store = transaction.objectStore(STORE_NAME);
+  const transaction = db.transaction(STORE_CERTIFICATES, 'readonly');
+  const store = transaction.objectStore(STORE_CERTIFICATES);
   const request = store.get(id);
 
   return new Promise((resolve, reject) => {
@@ -96,7 +129,7 @@ const getCertificateById = async (id: number): Promise<Certificate | null> => {
           ...request.result,
           supplier: {
             name: request.result.supplier.name,
-            s_index: request.result.supplier.s_index,
+            supplierIndex: request.result.supplier.supplierIndex,
             city: request.result.supplier.city,
           },
           validFrom: new Date(request.result.validFrom),
@@ -113,15 +146,15 @@ const getCertificateById = async (id: number): Promise<Certificate | null> => {
 
 const updateData = async (data: Certificate): Promise<void> => {
   const db = await openDB();
-  const transaction = db.transaction(STORE_NAME, 'readwrite');
-  const store = transaction.objectStore(STORE_NAME);
+  const transaction = db.transaction(STORE_CERTIFICATES, 'readwrite');
+  const store = transaction.objectStore(STORE_CERTIFICATES);
 
   return new Promise<void>((resolve, reject) => {
     const updateRequest = store.put({
       ...data,
       supplier: {
         name: data.supplier.name,
-        s_index: data.supplier.supplierIndex,
+        supplierIndex: data.supplier.supplierIndex,
         city: data.supplier.city,
       },
       validFrom: data.validFrom.toISOString(),
@@ -135,11 +168,10 @@ const updateData = async (data: Certificate): Promise<void> => {
     transaction.onerror = () => reject(transaction.error);
   });
 };
-
 const deleteData = async (id: number): Promise<void> => {
   const db = await openDB();
-  const transaction = db.transaction(STORE_NAME, 'readwrite');
-  const store = transaction.objectStore(STORE_NAME);
+  const transaction = db.transaction(STORE_CERTIFICATES, 'readwrite');
+  const store = transaction.objectStore(STORE_CERTIFICATES);
 
   return new Promise<void>((resolve, reject) => {
     const deleteRequest = store.delete(id);
@@ -152,4 +184,30 @@ const deleteData = async (id: number): Promise<void> => {
   });
 };
 
-export { addData, getData, getCertificateById, updateData, deleteData };
+// CRUD Operations for Suppliers
+export const searchSuppliers = async (
+  name: string,
+  supplierIndex: number | undefined,
+  city: string,
+): Promise<Supplier[]> => {
+  const db = await openDB();
+  const transaction = db.transaction(STORE_SUPPLIERS, 'readonly');
+  const store = transaction.objectStore(STORE_SUPPLIERS);
+
+  const request = store.getAll();
+  return new Promise((resolve, reject) => {
+    request.onsuccess = () => {
+      const result = request.result.filter((supplier: Supplier) => {
+        return (
+          supplier.name.toLowerCase().includes(name.toLowerCase()) &&
+          (!supplierIndex || supplier.supplierIndex === supplierIndex) &&
+          (!city || supplier.city?.toLowerCase().includes(city.toLowerCase()))
+        );
+      });
+      resolve(result);
+    };
+    request.onerror = () => reject(request.error);
+  });
+};
+
+export { initDB, addData, getData, getCertificateById, updateData, deleteData };
