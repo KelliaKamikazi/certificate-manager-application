@@ -3,8 +3,8 @@ import { Textfield } from '../base/Textfield';
 import '../../styles/globalbtn.css';
 import { useState } from 'react';
 import { Supplier } from '../data/data';
-
 import SupplierTable from '../inputs/SupplierTable';
+import { searchSuppliers } from '../../utils/indexedDB';
 
 interface SupplierLookupProps {
   onClose: () => void;
@@ -16,11 +16,11 @@ const SupplierLookup: React.FC<SupplierLookupProps> = ({
   onSupplierSelect,
 }) => {
   const [name, setName] = useState('');
-  const [supplierIndex, setSIndex] = useState<number | null>(null);
+  const [supplierIndex, setSupplierIndex] = useState<number | null>(null);
   const [city, setCity] = useState('');
   const [filteredSuppliers, setFilteredSuppliers] = useState<Supplier[]>([]);
-  const [selectedSupplierIndex, setSelectedSupplierIndex] = useState<
-    number | null
+  const [selectedSupplierName, setSelectedSupplierName] = useState<
+    string | null
   >(null);
 
   const handleNameChange = (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -28,55 +28,50 @@ const SupplierLookup: React.FC<SupplierLookupProps> = ({
   };
 
   const handleIndexChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    setSIndex(event.target.value ? parseInt(event.target.value) : null);
+    setSupplierIndex(
+      event.target.value ? parseInt(event.target.value, 10) : null,
+    );
   };
 
   const handleCityChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     setCity(event.target.value);
   };
 
-  const handleSearch = (event: React.FormEvent) => {
+  const handleSearch = async (event: React.FormEvent) => {
     event.preventDefault();
-    const hardcodedSuppliers: Supplier[] = [
-      { name: 'Andemis', supplierIndex: 1, city: 'San Francisco' },
-      { name: 'Anna', supplierIndex: 2, city: 'Machu Picchu' },
-      { name: 'Mathew', supplierIndex: 3, city: 'Kigali' },
-    ];
-
-    const filtered = hardcodedSuppliers.filter((supplier) => {
-      return (
-        (!name || supplier.name.toLowerCase().includes(name.toLowerCase())) &&
-        (supplierIndex === null || supplier.supplierIndex === supplierIndex) &&
-        (!city ||
-          (supplier.city &&
-            supplier.city.toLowerCase().includes(city.toLowerCase())))
-      );
-    });
-
-    setFilteredSuppliers(filtered);
+    try {
+      const filtered = await searchSuppliers(name, supplierIndex, city);
+      setFilteredSuppliers(filtered);
+    } catch (error) {
+      console.error('Error fetching suppliers:', error);
+    }
   };
 
   const handleReset = () => {
     setName('');
-    setSIndex(null);
+    setSupplierIndex(null);
     setCity('');
     setFilteredSuppliers([]);
-    setSelectedSupplierIndex(null);
+    setSelectedSupplierName(null);
   };
 
   const handleClose = () => {
     if (onClose) onClose();
   };
 
-  const handleSelectSupplier = (index: number) => {
-    setSelectedSupplierIndex(index);
+  const handleSelectSupplier = (name: string) => {
+    setSelectedSupplierName(name);
   };
 
   const handleSubmit = () => {
-    if (selectedSupplierIndex !== null) {
-      const selectedSupplier = filteredSuppliers[selectedSupplierIndex];
-      onSupplierSelect(selectedSupplier);
-      handleClose();
+    if (selectedSupplierName) {
+      const selectedSupplier = filteredSuppliers.find(
+        (supplier) => supplier.name === selectedSupplierName,
+      );
+      if (selectedSupplier) {
+        onSupplierSelect(selectedSupplier);
+        handleClose();
+      }
     }
   };
 
@@ -89,10 +84,9 @@ const SupplierLookup: React.FC<SupplierLookupProps> = ({
         >
           <div className="top-bar">
             <h2 className="top-bar-title">Search for suppliers</h2>
-
             <div
               className="x-btn"
-              onClick={onClose}
+              onClick={handleClose}
             >
               X
             </div>
@@ -110,7 +104,6 @@ const SupplierLookup: React.FC<SupplierLookupProps> = ({
                     type="text"
                     value={name}
                     onChange={handleNameChange}
-                    placeholder="ANDEMIS"
                     className="input-container"
                   />
                 </div>
@@ -155,7 +148,7 @@ const SupplierLookup: React.FC<SupplierLookupProps> = ({
           <div className="suppliers-results-container">
             <SupplierTable
               suppliers={filteredSuppliers}
-              selectedSupplierIndex={selectedSupplierIndex}
+              selectSupplierName={selectedSupplierName}
               onSelectSupplier={handleSelectSupplier}
             />
             <div className="buttons-container">
@@ -168,7 +161,7 @@ const SupplierLookup: React.FC<SupplierLookupProps> = ({
               </button>
               <button
                 type="button"
-                onClick={onClose}
+                onClick={handleClose}
                 className="btn neutral-btn"
               >
                 Cancel

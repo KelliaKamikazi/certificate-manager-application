@@ -1,5 +1,5 @@
 export interface Certificate {
-  id?: number;
+  id: number;
   supplier: Supplier;
   certificateType: string;
   validFrom: Date;

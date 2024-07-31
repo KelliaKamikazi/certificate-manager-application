@@ -1,5 +1,11 @@
 import '../../styles/certificateForm.css';
-import { useState, ChangeEvent, FormEvent, useEffect } from 'react';
+import {
+  useState,
+  ChangeEvent,
+  FormEvent,
+  useEffect,
+  useCallback,
+} from 'react';
 import '../../utils/indexedDB';
 import { Certificate, Supplier, INITIAL_CERTIFICATE } from '../data/data';
 import { addData, getCertificateById, updateData } from '../../utils/indexedDB';
@@ -51,6 +57,7 @@ const CertificateForm: React.FC = () => {
     }
 
     const newCertificate: Certificate = {
+      id: Date.now(),
       supplier,
       certificateType,
       validFrom: validFromDate,
@@ -108,16 +115,20 @@ const CertificateForm: React.FC = () => {
   const handleResetFields = () => {
     setCertificate(INITIAL_CERTIFICATE);
   };
-  const handleSupplierOnSelect = (supplier: Supplier) => {
+  const handleSupplierOnSelect = useCallback((supplier: Supplier) => {
     handleSupplierChange(supplier);
     setShowSupplierLookup(false);
-  };
+  }, []);
+
+  const handleCloseSupplierLookup = useCallback(() => {
+    setShowSupplierLookup(false);
+  }, []);
 
   return (
     <div className="new-cert-form">
       {showSupplierLookup && (
         <SupplierLookup
-          onClose={() => setShowSupplierLookup(false)}
+          onClose={handleCloseSupplierLookup}
           onSupplierSelect={handleSupplierOnSelect}
         />
       )}

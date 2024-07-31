@@ -60,7 +60,10 @@ const Example1: React.FC = () => {
     navigate(`/CertificateForm/0`);
   };
 
-  const handleEdit = (cert: Certificate) => () => handleEditClick(cert.id);
+  const handleEdit = (cert: Certificate) => () => {
+    console.log('cert 1 ', cert);
+    handleEditClick(cert.id);
+  };
   const handleDelete = (cert: Certificate) => () => handleDeleteClick(cert.id);
   const handleToggleDropdown = (cert: Certificate) => () =>
     toggleDropdown(cert.id);
