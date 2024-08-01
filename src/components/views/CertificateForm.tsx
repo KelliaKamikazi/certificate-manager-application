@@ -1,4 +1,3 @@
-import { useTranslation } from 'react-i18next';
 import '../../styles/certificateForm.css';
 import {
   useState,
@@ -17,7 +16,6 @@ import { useParams } from 'react-router-dom';
 import SupplierLookup from './SupplierLookup';
 
 const CertificateForm: React.FC = () => {
-  const { t } = useTranslation();
   const { certificateId } = useParams<{ certificateId: string }>();
   const [certificate, setCertificate] = useState(INITIAL_CERTIFICATE);
   const [showSupplierLookup, setShowSupplierLookup] = useState(false);
@@ -48,13 +46,13 @@ const CertificateForm: React.FC = () => {
     event.preventDefault();
     const { supplier, certificateType, validTo, validFrom } = certificate;
     if (!supplier.name || !certificateType || !validTo || !validFrom) {
-      alert(t('all_fields_required'));
+      alert('All fields are required');
       return;
     }
     const validFromDate = new Date(validFrom);
     const validToDate = new Date(validTo);
     if (validFromDate > validToDate) {
-      alert(t('valid_from_later_than_valid_to'));
+      alert('Valid From date cannot be later than Valid To date');
       return;
     }
 
@@ -70,14 +68,14 @@ const CertificateForm: React.FC = () => {
     try {
       if (certificateId && certificateId !== '0') {
         await updateData({ ...newCertificate, id: Number(certificateId) });
-        alert(t('certificate_updated_successfully'));
+        alert('Certificate was updated successfully');
       } else {
         await addData([newCertificate]);
-        alert(t('certificate_saved_successfully'));
+        alert('Certificate was saved successfully');
       }
       handleResetFields();
     } catch (error) {
-      alert(t('certificate_not_added_updated'));
+      alert('Certificate not added/updated');
     }
   };
 
@@ -110,7 +108,7 @@ const CertificateForm: React.FC = () => {
       };
       reader.readAsDataURL(file);
     } else {
-      alert(t('only_pdf_files_allowed'));
+      alert('Only PDF files are allowed');
     }
   };
 
@@ -147,7 +145,7 @@ const CertificateForm: React.FC = () => {
               onChange={handleInputChange}
             />
             <div className="form-input-container">
-              <label className="form-input-label">{t('valid_from')}</label>
+              <label className="form-input-label">Valid from</label>
               <Textfield
                 name="validFrom"
                 className="form-input"
@@ -157,7 +155,7 @@ const CertificateForm: React.FC = () => {
               />
             </div>
             <div className="form-input-container">
-              <label className="form-input-label">{t('valid_to')}</label>
+              <label className="form-input-label">Valid to</label>
               <Textfield
                 name="validTo"
                 className="form-input"
@@ -177,7 +175,7 @@ const CertificateForm: React.FC = () => {
                 )?.click()
               }
             >
-              {t('upload')}
+              Upload
             </button>
             <input
               type="file"
@@ -199,14 +197,14 @@ const CertificateForm: React.FC = () => {
             type="submit"
             className="submit-cert-btn"
           >
-            {t('save')}
+            Save
           </button>
           <button
             type="reset"
             className="reset-cert-btn"
             onClick={handleResetFields}
           >
-            {t('reset')}
+            Reset
           </button>
         </div>
       </form>

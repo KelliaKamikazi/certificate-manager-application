@@ -5,7 +5,6 @@ import Example1 from '../src/components/views/Example1';
 import Example2 from '../src/components/views/Example2';
 import Example3 from '../src/components/views/Example3';
 import NotFound from '../src/components/views/Notfound';
-import SupplierLookup from './components/views/SupplierLookup';
 
 const AppRoutes: React.FC = () => {
   return (
@@ -21,10 +20,6 @@ const AppRoutes: React.FC = () => {
       <Route
         path="/CertificateForm/:certificateId"
         element={<CertificateForm />}
-      />
-      <Route
-        path="/supplierLookup"
-        element={<SupplierLookup />}
       />
       <Route
         path="/example2"
