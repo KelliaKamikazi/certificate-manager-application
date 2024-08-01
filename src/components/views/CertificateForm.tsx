@@ -1,7 +1,5 @@
-import React, { useState, ChangeEvent, FormEvent, useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
 import '../../styles/certificateForm.css';
-<<<<<<< HEAD
 import {
   useState,
   ChangeEvent,
@@ -11,9 +9,6 @@ import {
 } from 'react';
 import '../../utils/indexedDB';
 import { Certificate, Supplier, INITIAL_CERTIFICATE } from '../data/data';
-=======
-import { Certificate, Supplier } from '../data/data';
->>>>>>> fff1e45 (task8-KAN-72 rename and move the language folder to be global)
 import { addData, getCertificateById, updateData } from '../../utils/indexedDB';
 import { SupplierField } from '../inputs/SupplierField';
 import { CertificateType } from '../inputs/CertificateType';
@@ -194,15 +189,8 @@ const CertificateForm: React.FC = () => {
               className="file-preview-panel"
               id="pdf-preview"
             >
-<<<<<<< HEAD
               <iframe src={certificate.pdfUrl}></iframe>
               {certificate.pdfUrl ? null : <span>No pdf Available</span>}
-=======
-              <iframe src={certificate.preview}></iframe>
-              {certificate.preview ? null : (
-                <span>{t('no_pdf_available')}</span>
-              )}
->>>>>>> fff1e45 (task8-KAN-72 rename and move the language folder to be global)
             </div>
           </div>
         </div>
