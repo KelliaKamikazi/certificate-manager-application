@@ -66,7 +66,11 @@ const Sidebar: React.FC = () => {
   const handleSubmenuClick = (e: React.MouseEvent) => {
     e.stopPropagation();
   };
-
+  const handleKeyDown = (e: { key: string }) => {
+    if (e.key === 'Enter' || e.key === ' ') {
+      handleMenuClick();
+    }
+  };
   return (
     <>
       <a
@@ -110,11 +114,7 @@ const Sidebar: React.FC = () => {
           role="button"
           aria-expanded={isSubmenuOpen}
           tabIndex={0}
-          onKeyDown={(e) => {
-            if (e.key === 'Enter' || e.key === ' ') {
-              handleMenuClick();
-            }
-          }}
+          onKeyDown={handleKeyDown}
         >
           <IconSvg
             Icon={ThreeLineMenu}
