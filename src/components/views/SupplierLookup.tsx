@@ -1,7 +1,8 @@
+import React, { useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import '../../styles/supplierLookup.css';
 import { Textfield } from '../base/Textfield';
 import '../../styles/globalbtn.css';
-import { useState } from 'react';
 import { Supplier } from '../data/data';
 import SupplierTable from '../inputs/SupplierTable';
 import { searchSuppliers } from '../../utils/indexedDB';
@@ -15,6 +16,7 @@ const SupplierLookup: React.FC<SupplierLookupProps> = ({
   onClose,
   onSupplierSelect,
 }) => {
+  const { t } = useTranslation();
   const [name, setName] = useState('');
   const [supplierIndex, setSupplierIndex] = useState<number | undefined>(
     undefined,
@@ -85,22 +87,29 @@ const SupplierLookup: React.FC<SupplierLookupProps> = ({
           onSubmit={handleSearch}
         >
           <div className="top-bar">
-            <h2 className="top-bar-title">Search for suppliers</h2>
+            <h2 className="top-bar-title">{t('searchForSuppliers')}</h2>
             <div
               className="x-btn"
               onClick={handleClose}
+              onKeyDown={(e) => {
+                if (e.key === 'Enter' || e.key === ' ') {
+                  handleClose();
+                }
+              }}
+              tabIndex={0}
+              role="button"
             >
               X
             </div>
           </div>
           <div className="search-supplier-inputs-container">
             <div className="top-bar-title-container">
-              <div className="top-bar-title">▼ Search criteria</div>
+              <div className="top-bar-title">▼ {t('searchCriteria')}</div>
             </div>
             <div className="form-inputs">
               <div className="inputs-container-supplier">
                 <div className="input-container">
-                  <label className="input-label">Supplier name</label>
+                  <label className="input-label">{t('supplierName')}</label>
                   <Textfield
                     name="supplierName"
                     type="text"
@@ -110,7 +119,7 @@ const SupplierLookup: React.FC<SupplierLookupProps> = ({
                   />
                 </div>
                 <div className="input-container">
-                  <label className="input-label">Supplier index</label>
+                  <label className="input-label">{t('supplierIndex')}</label>
                   <Textfield
                     name="supplierIndex"
                     type="number"
@@ -120,7 +129,7 @@ const SupplierLookup: React.FC<SupplierLookupProps> = ({
                   />
                 </div>
                 <div className="input-container">
-                  <label className="input-label">City</label>
+                  <label className="input-label">{t('city')}</label>
                   <Textfield
                     name="supplierCity"
                     type="text"
@@ -135,14 +144,14 @@ const SupplierLookup: React.FC<SupplierLookupProps> = ({
                   type="submit"
                   className="btn yellow-btn"
                 >
-                  Search
+                  {t('search')}
                 </button>
                 <button
                   type="button"
                   className="btn neutral-btn"
                   onClick={handleReset}
                 >
-                  Reset
+                  {t('reset')}
                 </button>
               </div>
             </div>
@@ -159,14 +168,14 @@ const SupplierLookup: React.FC<SupplierLookupProps> = ({
                 className="btn yellow-btn"
                 onClick={handleSubmit}
               >
-                Select
+                {t('select')}
               </button>
               <button
                 type="button"
                 onClick={handleClose}
                 className="btn neutral-btn"
               >
-                Cancel
+                {t('cancel')}
               </button>
             </div>
           </div>

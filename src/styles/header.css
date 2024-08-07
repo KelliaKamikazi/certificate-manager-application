@@ -18,16 +18,16 @@
   position: fixed; /* Fixed position */
   top: 0;
   width: 100%; /* Full width */
-  padding: 16px;
+  padding: 10px;
   color: var(--title-color);
   font-size: 50px;
   font-weight: 100;
-  overflow: hidden;
+  /* overflow: hidden; */
   background-color: var(--primarycolor);
   z-index: 110; /* Ensure it stays on top of other elements */
   display: flex;
   align-items: center;
-  justify-content: flex-start; /* Align to the left */
+  justify-content: space-between;
 }
 
 .title::before {
@@ -63,6 +63,59 @@
   color: var(--title-color);
   position: relative;
   z-index: 2;
+}
+
+.lang-dropdown-container {
+  display: flex;
+  align-items: center;
+  margin-left: auto;
+  position: relative;
+  z-index: 3;
+  margin-top: -20px;
+}
+
+.lang-dropdown-container span {
+  color: #333;
+  margin-right: 10px;
+  font-size: 1rem;
+}
+
+.languages {
+  position: relative;
+  padding-bottom: 2rem;
+}
+
+.lang-button {
+  background-color: var(--title-color);
+  color: var(--text-color);
+  border: 1px solid var(--border-color);
+  padding: 5px 10px;
+  cursor: pointer;
+  font-size: 14px;
+}
+
+.dropdown-content {
+  display: none;
+  position: absolute;
+  background-color: var(--title-color);
+  min-width: 5rem;
+  box-shadow: 0px 8px 16px 0px rgba(0, 0, 0, 0.2);
+}
+
+.languages:hover .dropdown-content {
+  display: block;
+}
+
+.dropdown-content a {
+  color: var(--text-color);
+  padding: 10px 16px;
+  font-size: 14px;
+  text-decoration: none;
+  display: block;
+}
+
+.dropdown-content a:hover {
+  background-color: var(--light-blue);
 }
 /*From the screen with this 1111px the following happens*/
 @media (max-width: 1200px) {

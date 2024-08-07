@@ -25,6 +25,7 @@ export default () => {
           test: /\.tsx?$/,
           use: 'ts-loader',
           exclude: /node_modules/,
+          type: 'javascript/auto',
         },
         {
           test: /\.js$/,
@@ -49,7 +50,7 @@ export default () => {
       ],
     },
     resolve: {
-      extensions: ['.tsx', '.ts', '.js'],
+      extensions: ['.js', '.tsx', '.ts', '.js', '.json'],
     },
     output: {
       filename: '[name].[contenthash].js',

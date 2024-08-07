@@ -5,6 +5,7 @@ import { useNavigate } from 'react-router-dom';
 import IconSvg from '../icons/icons';
 import gearIcon from '../icons/gearIcon';
 import { getData, deleteData } from '../../utils/indexedDB';
+import { useTranslation } from 'react-i18next';
 
 const Example1: React.FC = () => {
   const [certificates, setCertificates] = useState<Certificate[]>([]);
@@ -12,6 +13,7 @@ const Example1: React.FC = () => {
     undefined,
   );
   const navigate = useNavigate();
+  const { t } = useTranslation();
 
   useEffect(() => {
     const fetchData = async () => {
@@ -26,16 +28,16 @@ const Example1: React.FC = () => {
   };
 
   const confirmAndDelete = async (id: number) => {
-    if (window.confirm('Are you sure you want to delete this certificate?')) {
+    if (window.confirm(t('confirm_delete'))) {
       try {
         await deleteData(id);
-        alert('Certificate was deleted successfully');
+        alert(t('delete_success'));
         setCertificates((prevCertificates) =>
           prevCertificates.filter((cert) => cert.id !== id),
         );
       } catch (error) {
         console.error('Failed to delete the certificate', error);
-        alert('The certificate was not successfully deleted');
+        alert(t('delete_failure'));
       }
     }
   };
@@ -44,7 +46,7 @@ const Example1: React.FC = () => {
     if (id !== undefined) {
       confirmAndDelete(id);
     } else {
-      alert('Certificate ID is undefined');
+      alert(t('undefined_id'));
     }
   };
 
@@ -52,7 +54,7 @@ const Example1: React.FC = () => {
     if (id !== undefined) {
       navigate(`/CertificateForm/${id}`);
     } else {
-      alert('Certificate ID is undefined');
+      alert(t('undefined_id'));
     }
   };
 
@@ -70,22 +72,22 @@ const Example1: React.FC = () => {
 
   return (
     <div className="container">
-      <h2 className="header_h">Example 1</h2>
+      <h2 className="header_h">{t('example1_header')}</h2>
       <button
         className="btn-create"
         onClick={handleCreateClick}
       >
-        New Certificate
+        {t('new_certificate')}
       </button>
       <div className="table-wrapper">
         <table>
           <thead>
             <tr>
               <th></th>
-              <th>Supplier</th>
-              <th>Certificate type</th>
-              <th>Valid from</th>
-              <th>Valid to</th>
+              <th>{t('supplier')}</th>
+              <th>{t('certificate_type')}</th>
+              <th>{t('valid_from')}</th>
+              <th>{t('valid_to')}</th>
             </tr>
           </thead>
           <tbody>
@@ -105,13 +107,13 @@ const Example1: React.FC = () => {
                             className="dropdown-button"
                             onClick={handleEdit(cert)}
                           >
-                            Edit
+                            {t('edit')}
                           </button>
                           <button
                             className="dropdown-button"
                             onClick={handleDelete(cert)}
                           >
-                            Delete
+                            {t('delete')}
                           </button>
                         </div>
                       </div>

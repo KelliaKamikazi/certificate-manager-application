@@ -1,4 +1,5 @@
 import React from 'react';
+import { useTranslation } from 'react-i18next';
 import { Supplier } from '../data/data';
 
 interface SupplierTableProps {
@@ -12,18 +13,20 @@ const SupplierTable: React.FC<SupplierTableProps> = ({
   selectSupplierIndex,
   onSelectSupplier,
 }) => {
+  const { t } = useTranslation();
+
   return (
     <div className="suppliers-results-container">
       <div className="top-bar-title-container">
-        <div className="top-bar-title">▼ Supplier list</div>
+        <div className="top-bar-title">{t('supplierList')}</div>
       </div>
       <table>
         <thead>
           <tr>
             <th></th>
-            <th>Supplier name</th>
-            <th>Supplier index</th>
-            <th>City</th>
+            <th>{t('supplierName')}</th>
+            <th>{t('supplierIndex')}</th>
+            <th>{t('city')}</th>
           </tr>
         </thead>
         <tbody>

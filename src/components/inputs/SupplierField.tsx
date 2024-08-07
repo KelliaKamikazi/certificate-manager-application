@@ -1,3 +1,4 @@
+import { useTranslation } from 'react-i18next';
 import IconSvg from '../icons/icons';
 import searchIcon from '../icons/searchIcon';
 import closeIcon from '../icons/closeIcon';
@@ -14,14 +15,17 @@ interface SupplierFieldProps {
 }
 
 export function SupplierField(props: SupplierFieldProps) {
+  const { t } = useTranslation();
+
   const handleInputChange = (e: ChangeEvent<HTMLInputElement>) => {
     const { value } = e.target;
     const newSupplier = { ...props.supplier, name: value };
     props.onChange(newSupplier);
   };
+
   return (
     <div className="form-input-container">
-      <label className="form-input-label">Supplier</label>
+      <label className="form-input-label">{t('supplierLabel')}</label>
       <div className="form-input-container form-input-multiple">
         <Textfield
           name="supplier"
@@ -35,7 +39,10 @@ export function SupplierField(props: SupplierFieldProps) {
         >
           <IconSvg Icon={searchIcon} />
         </button>
-        <button type="button">
+        <button
+          type="button"
+          onClick={props.onClose}
+        >
           <IconSvg Icon={closeIcon} />
         </button>
       </div>
