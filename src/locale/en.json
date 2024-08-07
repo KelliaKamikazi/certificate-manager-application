@@ -47,5 +47,17 @@
   "undefined_id": "Certificate ID is undefined",
   "skipToContent": "Skip to content",
   "start": "Start",
-  "machineLearning": "Machine Learning"
+  "machineLearning": "Machine Learning",
+  "certificateSaved": "Certificate saved successfully",
+  "certificateUpdated": "Certificate updated successfully",
+  "certificateNotAddedOrUpdated": "Certificate could not be added or updated",
+  "allFieldsRequired": "All fields are required",
+  "validFromLaterThanValidTo": "Valid From date cannot be later than Valid To date",
+  "onlyPDFAllowed": "Only PDF files are allowed",
+  "noPdfAvailable": "No PDF Available",
+  "certificateTypeLabel": "Certificate type",
+  "selectOption": "Select your option",
+  "printingOfPermission": "Printing of Permission",
+  "ohsas18001": "OHSAS 18001",
+  "supplierLabel": "Supplier"
 }

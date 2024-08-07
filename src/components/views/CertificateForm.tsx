@@ -14,11 +14,13 @@ import { CertificateType } from '../inputs/CertificateType';
 import { Textfield } from '../base/Textfield';
 import { useParams } from 'react-router-dom';
 import SupplierLookup from './SupplierLookup';
+import { useTranslation } from 'react-i18next';
 
 const CertificateForm: React.FC = () => {
   const { certificateId } = useParams<{ certificateId: string }>();
   const [certificate, setCertificate] = useState(INITIAL_CERTIFICATE);
   const [showSupplierLookup, setShowSupplierLookup] = useState(false);
+  const { t } = useTranslation();
 
   useEffect(() => {
     if (certificateId && certificateId !== '0') {
@@ -46,13 +48,13 @@ const CertificateForm: React.FC = () => {
     event.preventDefault();
     const { supplier, certificateType, validTo, validFrom } = certificate;
     if (!supplier.name || !certificateType || !validTo || !validFrom) {
-      alert('All fields are required');
+      alert(t('allFieldsRequired'));
       return;
     }
     const validFromDate = new Date(validFrom);
     const validToDate = new Date(validTo);
     if (validFromDate > validToDate) {
-      alert('Valid From date cannot be later than Valid To date');
+      alert(t('validFromLaterThanValidTo'));
       return;
     }
 
@@ -68,14 +70,14 @@ const CertificateForm: React.FC = () => {
     try {
       if (certificateId && certificateId !== '0') {
         await updateData({ ...newCertificate, id: Number(certificateId) });
-        alert('Certificate was updated successfully');
+        alert(t('certificateUpdated'));
       } else {
         await addData([newCertificate]);
-        alert('Certificate was saved successfully');
+        alert(t('certificateSaved'));
       }
       handleResetFields();
     } catch (error) {
-      alert('Certificate not added/updated');
+      alert(t('certificateNotAddedOrUpdated'));
     }
   };
 
@@ -108,13 +110,14 @@ const CertificateForm: React.FC = () => {
       };
       reader.readAsDataURL(file);
     } else {
-      alert('Only PDF files are allowed');
+      alert(t('onlyPDFAllowed'));
     }
   };
 
   const handleResetFields = () => {
     setCertificate(INITIAL_CERTIFICATE);
   };
+
   const handleSupplierOnSelect = useCallback((supplier: Supplier) => {
     handleSupplierChange(supplier);
     setShowSupplierLookup(false);
@@ -145,7 +148,7 @@ const CertificateForm: React.FC = () => {
               onChange={handleInputChange}
             />
             <div className="form-input-container">
-              <label className="form-input-label">Valid from</label>
+              <label className="form-input-label">{t('validFrom')}</label>
               <Textfield
                 name="validFrom"
                 className="form-input"
@@ -155,7 +158,7 @@ const CertificateForm: React.FC = () => {
               />
             </div>
             <div className="form-input-container">
-              <label className="form-input-label">Valid to</label>
+              <label className="form-input-label">{t('validTo')}</label>
               <Textfield
                 name="validTo"
                 className="form-input"
@@ -175,7 +178,7 @@ const CertificateForm: React.FC = () => {
                 )?.click()
               }
             >
-              Upload
+              {t('upload')}
             </button>
             <input
               type="file"
@@ -188,7 +191,7 @@ const CertificateForm: React.FC = () => {
               id="pdf-preview"
             >
               <iframe src={certificate.pdfUrl}></iframe>
-              {certificate.pdfUrl ? null : <span>No pdf Available</span>}
+              {certificate.pdfUrl ? null : <span>{t('noPdfAvailable')}</span>}
             </div>
           </div>
         </div>
@@ -197,14 +200,14 @@ const CertificateForm: React.FC = () => {
             type="submit"
             className="submit-cert-btn"
           >
-            Save
+            {t('save')}
           </button>
           <button
             type="reset"
             className="reset-cert-btn"
             onClick={handleResetFields}
           >
-            Reset
+            {t('reset')}
           </button>
         </div>
       </form>

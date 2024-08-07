@@ -43,5 +43,17 @@
   "undefined_id": "Zertifikat-ID ist undefiniert",
   "skipToContent": "Zum Inhalt springen",
   "start": "Starten",
-  "machineLearning": "Maschinelles Lernen"
+  "machineLearning": "Maschinelles Lernen",
+  "certificateSaved": "Zertifikat erfolgreich gespeichert",
+  "certificateUpdated": "Zertifikat erfolgreich aktualisiert",
+  "certificateNotAddedOrUpdated": "Zertifikat konnte nicht hinzugefügt oder aktualisiert werden",
+  "allFieldsRequired": "Alle Felder sind erforderlich",
+  "validFromLaterThanValidTo": "Gültig ab Datum darf nicht später als Gültig bis Datum sein",
+  "onlyPDFAllowed": "Nur PDF-Dateien sind erlaubt",
+  "noPdfAvailable": "Keine PDF verfügbar",
+  "certificateTypeLabel": "Zertifikatstyp",
+  "selectOption": "Wählen Sie Ihre Option",
+  "printingOfPermission": "Druckgenehmigung",
+  "ohsas18001": "OHSAS 18001",
+  "supplierLabel": "Lieferant"
 }
