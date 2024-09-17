@@ -14,6 +14,11 @@ const SupplierTable: React.FC<SupplierTableProps> = ({
 }) => {
   const { t } = useTranslation();
 
+  // Function to handle supplier selection without using an inline function
+  const handleSelectSupplier = (supplierIndex: number | undefined) => {
+    onSelectSupplier(supplierIndex);
+  };
+
   return (
     <div className="suppliers-results-container">
       <div className="top-bar-title-container">
@@ -36,7 +41,7 @@ const SupplierTable: React.FC<SupplierTableProps> = ({
                   type="radio"
                   name="supplier"
                   checked={supplier.supplierIndex === selectSupplierIndex}
-                  onChange={() => onSelectSupplier(supplier.supplierIndex)}
+                  onChange={() => handleSelectSupplier(supplier.supplierIndex)}
                 />
               </td>
               <td>{supplier.name}</td>

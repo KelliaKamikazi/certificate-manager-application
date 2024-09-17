@@ -20,7 +20,10 @@
   padding: 5px;
   padding-top: 140px;
   width: 25%;
-  height: 100vh;
+  height: 100vh; /* Set full viewport height */
+  position: sticky !important;
+  top: 0; /* Ensure it sticks to the top */
+  overflow-y: auto; /* Enable scrolling if content overflows */
 }
 
 .sidebarStart {

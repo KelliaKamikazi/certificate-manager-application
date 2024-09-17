@@ -7,7 +7,12 @@ import {
   useCallback,
 } from 'react';
 import '../../utils/indexedDB';
-import { Certificate, Supplier, INITIAL_CERTIFICATE } from '../data/data';
+import {
+  Certificate,
+  Supplier,
+  INITIAL_CERTIFICATE,
+  Participant,
+} from '../data/data';
 import { addData, getCertificateById, updateData } from '../../utils/indexedDB';
 import { SupplierField } from '../inputs/SupplierField';
 import { CertificateType } from '../inputs/CertificateType';
@@ -18,12 +23,15 @@ import IconSvg from '../icons/icons';
 import searchIcon from '../icons/searchIcon';
 import { useTranslation } from '../../useTranslation';
 import ParticipantLookup from './ParticipantLookup';
+import CommentForm from './CommentForm';
+
 const CertificateForm: React.FC = () => {
   const { t } = useTranslation();
   const { certificateId } = useParams<{ certificateId: string }>();
   const [certificate, setCertificate] = useState(INITIAL_CERTIFICATE);
   const [showSupplierLookup, setShowSupplierLookup] = useState(false);
   const [showParticipantLookup, setShowParticipantLookup] = useState(false);
+  const [selectedParticipants] = useState<Participant[]>([]);
 
   useEffect(() => {
     if (certificateId && certificateId !== '0') {
@@ -134,7 +142,6 @@ const CertificateForm: React.FC = () => {
     setShowParticipantLookup(false);
   }, []);
 
-  // Callback to open Participant Lookup
   const handleOpenParticipantLookup = useCallback(() => {
     setShowParticipantLookup(true);
   }, []);
@@ -186,13 +193,13 @@ const CertificateForm: React.FC = () => {
               />
               <div className="form-input-container">
                 <label className="form-input-label mb-1">Assigned Users</label>
-                <button
+                <span
                   className="btn gray-btn"
                   onClick={handleOpenParticipantLookup}
                 >
                   <IconSvg Icon={searchIcon} />
                   <span>Add participant</span>
-                </button>
+                </span>
                 <div className="suppliers-results-container mt-1">
                   <table>
                     <thead>
@@ -204,15 +211,20 @@ const CertificateForm: React.FC = () => {
                       </tr>
                     </thead>
                     <tbody>
-                      <tr>
-                        <td></td>
-                        <td>participant name</td>
-                        <td>participant department</td>
-                        <td>participant e-mail</td>
-                      </tr>
+                      {selectedParticipants.map((participant) => (
+                        <tr>
+                          <td></td>
+                          <td>{participant.name}</td>
+                          <td>{participant.department}</td>
+                          <td>{participant.email}</td>
+                        </tr>
+                      ))}
                     </tbody>
                   </table>
                 </div>
+
+                {/* Add CommentForm below the participant table */}
+                <CommentForm />
               </div>
             </div>
           </div>

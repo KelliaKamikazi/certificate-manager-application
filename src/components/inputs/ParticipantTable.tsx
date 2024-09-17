@@ -1,18 +1,32 @@
+import React from 'react';
 import { useTranslation } from '../../useTranslation';
 import { Participant } from '../data/data';
 
 interface ParticipantTableProps {
   participants: Participant[];
-  selectId: number | undefined;
-  onSelectParticipantId: (index: number | undefined) => void;
+  selectedParticipants: Participant[];
+  onSelectParticipants: (selectedParticipants: Participant[]) => void;
 }
 
 const ParticipantTable: React.FC<ParticipantTableProps> = ({
   participants,
-  selectId,
-  onSelectParticipantId,
+  selectedParticipants,
+  onSelectParticipants,
 }) => {
   const { t } = useTranslation();
+
+  // Function to handle participant selection/deselection
+  const handleSelectParticipant = (participant: Participant) => {
+    let updatedSelectedParticipants;
+    if (selectedParticipants.some((p) => p.id === participant.id)) {
+      updatedSelectedParticipants = selectedParticipants.filter(
+        (p) => p.id !== participant.id,
+      );
+    } else {
+      updatedSelectedParticipants = [...selectedParticipants, participant];
+    }
+    onSelectParticipants(updatedSelectedParticipants);
+  };
 
   return (
     <div className="suppliers-results-container">
@@ -37,9 +51,11 @@ const ParticipantTable: React.FC<ParticipantTableProps> = ({
               <td>
                 <input
                   type="checkbox"
-                  name="supplier"
-                  checked={participant.id === selectId}
-                  onChange={() => onSelectParticipantId(participant.id)}
+                  name="participant"
+                  checked={selectedParticipants.some(
+                    (p) => p.id === participant.id,
+                  )}
+                  onChange={() => handleSelectParticipant(participant)}
                 />
               </td>
               <td>{participant.id}</td>

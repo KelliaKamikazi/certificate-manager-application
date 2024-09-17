@@ -1,4 +1,4 @@
-import { Certificate, Supplier } from '../components/data/data';
+import { Certificate, Supplier, Participant } from '../components/data/data';
 const DB_NAME = 'exampleDB';
 const DB_VERSION = 1;
 const STORE_CERTIFICATES = 'certificates';
@@ -12,7 +12,7 @@ const openDB = (): Promise<IDBDatabase> => {
     request.onupgradeneeded = (event: IDBVersionChangeEvent) => {
       const db = (event.target as IDBOpenDBRequest).result;
 
-      // Certificates store
+      // Create stores if they don't exist
       if (!db.objectStoreNames.contains(STORE_CERTIFICATES)) {
         db.createObjectStore(STORE_CERTIFICATES, {
           keyPath: 'id',
@@ -20,53 +20,94 @@ const openDB = (): Promise<IDBDatabase> => {
         });
       }
 
-      // Suppliers store
       if (!db.objectStoreNames.contains(STORE_SUPPLIERS)) {
-        const supplierStore = db.createObjectStore(STORE_SUPPLIERS, {
+        db.createObjectStore(STORE_SUPPLIERS, {
           keyPath: 'supplierIndex',
           autoIncrement: false,
         });
-
-        supplierStore.transaction.oncomplete = () => {
-          const supplierTransaction = db.transaction(
-            STORE_SUPPLIERS,
-            'readwrite',
-          );
-          const supplierStoreTransaction =
-            supplierTransaction.objectStore(STORE_SUPPLIERS);
-
-          const suppliers: Supplier[] = [
-            { supplierIndex: 1, name: 'ANDEMIS GmbH', city: 'Stuttgart' },
-            { supplierIndex: 2, name: 'IMLER AG', city: 'Berlin' },
-          ];
-
-          suppliers.forEach((supplier) => {
-            supplierStoreTransaction.add(supplier);
-          });
-
-          supplierTransaction.oncomplete = () => {
-            console.log('Suppliers added successfully');
-          };
-
-          supplierTransaction.onerror = (e) => {
-            console.error('Error adding suppliers:', e);
-          };
-        };
       }
 
-      // Participants store
       if (!db.objectStoreNames.contains(STORE_PARTICIPANTS)) {
         db.createObjectStore(STORE_PARTICIPANTS, {
-          keyPath: 'userId',
+          keyPath: 'id',
           autoIncrement: true,
         });
-        // const participantTransaction= db.transaction(STORE_PARTICIPANTS, 'readwrite');
-        // const participantStoreTransaction= partTransaction.objectStore(STORE_PARTICIPANTS)
       }
     };
 
     request.onsuccess = () => {
-      resolve(request.result);
+      const db = request.result;
+
+      // Function to check if a store is empty
+      const isStoreEmpty = (storeName: string): Promise<boolean> => {
+        return new Promise((resolve) => {
+          const transaction = db.transaction(storeName, 'readonly');
+          const store = transaction.objectStore(storeName);
+          const countRequest = store.count();
+          countRequest.onsuccess = () => {
+            resolve(countRequest.result === 0);
+          };
+        });
+      };
+
+      // Function to populate a store if it's empty
+      const populateStoreIfEmpty = async (storeName: string, data: any[]) => {
+        if (await isStoreEmpty(storeName)) {
+          const transaction = db.transaction(storeName, 'readwrite');
+          const store = transaction.objectStore(storeName);
+          data.forEach((item) => {
+            store.add(item);
+          });
+          return new Promise<void>((resolve, reject) => {
+            transaction.oncomplete = () => {
+              console.log(`${storeName} populated successfully`);
+              resolve();
+            };
+            transaction.onerror = (e) => {
+              console.error(`Error populating ${storeName}:`, e);
+              reject(e);
+            };
+          });
+        }
+      };
+
+      // Initial data
+      const suppliers: Supplier[] = [
+        { supplierIndex: 1, name: 'ANDEMIS GmbH', city: 'Stuttgart' },
+        { supplierIndex: 2, name: 'IMLER AG', city: 'Berlin' },
+      ];
+
+      const participants = [
+        {
+          userId: 'ZWOLFER',
+          name: 'Simon',
+          firstname: 'Zwölfer',
+          department: 'ITM/FP',
+          plant: '096',
+          email: 'simon@example.com',
+        },
+        {
+          userId: 'WOLFGANG',
+          name: 'Wolfgang',
+          firstname: 'Stark',
+          department: 'ITM/FP',
+          plant: '094',
+          email: 'wolfgang@example.com',
+        },
+      ];
+
+      // Populate stores if they're empty
+      Promise.all([
+        populateStoreIfEmpty(STORE_SUPPLIERS, suppliers),
+        populateStoreIfEmpty(STORE_PARTICIPANTS, participants),
+      ])
+        .then(() => {
+          resolve(db);
+        })
+        .catch((error) => {
+          console.error('Error during population:', error);
+          reject(error);
+        });
     };
 
     request.onerror = () => {
@@ -226,4 +267,43 @@ export const searchSuppliers = async (
   });
 };
 
-export { initDB, addData, getData, getCertificateById, updateData, deleteData };
+const fetchParticipants = async (): Promise<Participant[]> => {
+  const db = await openDB();
+  const transaction = db.transaction(STORE_PARTICIPANTS, 'readonly');
+  const store = transaction.objectStore(STORE_PARTICIPANTS);
+
+  return new Promise((resolve, reject) => {
+    const participants: Participant[] = [];
+
+    // Using cursor to iterate over all records
+    const request = store.openCursor();
+
+    request.onsuccess = (event) => {
+      const cursor = (event.target as IDBRequest).result as IDBCursorWithValue;
+      if (cursor) {
+        participants.push(cursor.value);
+        cursor.continue();
+      } else {
+        resolve(participants);
+      }
+    };
+
+    request.onerror = (event) => {
+      reject(
+        new Error(
+          `Error fetching participants: ${(event.target as IDBRequest).error}`,
+        ),
+      );
+    };
+  });
+};
+
+export {
+  initDB,
+  addData,
+  getData,
+  getCertificateById,
+  updateData,
+  deleteData,
+  fetchParticipants,
+};

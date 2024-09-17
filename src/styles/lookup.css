@@ -120,6 +120,12 @@
   display: flex;
   justify-content: flex-start;
 }
+.buttons-container-participant {
+  padding-top: 1rem;
+  text-align: left;
+  display: flex;
+  justify-content: flex-start;
+}
 .suppliers-results-container .buttons-container button {
   display: inline-block;
 }

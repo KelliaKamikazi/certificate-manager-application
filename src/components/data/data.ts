@@ -25,10 +25,10 @@ export enum Certificate_Type {
   CCC_CERTIFICATE = 'CCC Certificate',
 }
 export interface Participant {
-  id?: number | undefined;
+  id?: number;
+  userId: string;
   name: string;
   firstname: string;
-  userId: string;
   department: string;
   plant: string;
   email: string;
