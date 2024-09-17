@@ -5,16 +5,17 @@ import HomeIcon from './icons/HomeIcon';
 import ThreeLineMenu from './icons/threeLineMenu';
 import AngleDown from './icons/angledown';
 import IconSvg from './icons/icons';
-import { useTranslation } from 'react-i18next';
+import { useTranslation } from '../useTranslation';
 
 const Sidebar: React.FC = () => {
-  const { t } = useTranslation();
+  const { t, currentLanguage } = useTranslation();
   const [isSubmenuOpen, setIsSubmenuOpen] = useState<boolean>(false);
   const [isSidebarVisible, setIsSidebarVisible] = useState<boolean>(false);
   const [isMobile, setIsMobile] = useState<boolean>(window.innerWidth < 1200);
 
-  const sidebarRef = useRef<HTMLDivElement>(null); // Ref to sidebar element
+  console.log(currentLanguage, 'language');
 
+  const sidebarRef = useRef<HTMLDivElement>(null); // Ref to sidebar element
   const handleMenuClick = () => {
     setIsSubmenuOpen((prev) => !prev);
   };

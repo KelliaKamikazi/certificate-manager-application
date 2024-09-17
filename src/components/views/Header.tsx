@@ -1,14 +1,14 @@
 import React, { useState } from 'react';
-import { useTranslation } from 'react-i18next';
+import { useTranslation } from '../../useTranslation'; // Adjust the import path
 import '../../styles/header.css';
 
 const Header: React.FC = () => {
-  const { t, i18n } = useTranslation();
+  const { t, changeLanguage } = useTranslation(); // Use your custom hook
   const [language, setLanguage] = useState('English');
 
-  const changeLanguage = (lang: string) => {
+  const handleLanguageChange = (lang: string) => {
     setLanguage(lang);
-    i18n.changeLanguage(lang === 'English' ? 'en' : 'de');
+    changeLanguage(lang === 'English' ? 'en' : 'de'); // Pass the language code to your custom hook
   };
 
   return (
@@ -21,13 +21,13 @@ const Header: React.FC = () => {
           <div className="dropdown-content">
             <a
               href="#"
-              onClick={() => changeLanguage('English')}
+              onClick={() => handleLanguageChange('English')}
             >
               English
             </a>
             <a
               href="#"
-              onClick={() => changeLanguage('German')}
+              onClick={() => handleLanguageChange('German')}
             >
               German
             </a>

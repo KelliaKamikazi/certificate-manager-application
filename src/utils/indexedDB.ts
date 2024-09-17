@@ -3,6 +3,7 @@ const DB_NAME = 'exampleDB';
 const DB_VERSION = 1;
 const STORE_CERTIFICATES = 'certificates';
 const STORE_SUPPLIERS = 'suppliers';
+const STORE_PARTICIPANTS = 'participants';
 
 const openDB = (): Promise<IDBDatabase> => {
   return new Promise((resolve, reject) => {
@@ -10,12 +11,16 @@ const openDB = (): Promise<IDBDatabase> => {
 
     request.onupgradeneeded = (event: IDBVersionChangeEvent) => {
       const db = (event.target as IDBOpenDBRequest).result;
+
+      // Certificates store
       if (!db.objectStoreNames.contains(STORE_CERTIFICATES)) {
         db.createObjectStore(STORE_CERTIFICATES, {
           keyPath: 'id',
           autoIncrement: true,
         });
       }
+
+      // Suppliers store
       if (!db.objectStoreNames.contains(STORE_SUPPLIERS)) {
         const supplierStore = db.createObjectStore(STORE_SUPPLIERS, {
           keyPath: 'supplierIndex',
@@ -47,6 +52,16 @@ const openDB = (): Promise<IDBDatabase> => {
             console.error('Error adding suppliers:', e);
           };
         };
+      }
+
+      // Participants store
+      if (!db.objectStoreNames.contains(STORE_PARTICIPANTS)) {
+        db.createObjectStore(STORE_PARTICIPANTS, {
+          keyPath: 'userId',
+          autoIncrement: true,
+        });
+        // const participantTransaction= db.transaction(STORE_PARTICIPANTS, 'readwrite');
+        // const participantStoreTransaction= partTransaction.objectStore(STORE_PARTICIPANTS)
       }
     };
 
@@ -168,6 +183,7 @@ const updateData = async (data: Certificate): Promise<void> => {
     transaction.onerror = () => reject(transaction.error);
   });
 };
+
 const deleteData = async (id: number): Promise<void> => {
   const db = await openDB();
   const transaction = db.transaction(STORE_CERTIFICATES, 'readwrite');

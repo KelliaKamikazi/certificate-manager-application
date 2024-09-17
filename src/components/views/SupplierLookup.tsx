@@ -1,12 +1,11 @@
-import React, { useState } from 'react';
-import { useTranslation } from 'react-i18next';
-import '../../styles/supplierLookup.css';
+import { useState } from 'react';
+import '../../styles/lookup.css';
 import { Textfield } from '../base/Textfield';
 import '../../styles/globalbtn.css';
 import { Supplier } from '../data/data';
 import SupplierTable from '../inputs/SupplierTable';
 import { searchSuppliers } from '../../utils/indexedDB';
-
+import { useTranslation } from '../../useTranslation';
 interface SupplierLookupProps {
   onClose: () => void;
   onSupplierSelect: (supplier: Supplier) => void;
@@ -78,7 +77,11 @@ const SupplierLookup: React.FC<SupplierLookupProps> = ({
       }
     }
   };
-
+  const handleKeyDownClose = (e: React.KeyboardEvent<HTMLDivElement>) => {
+    if (e.key === 'Enter' || e.key === ' ') {
+      handleClose();
+    }
+  };
   return (
     <dialog open>
       <div className="modal-backdrop">
@@ -91,11 +94,7 @@ const SupplierLookup: React.FC<SupplierLookupProps> = ({
             <div
               className="x-btn"
               onClick={handleClose}
-              onKeyDown={(e) => {
-                if (e.key === 'Enter' || e.key === ' ') {
-                  handleClose();
-                }
-              }}
+              onKeyDown={handleKeyDownClose}
               tabIndex={0}
               role="button"
             >
@@ -118,6 +117,7 @@ const SupplierLookup: React.FC<SupplierLookupProps> = ({
                     className="input-container"
                   />
                 </div>
+
                 <div className="input-container">
                   <label className="input-label">{t('supplierIndex')}</label>
                   <Textfield

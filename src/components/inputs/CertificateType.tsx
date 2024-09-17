@@ -1,4 +1,4 @@
-import { useTranslation } from 'react-i18next';
+import { useTranslation } from '../../useTranslation';
 import { Certificate_Type } from '../data/data';
 import '../../styles/certificateForm.css';
 

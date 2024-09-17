@@ -14,13 +14,16 @@ import { CertificateType } from '../inputs/CertificateType';
 import { Textfield } from '../base/Textfield';
 import { useParams } from 'react-router-dom';
 import SupplierLookup from './SupplierLookup';
-import { useTranslation } from 'react-i18next';
-
+import IconSvg from '../icons/icons';
+import searchIcon from '../icons/searchIcon';
+import { useTranslation } from '../../useTranslation';
+import ParticipantLookup from './ParticipantLookup';
 const CertificateForm: React.FC = () => {
+  const { t } = useTranslation();
   const { certificateId } = useParams<{ certificateId: string }>();
   const [certificate, setCertificate] = useState(INITIAL_CERTIFICATE);
   const [showSupplierLookup, setShowSupplierLookup] = useState(false);
-  const { t } = useTranslation();
+  const [showParticipantLookup, setShowParticipantLookup] = useState(false);
 
   useEffect(() => {
     if (certificateId && certificateId !== '0') {
@@ -127,12 +130,27 @@ const CertificateForm: React.FC = () => {
     setShowSupplierLookup(false);
   }, []);
 
+  const handleCloseParticipantLookup = useCallback(() => {
+    setShowParticipantLookup(false);
+  }, []);
+
+  // Callback to open Participant Lookup
+  const handleOpenParticipantLookup = useCallback(() => {
+    setShowParticipantLookup(true);
+  }, []);
+
   return (
     <div className="new-cert-form">
       {showSupplierLookup && (
         <SupplierLookup
           onClose={handleCloseSupplierLookup}
           onSupplierSelect={handleSupplierOnSelect}
+        />
+      )}
+      {showParticipantLookup && (
+        <ParticipantLookup
+          onParticipantSelect={handleCloseParticipantLookup} //for now
+          onClose={handleCloseParticipantLookup}
         />
       )}
       <form onSubmit={handleSaving}>
@@ -166,6 +184,36 @@ const CertificateForm: React.FC = () => {
                 value={certificate.validTo}
                 onChange={handleInputChange}
               />
+              <div className="form-input-container">
+                <label className="form-input-label mb-1">Assigned Users</label>
+                <button
+                  className="btn gray-btn"
+                  onClick={handleOpenParticipantLookup}
+                >
+                  <IconSvg Icon={searchIcon} />
+                  <span>Add participant</span>
+                </button>
+                <div className="suppliers-results-container mt-1">
+                  <table>
+                    <thead>
+                      <tr>
+                        <th></th>
+                        <th>Name</th>
+                        <th>Department</th>
+                        <th>E-mail</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      <tr>
+                        <td></td>
+                        <td>participant name</td>
+                        <td>participant department</td>
+                        <td>participant e-mail</td>
+                      </tr>
+                    </tbody>
+                  </table>
+                </div>
+              </div>
             </div>
           </div>
           <div className="right-side">
