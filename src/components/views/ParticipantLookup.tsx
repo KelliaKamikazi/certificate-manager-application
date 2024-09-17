@@ -5,11 +5,11 @@ import { Textfield } from '../base/Textfield';
 import '../../styles/globalbtn.css';
 import ParticipantTable from '../inputs/ParticipantTable';
 import { Participant } from '../data/data';
-import { fetchParticipants } from '../../utils/indexedDB'; // Assuming this is where your IndexedDB function is located.
+import { fetchParticipants } from '../../utils/indexedDB';
 
 interface ParticipantLookupProps {
   onClose: () => void;
-  onParticipantSelect: (participants: string[]) => void; // Now this handles an array of selected participant names
+  onParticipantSelect: (participants: string[]) => void;
 }
 
 const ParticipantLookup: React.FC<ParticipantLookupProps> = ({
@@ -17,11 +17,21 @@ const ParticipantLookup: React.FC<ParticipantLookupProps> = ({
   onParticipantSelect,
 }) => {
   const { t } = useTranslation();
+  const [name, setName] = useState('');
+  const [firstName, setFirstName] = useState('');
+  const [userId, setUserId] = useState('');
+  const [department, setDepartment] = useState('');
+  const [plant, setPlant] = useState('');
 
   const [participants, setParticipants] = useState<Participant[]>([]);
+  const [filteredParticipants, setFilteredParticipants] = useState<
+    Participant[]
+  >([]);
   const [selectedParticipants, setSelectedParticipants] = useState<
     Participant[]
   >([]);
+  const [showTable, setShowTable] = useState(false);
+
   useEffect(() => {
     const fetchData = async () => {
       try {
@@ -39,12 +49,6 @@ const ParticipantLookup: React.FC<ParticipantLookupProps> = ({
     if (onClose) onClose();
   };
 
-  const handleKeyDownClose = (e: React.KeyboardEvent<HTMLDivElement>) => {
-    if (e.key === 'Enter' || e.key === ' ') {
-      handleClose();
-    }
-  };
-
   const handleSelectParticipants = (updatedParticipants: Participant[]) => {
     setSelectedParticipants(updatedParticipants);
   };
@@ -57,16 +61,69 @@ const ParticipantLookup: React.FC<ParticipantLookupProps> = ({
     handleClose();
   };
 
+  const filterParticipants = () => {
+    const filtered = participants.filter((participant) => {
+      const matchesName = name
+        ? participant.name.toLowerCase().includes(name.toLowerCase())
+        : true;
+      const matchesFirstName = firstName
+        ? participant.firstname.toLowerCase().includes(firstName.toLowerCase())
+        : true;
+      const matchesUserId = userId
+        ? participant.userId.toLowerCase().includes(userId.toLowerCase())
+        : true;
+      const matchesDepartment = department
+        ? participant.department
+            .toLowerCase()
+            .includes(department.toLowerCase())
+        : true;
+      const matchesPlant = plant
+        ? participant.plant.toLowerCase().includes(plant.toLowerCase())
+        : true;
+
+      return (
+        matchesName &&
+        matchesFirstName &&
+        matchesUserId &&
+        matchesDepartment &&
+        matchesPlant
+      );
+    });
+
+    setFilteredParticipants(filtered);
+  };
+
+  const handleSearch = (e: React.FormEvent) => {
+    e.preventDefault();
+    filterParticipants();
+  };
+
+  const handleReset = () => {
+    setName('');
+    setFirstName('');
+    setUserId('');
+    setDepartment('');
+    setPlant('');
+    setFilteredParticipants([]);
+    setShowTable(false);
+  };
+
+  const handleShowTable = () => {
+    setShowTable(true);
+  };
+
   return (
     <dialog open>
       <div className="modal-backdrop">
-        <form className="supplier-container">
+        <form
+          className="supplier-container"
+          onSubmit={handleSearch}
+        >
           <div className="top-bar">
             <h2 className="top-bar-title">{t('searchForParticipants')}</h2>
             <div
               className="x-btn"
               onClick={handleClose}
-              onKeyDown={handleKeyDownClose}
               tabIndex={0}
               role="button"
             >
@@ -83,10 +140,10 @@ const ParticipantLookup: React.FC<ParticipantLookupProps> = ({
               <div className="input-container-one">
                 <label className="input-label">{t('participantName')}</label>
                 <Textfield
-                  name="Name"
+                  name="name"
                   type="text"
-                  value=""
-                  onChange={() => {}}
+                  value={name}
+                  onChange={(e) => setName(e.target.value)}
                   className="input-container"
                 />
               </div>
@@ -95,19 +152,18 @@ const ParticipantLookup: React.FC<ParticipantLookupProps> = ({
                 <Textfield
                   name="firstName"
                   type="text"
-                  value=""
-                  onChange={() => {}}
+                  value={firstName}
+                  onChange={(e) => setFirstName(e.target.value)}
                   className="input-container"
                 />
               </div>
-
               <div className="input-container-one">
                 <label className="input-label">{t('user_id')}</label>
                 <Textfield
                   name="userId"
                   type="text"
-                  value=""
-                  onChange={() => {}}
+                  value={userId}
+                  onChange={(e) => setUserId(e.target.value)}
                   className="input-container"
                 />
               </div>
@@ -116,8 +172,8 @@ const ParticipantLookup: React.FC<ParticipantLookupProps> = ({
                 <Textfield
                   name="department"
                   type="text"
-                  value=""
-                  onChange={() => {}}
+                  value={department}
+                  onChange={(e) => setDepartment(e.target.value)}
                   className="input-container"
                 />
               </div>
@@ -126,8 +182,8 @@ const ParticipantLookup: React.FC<ParticipantLookupProps> = ({
                 <Textfield
                   name="plant"
                   type="text"
-                  value=""
-                  onChange={() => {}}
+                  value={plant}
+                  onChange={(e) => setPlant(e.target.value)}
                   className="input-container"
                 />
               </div>
@@ -137,41 +193,45 @@ const ParticipantLookup: React.FC<ParticipantLookupProps> = ({
               <button
                 type="submit"
                 className="btn yellow-btn"
+                onClick={handleShowTable}
               >
                 {t('search')}
               </button>
               <button
                 type="button"
                 className="btn neutral-btn"
-                onClick={handleClose}
+                onClick={handleReset}
               >
                 {t('reset')}
               </button>
             </div>
           </div>
 
-          <div className="suppliers-results-container">
-            <ParticipantTable
-              participants={participants}
-              selectedParticipants={selectedParticipants}
-              onSelectParticipants={handleSelectParticipants}
-            />
-            <div className="buttons-container">
-              <button
-                type="button"
-                className="btn yellow-btn"
-                onClick={handleParticipantSelect}
-              >
-                {t('select')}
-              </button>
-              <button
-                type="button"
-                onClick={handleClose}
-                className="btn neutral-btn"
-              >
-                {t('cancel')}
-              </button>
+          {showTable && (
+            <div className="suppliers-results-container">
+              <ParticipantTable
+                participants={filteredParticipants}
+                selectedParticipants={selectedParticipants}
+                onSelectParticipants={handleSelectParticipants}
+              />
             </div>
+          )}
+
+          <div className="buttons-container">
+            <button
+              type="button"
+              className="btn yellow-btn"
+              onClick={handleParticipantSelect}
+            >
+              {t('select')}
+            </button>
+            <button
+              type="button"
+              onClick={handleClose}
+              className="btn neutral-btn"
+            >
+              {t('cancel')}
+            </button>
           </div>
         </form>
       </div>

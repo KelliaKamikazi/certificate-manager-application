@@ -58,5 +58,11 @@
   "selectOption": "Select Your Option",
   "printingOfPermission": "Printing Of Permission",
   "ohsas18001": "OHSAS 18001",
-  "supplierLabel": "Supplier"
+  "supplierLabel": "Supplier",
+  "searchForParticipants": "Search for Participants",
+  "participantName": "Participant Name",
+  "firstName": "First Name",
+  "user_id": "User ID",
+  "department": "Department",
+  "plant": "Plant"
 }
