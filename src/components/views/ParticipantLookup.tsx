@@ -22,8 +22,6 @@ const ParticipantLookup: React.FC<ParticipantLookupProps> = ({
   const [selectedParticipants, setSelectedParticipants] = useState<
     Participant[]
   >([]);
-
-  // Fetch participants from IndexedDB when the component mounts
   useEffect(() => {
     const fetchData = async () => {
       try {

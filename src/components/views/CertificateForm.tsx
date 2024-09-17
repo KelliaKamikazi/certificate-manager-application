@@ -35,26 +35,25 @@ const CertificateForm: React.FC = () => {
 
   useEffect(() => {
     if (certificateId && certificateId !== '0') {
-      const fetchCertificate = async () => {
-        const id = Number(certificateId);
-        const fetchedCertificate = await getCertificateById(id);
-        if (fetchedCertificate) {
-          setCertificate({
-            ...fetchedCertificate,
-            validFrom: new Date(fetchedCertificate.validFrom)
-              .toISOString()
-              .split('T')[0],
-            validTo: new Date(fetchedCertificate.validTo)
-              .toISOString()
-              .split('T')[0],
-            pdfUrl: fetchedCertificate.pdfUrl,
-          });
-        }
-      };
       fetchCertificate();
     }
   }, [certificateId]);
-
+  const fetchCertificate = async () => {
+    const id = Number(certificateId);
+    const fetchedCertificate = await getCertificateById(id);
+    if (fetchedCertificate) {
+      setCertificate({
+        ...fetchedCertificate,
+        validFrom: new Date(fetchedCertificate.validFrom)
+          .toISOString()
+          .split('T')[0],
+        validTo: new Date(fetchedCertificate.validTo)
+          .toISOString()
+          .split('T')[0],
+        pdfUrl: fetchedCertificate.pdfUrl,
+      });
+    }
+  };
   const handleSaving = async (event: FormEvent) => {
     event.preventDefault();
     const { supplier, certificateType, validTo, validFrom } = certificate;
@@ -91,7 +90,6 @@ const CertificateForm: React.FC = () => {
       alert(t('certificateNotAddedOrUpdated'));
     }
   };
-
   const handleInputChange = (
     e: ChangeEvent<HTMLInputElement | HTMLSelectElement>,
   ) => {
@@ -101,14 +99,12 @@ const CertificateForm: React.FC = () => {
       [name]: value,
     }));
   };
-
   const handleSupplierChange = (supplier: Supplier) => {
     setCertificate((prevData) => ({
       ...prevData,
       supplier,
     }));
   };
-
   const handleFileChange = (e: ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (file && file.type === 'application/pdf') {
@@ -124,24 +120,19 @@ const CertificateForm: React.FC = () => {
       alert(t('onlyPDFAllowed'));
     }
   };
-
   const handleResetFields = () => {
     setCertificate(INITIAL_CERTIFICATE);
   };
-
   const handleSupplierOnSelect = useCallback((supplier: Supplier) => {
     handleSupplierChange(supplier);
     setShowSupplierLookup(false);
   }, []);
-
   const handleCloseSupplierLookup = useCallback(() => {
     setShowSupplierLookup(false);
   }, []);
-
   const handleCloseParticipantLookup = useCallback(() => {
     setShowParticipantLookup(false);
   }, []);
-
   const handleOpenParticipantLookup = useCallback(() => {
     setShowParticipantLookup(true);
   }, []);
@@ -156,7 +147,7 @@ const CertificateForm: React.FC = () => {
       )}
       {showParticipantLookup && (
         <ParticipantLookup
-          onParticipantSelect={handleCloseParticipantLookup} //for now
+          onParticipantSelect={handleCloseParticipantLookup} // for now
           onClose={handleCloseParticipantLookup}
         />
       )}
@@ -212,7 +203,7 @@ const CertificateForm: React.FC = () => {
                     </thead>
                     <tbody>
                       {selectedParticipants.map((participant) => (
-                        <tr>
+                        <tr key={participant.email}>
                           <td></td>
                           <td>{participant.name}</td>
                           <td>{participant.department}</td>

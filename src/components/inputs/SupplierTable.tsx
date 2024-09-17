@@ -1,3 +1,4 @@
+import React from 'react';
 import { useTranslation } from '../../useTranslation';
 import { Supplier } from '../data/data';
 
@@ -13,10 +14,11 @@ const SupplierTable: React.FC<SupplierTableProps> = ({
   onSelectSupplier,
 }) => {
   const { t } = useTranslation();
-
-  // Function to handle supplier selection without using an inline function
   const handleSelectSupplier = (supplierIndex: number | undefined) => {
     onSelectSupplier(supplierIndex);
+  };
+  const handleRadioChange = (supplier: Supplier) => {
+    handleSelectSupplier(supplier.supplierIndex);
   };
 
   return (
@@ -41,7 +43,7 @@ const SupplierTable: React.FC<SupplierTableProps> = ({
                   type="radio"
                   name="supplier"
                   checked={supplier.supplierIndex === selectSupplierIndex}
-                  onChange={() => handleSelectSupplier(supplier.supplierIndex)}
+                  onChange={() => handleRadioChange(supplier)}
                 />
               </td>
               <td>{supplier.name}</td>

@@ -17,6 +17,13 @@ const Header: React.FC = () => {
     changeLanguage(lang === 'English' ? 'en' : 'de');
   };
 
+  const handleParticipantSelect = (participantName: string) => {
+    localStorage.setItem('participant', participantName);
+  };
+
+  const handleEnglishSelect = () => handleLanguageChange('English');
+  const handleGermanSelect = () => handleLanguageChange('German');
+
   useEffect(() => {
     const fetchData = async () => {
       try {
@@ -42,9 +49,7 @@ const Header: React.FC = () => {
               {participants.map((participant, index) => (
                 <a
                   key={index}
-                  onClick={() => {
-                    localStorage.setItem('participant', participant.name);
-                  }}
+                  onClick={() => handleParticipantSelect(participant.name)}
                 >
                   {participant.name}
                 </a>
@@ -59,13 +64,13 @@ const Header: React.FC = () => {
             <div className="dropdown-content">
               <a
                 href="#"
-                onClick={() => handleLanguageChange('English')}
+                onClick={handleEnglishSelect}
               >
                 English
               </a>
               <a
                 href="#"
-                onClick={() => handleLanguageChange('German')}
+                onClick={handleGermanSelect}
               >
                 German
               </a>

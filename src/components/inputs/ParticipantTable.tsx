@@ -14,8 +14,6 @@ const ParticipantTable: React.FC<ParticipantTableProps> = ({
   onSelectParticipants,
 }) => {
   const { t } = useTranslation();
-
-  // Function to handle participant selection/deselection
   const handleSelectParticipant = (participant: Participant) => {
     let updatedSelectedParticipants;
     if (selectedParticipants.some((p) => p.id === participant.id)) {
