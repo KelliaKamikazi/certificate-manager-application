@@ -298,6 +298,45 @@ const fetchParticipants = async (): Promise<Participant[]> => {
   });
 };
 
+const searchParticipant = async (
+  name: string,
+  firstname: string,
+  department: string,
+  plant: string,
+  email: string,
+): Promise<Participant[]> => {
+  const db = await openDB();
+  const transaction = db.transaction(STORE_PARTICIPANTS, 'readonly');
+  const store = transaction.objectStore(STORE_PARTICIPANTS);
+
+  const request = store.getAll();
+
+  return new Promise((resolve, reject) => {
+    request.onsuccess = () => {
+      const result = request.result.filter((participant: Participant) => {
+        return (
+          (!name ||
+            participant.name.toLowerCase().includes(name.toLowerCase())) &&
+          (!firstname ||
+            participant.firstname
+              .toLowerCase()
+              .includes(firstname.toLowerCase())) &&
+          (!department ||
+            participant.department
+              .toLowerCase()
+              .includes(department.toLowerCase())) &&
+          (!plant || participant.plant === plant) &&
+          (!email ||
+            participant.email.toLowerCase().includes(email.toLowerCase()))
+        );
+      });
+      resolve(result);
+    };
+
+    request.onerror = () => reject(request.error);
+  });
+};
+
 export {
   initDB,
   addData,
@@ -306,4 +345,5 @@ export {
   updateData,
   deleteData,
   fetchParticipants,
+  searchParticipant,
 };

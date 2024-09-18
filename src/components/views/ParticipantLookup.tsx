@@ -111,6 +111,25 @@ const ParticipantLookup: React.FC<ParticipantLookupProps> = ({
   const handleShowTable = () => {
     setShowTable(true);
   };
+  const handleNameChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setName(e.target.value);
+  };
+
+  const handleFirstNameChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setFirstName(e.target.value);
+  };
+
+  const handleUserIdChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setUserId(e.target.value);
+  };
+
+  const handleDepartmentChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setDepartment(e.target.value);
+  };
+
+  const handlePlantChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setPlant(e.target.value);
+  };
 
   return (
     <dialog open>
@@ -143,7 +162,7 @@ const ParticipantLookup: React.FC<ParticipantLookupProps> = ({
                   name="name"
                   type="text"
                   value={name}
-                  onChange={(e) => setName(e.target.value)}
+                  onChange={handleNameChange}
                   className="input-container"
                 />
               </div>
@@ -153,7 +172,7 @@ const ParticipantLookup: React.FC<ParticipantLookupProps> = ({
                   name="firstName"
                   type="text"
                   value={firstName}
-                  onChange={(e) => setFirstName(e.target.value)}
+                  onChange={handleFirstNameChange}
                   className="input-container"
                 />
               </div>
@@ -163,7 +182,7 @@ const ParticipantLookup: React.FC<ParticipantLookupProps> = ({
                   name="userId"
                   type="text"
                   value={userId}
-                  onChange={(e) => setUserId(e.target.value)}
+                  onChange={handleUserIdChange}
                   className="input-container"
                 />
               </div>
@@ -173,7 +192,7 @@ const ParticipantLookup: React.FC<ParticipantLookupProps> = ({
                   name="department"
                   type="text"
                   value={department}
-                  onChange={(e) => setDepartment(e.target.value)}
+                  onChange={handleDepartmentChange}
                   className="input-container"
                 />
               </div>
@@ -183,7 +202,7 @@ const ParticipantLookup: React.FC<ParticipantLookupProps> = ({
                   name="plant"
                   type="text"
                   value={plant}
-                  onChange={(e) => setPlant(e.target.value)}
+                  onChange={handlePlantChange}
                   className="input-container"
                 />
               </div>
