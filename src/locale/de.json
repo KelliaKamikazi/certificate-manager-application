@@ -61,5 +61,6 @@
   "firstName": "Vorname",
   "user_id": "Benutzer-ID",
   "department": "Abteilung",
-  "plant": "Werk"
+  "plant": "Werk",
+  "user": "Benutzer"
 }

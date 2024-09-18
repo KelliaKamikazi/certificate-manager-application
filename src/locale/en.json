@@ -64,5 +64,6 @@
   "firstName": "First Name",
   "user_id": "User ID",
   "department": "Department",
-  "plant": "Plant"
+  "plant": "Plant",
+  "user": "User"
 }
