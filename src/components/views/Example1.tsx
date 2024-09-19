@@ -5,22 +5,21 @@ import { useNavigate } from 'react-router-dom';
 import IconSvg from '../icons/icons';
 import gearIcon from '../icons/gearIcon';
 import { getData, deleteData } from '../../utils/indexedDB';
-import { useTranslation } from 'react-i18next';
-
+import { useTranslation } from '../../useTranslation';
 const Example1: React.FC = () => {
+  const { t } = useTranslation();
   const [certificates, setCertificates] = useState<Certificate[]>([]);
   const [openDropdownId, setOpenDropdownId] = useState<number | undefined>(
     undefined,
   );
   const navigate = useNavigate();
-  const { t } = useTranslation();
 
   useEffect(() => {
     const fetchData = async () => {
       const data = await getData();
       setCertificates(data);
     };
-    fetchData().catch(console.error);
+    fetchData();
   }, []);
 
   const toggleDropdown = (certId: number | undefined) => {

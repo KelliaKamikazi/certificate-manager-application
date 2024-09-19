@@ -7,43 +7,53 @@ import {
   useCallback,
 } from 'react';
 import '../../utils/indexedDB';
-import { Certificate, Supplier, INITIAL_CERTIFICATE } from '../data/data';
+import {
+  Certificate,
+  Supplier,
+  INITIAL_CERTIFICATE,
+  Participant,
+} from '../data/data';
 import { addData, getCertificateById, updateData } from '../../utils/indexedDB';
 import { SupplierField } from '../inputs/SupplierField';
 import { CertificateType } from '../inputs/CertificateType';
 import { Textfield } from '../base/Textfield';
 import { useParams } from 'react-router-dom';
 import SupplierLookup from './SupplierLookup';
-import { useTranslation } from 'react-i18next';
+import IconSvg from '../icons/icons';
+import searchIcon from '../icons/searchIcon';
+import { useTranslation } from '../../useTranslation';
+import ParticipantLookup from './ParticipantLookup';
+import CommentForm from './CommentForm';
 
 const CertificateForm: React.FC = () => {
+  const { t } = useTranslation();
   const { certificateId } = useParams<{ certificateId: string }>();
   const [certificate, setCertificate] = useState(INITIAL_CERTIFICATE);
   const [showSupplierLookup, setShowSupplierLookup] = useState(false);
-  const { t } = useTranslation();
+  const [showParticipantLookup, setShowParticipantLookup] = useState(false);
+  const [selectedParticipants] = useState<Participant[]>([]);
 
   useEffect(() => {
     if (certificateId && certificateId !== '0') {
-      const fetchCertificate = async () => {
-        const id = Number(certificateId);
-        const fetchedCertificate = await getCertificateById(id);
-        if (fetchedCertificate) {
-          setCertificate({
-            ...fetchedCertificate,
-            validFrom: new Date(fetchedCertificate.validFrom)
-              .toISOString()
-              .split('T')[0],
-            validTo: new Date(fetchedCertificate.validTo)
-              .toISOString()
-              .split('T')[0],
-            pdfUrl: fetchedCertificate.pdfUrl,
-          });
-        }
-      };
       fetchCertificate();
     }
   }, [certificateId]);
-
+  const fetchCertificate = async () => {
+    const id = Number(certificateId);
+    const fetchedCertificate = await getCertificateById(id);
+    if (fetchedCertificate) {
+      setCertificate({
+        ...fetchedCertificate,
+        validFrom: new Date(fetchedCertificate.validFrom)
+          .toISOString()
+          .split('T')[0],
+        validTo: new Date(fetchedCertificate.validTo)
+          .toISOString()
+          .split('T')[0],
+        pdfUrl: fetchedCertificate.pdfUrl,
+      });
+    }
+  };
   const handleSaving = async (event: FormEvent) => {
     event.preventDefault();
     const { supplier, certificateType, validTo, validFrom } = certificate;
@@ -80,7 +90,6 @@ const CertificateForm: React.FC = () => {
       alert(t('certificateNotAddedOrUpdated'));
     }
   };
-
   const handleInputChange = (
     e: ChangeEvent<HTMLInputElement | HTMLSelectElement>,
   ) => {
@@ -90,14 +99,12 @@ const CertificateForm: React.FC = () => {
       [name]: value,
     }));
   };
-
   const handleSupplierChange = (supplier: Supplier) => {
     setCertificate((prevData) => ({
       ...prevData,
       supplier,
     }));
   };
-
   const handleFileChange = (e: ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (file && file.type === 'application/pdf') {
@@ -113,18 +120,21 @@ const CertificateForm: React.FC = () => {
       alert(t('onlyPDFAllowed'));
     }
   };
-
   const handleResetFields = () => {
     setCertificate(INITIAL_CERTIFICATE);
   };
-
   const handleSupplierOnSelect = useCallback((supplier: Supplier) => {
     handleSupplierChange(supplier);
     setShowSupplierLookup(false);
   }, []);
-
   const handleCloseSupplierLookup = useCallback(() => {
     setShowSupplierLookup(false);
+  }, []);
+  const handleCloseParticipantLookup = useCallback(() => {
+    setShowParticipantLookup(false);
+  }, []);
+  const handleOpenParticipantLookup = useCallback(() => {
+    setShowParticipantLookup(true);
   }, []);
 
   return (
@@ -133,6 +143,12 @@ const CertificateForm: React.FC = () => {
         <SupplierLookup
           onClose={handleCloseSupplierLookup}
           onSupplierSelect={handleSupplierOnSelect}
+        />
+      )}
+      {showParticipantLookup && (
+        <ParticipantLookup
+          onParticipantSelect={handleCloseParticipantLookup} // for now
+          onClose={handleCloseParticipantLookup}
         />
       )}
       <form onSubmit={handleSaving}>
@@ -166,6 +182,41 @@ const CertificateForm: React.FC = () => {
                 value={certificate.validTo}
                 onChange={handleInputChange}
               />
+              <div className="form-input-container">
+                <label className="form-input-label mb-1">Assigned Users</label>
+                <span
+                  className="btn gray-btn"
+                  onClick={handleOpenParticipantLookup}
+                >
+                  <IconSvg Icon={searchIcon} />
+                  <span>Add participant</span>
+                </span>
+                <div className="suppliers-results-container mt-1">
+                  <table>
+                    <thead>
+                      <tr>
+                        <th></th>
+                        <th>Name</th>
+                        <th>Department</th>
+                        <th>E-mail</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      {selectedParticipants.map((participant) => (
+                        <tr key={participant.email}>
+                          <td></td>
+                          <td>{participant.name}</td>
+                          <td>{participant.department}</td>
+                          <td>{participant.email}</td>
+                        </tr>
+                      ))}
+                    </tbody>
+                  </table>
+                </div>
+
+                {/* Add CommentForm below the participant table */}
+                <CommentForm />
+              </div>
             </div>
           </div>
           <div className="right-side">

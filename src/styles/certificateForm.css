@@ -125,3 +125,19 @@
   border: none;
   cursor: pointer;
 }
+
+.mt-1 {
+  margin-top: 2rem;
+}
+.mb-1 {
+  margin-bottom: 1rem;
+}
+.btn {
+  display: flex;
+  align-items: left; /* Align items vertically (center them) */
+  justify-content: left; /* Align items horizontally */
+}
+
+.btn svg {
+  margin-right: 5px; /* Add some space between the icon and the text */
+}

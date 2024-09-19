@@ -1,5 +1,5 @@
 import React from 'react';
-import { useTranslation } from 'react-i18next';
+import { useTranslation } from '../../useTranslation';
 import { Supplier } from '../data/data';
 
 interface SupplierTableProps {
@@ -14,6 +14,12 @@ const SupplierTable: React.FC<SupplierTableProps> = ({
   onSelectSupplier,
 }) => {
   const { t } = useTranslation();
+  const handleSelectSupplier = (supplierIndex: number | undefined) => {
+    onSelectSupplier(supplierIndex);
+  };
+  const handleRadioChange = (supplier: Supplier) => {
+    handleSelectSupplier(supplier.supplierIndex);
+  };
 
   return (
     <div className="suppliers-results-container">
@@ -37,7 +43,7 @@ const SupplierTable: React.FC<SupplierTableProps> = ({
                   type="radio"
                   name="supplier"
                   checked={supplier.supplierIndex === selectSupplierIndex}
-                  onChange={() => onSelectSupplier(supplier.supplierIndex)}
+                  onChange={() => handleRadioChange(supplier)}
                 />
               </td>
               <td>{supplier.name}</td>

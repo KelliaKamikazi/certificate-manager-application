@@ -1,4 +1,4 @@
-import { useTranslation } from 'react-i18next';
+import { useTranslation } from '../../useTranslation';
 import IconSvg from '../icons/icons';
 import searchIcon from '../icons/searchIcon';
 import closeIcon from '../icons/closeIcon';

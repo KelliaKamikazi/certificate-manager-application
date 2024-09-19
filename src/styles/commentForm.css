@@ -1,0 +1,74 @@
+@font-face {
+  font-family: 'PMNCaeciliaSansHeadLight';
+  src: url('./items/Fonts/pmncaeciliasans-head-cufonfonts/PMNCaeciliaSansHeadLight.TTF')
+    format('truetype');
+  font-weight: 100;
+  font-style: normal;
+}
+
+.comment-form-container {
+  margin: 0 auto;
+  margin-top: 8.75rem;
+  width: 37.5rem;
+  padding: 1.25rem;
+  border: 0.0625rem solid #ddd;
+  border-radius: 0.3125rem;
+  background-color: #f9f9f9;
+}
+
+.form-header {
+  display: flex;
+  justify-content: flex-end;
+  margin-bottom: 1.25rem;
+}
+
+.comment-body {
+  margin-bottom: 1.25rem;
+}
+
+.comment {
+  margin-bottom: 0.625rem;
+}
+
+.comment h2 {
+  font-size: 1rem;
+  font-weight: bold;
+  margin: 0;
+  text-align: start;
+}
+.comment h4 {
+  font-size: 1rem;
+  font-weight: bold;
+  margin: 0;
+  text-align: start;
+}
+
+.comment span {
+  font-weight: normal;
+  color: #555;
+}
+
+.comment-form {
+  display: flex;
+  flex-direction: column;
+  border: 0.0625rem solid #ccc;
+  padding: 0.5rem;
+}
+
+.comment-form label {
+  margin-bottom: 0.3125rem;
+  font-size: 0.875rem;
+  font-style: italic;
+}
+
+.comment-form textarea {
+  padding: 0.625rem;
+  border: 0.0625rem solid #ddd;
+  resize: none;
+  font-size: 0.875rem;
+}
+
+.comment-form button {
+  align-self: flex-start;
+  margin-top: 1rem;
+}
