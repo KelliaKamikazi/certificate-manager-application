@@ -1,0 +1,16 @@
+.example {
+  display: flex;
+  align-items: center;
+  position: fixed;
+  padding-left: 150px;
+  padding-top: 140px;
+}
+
+h1 {
+  color: var(--black-color);
+  text-align: left;
+  margin-left: 150px;
+  font-size: 40px;
+  font-weight: 700;
+  font-style: normal;
+}
