@@ -12,7 +12,6 @@ public class Supplier {
     private Long id;
 
     private String name;
-    private String supplierIndex;
     private String city;
 
     @OneToMany(mappedBy = "supplier")
@@ -32,14 +31,6 @@ public class Supplier {
 
     public void setName(String name) {
         this.name = name;
-    }
-
-    public String getSupplierIndex() {
-        return supplierIndex;
-    }
-
-    public void setSupplierIndex(String supplierIndex) {
-        this.supplierIndex = supplierIndex;
     }
 
     public String getCity() {
