@@ -25,7 +25,7 @@ public class UserEntity {
     private String email;
 
     @ManyToOne
-    @JoinColumn(name = "department_id")
+    @JoinColumn(name = "department_id",referencedColumnName = "id")
     private DepartmentEntity department;
 
     private String plant;

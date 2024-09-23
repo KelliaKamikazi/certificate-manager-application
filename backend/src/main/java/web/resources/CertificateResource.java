@@ -20,7 +20,7 @@ public class CertificateResource {
     public List<CertificateDto> getCertificates(){
         return certificateService.getCertificates();
     }
-        @POST
+    @POST
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
     public Response createCertificate(CertificateDto certificateDto){
@@ -36,7 +36,4 @@ public class CertificateResource {
         CertificateDto updatedCertificate= certificateService.updateCertificateDto(id, certificateDto);
         return Response.ok(updatedCertificate).build();
     }
-
-
-
 }
