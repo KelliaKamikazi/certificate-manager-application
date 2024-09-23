@@ -10,11 +10,11 @@
 #
 # Then, build the image with:
 #
-# docker build -f src/main/docker/Dockerfile.native-micro -t quarkus/certificate-manager-backend .
+# docker build -f src/main/docker/Dockerfile.native-micro -t quarkus/certificateEntity-manager-backend .
 #
 # Then run the container using:
 #
-# docker run -i --rm -p 8080:8080 quarkus/certificate-manager-backend
+# docker run -i --rm -p 8080:8080 quarkus/certificateEntity-manager-backend
 #
 ###
 FROM quay.io/quarkus/quarkus-micro-image:2.0

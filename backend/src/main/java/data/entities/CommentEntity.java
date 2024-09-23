@@ -5,17 +5,17 @@ import jakarta.persistence.*;
 import java.time.LocalDateTime;
 
 @Entity
-@Table(schema = "application")
-public class Comment {
+@Table(name = "comments",schema = "application")
+public class CommentEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
     @ManyToOne
-    private Certificate certificate;
+    private CertificateEntity certificateEntity;
 
     @ManyToOne
-    private User user;
+    private UserEntity userEntity;
 
     private String content;
     private LocalDateTime timestamp;
@@ -28,20 +28,20 @@ public class Comment {
         this.id = id;
     }
 
-    public Certificate getCertificate() {
-        return certificate;
+    public CertificateEntity getCertificate() {
+        return certificateEntity;
     }
 
-    public void setCertificate(Certificate certificate) {
-        this.certificate = certificate;
+    public void setCertificate(CertificateEntity certificateEntity) {
+        this.certificateEntity = certificateEntity;
     }
 
-    public User getUser() {
-        return user;
+    public UserEntity getUser() {
+        return userEntity;
     }
 
-    public void setUser(User user) {
-        this.user = user;
+    public void setUser(UserEntity userEntity) {
+        this.userEntity = userEntity;
     }
 
     public String getContent() {
