@@ -1,11 +1,11 @@
 -- Insert data into department table in the application schema
-INSERT INTO application.department (name) VALUES
+INSERT INTO application.departments (name) VALUES
                                               ('ITM/FP'),
                                               ('IMM/FP'),
                                               ('INN/FG');
 
 -- Insert data into supplier table in the application schema
-INSERT INTO application.supplier (name, city) VALUES
+INSERT INTO application.suppliers (name, city) VALUES
                                                   ('ANDEMIS GmbH', 'Stuttgart'),
                                                   ('IMLER AG', 'Berlin');
 
