@@ -20,10 +20,11 @@ public class CertificateResource {
     public List<CertificateDto> getCertificates(){
         return certificateService.getCertificates();
     }
-    @POST
+        @POST
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
     public Response createCertificate(CertificateDto certificateDto){
+
         CertificateDto createdCertificate= certificateService.createCertificate(certificateDto);
         return  Response.status(Response.Status.CREATED).entity(createdCertificate).build();
     }

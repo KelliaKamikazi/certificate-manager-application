@@ -1,12 +1,12 @@
 package data.entities;
 
-public enum CertificateType {
+public enum Certificate_Type {
 
     PERMISSION_OF_PRINTING("Permission of Printing"),
-    CCC_CERTIFICATE("CCC CertificateEntity");
+    CCC_CERTIFICATE("CCC Certificate");
 
     private final String displayName;
-    CertificateType(String displayName) {
+    Certificate_Type(String displayName) {
         this.displayName = displayName;
     }
     public String getDisplayName() {

@@ -6,15 +6,15 @@ import java.util.ArrayList;
 import java.util.List;
 
 @Entity
-@Table(name = "departments",schema = "application")
-public class DepartmentEntity {
+@Table(schema = "application")
+public class Department {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     private String name;
 
     @OneToMany(mappedBy = "department")
-    private List<UserEntity> userEntities = new ArrayList<>();
+    private List<User> users = new ArrayList<>();
 
     public Long getId() {
         return id;
@@ -32,11 +32,11 @@ public class DepartmentEntity {
         this.name = name;
     }
 
-    public List<UserEntity> getUsers() {
-        return userEntities;
+    public List<User> getUsers() {
+        return users;
     }
 
-    public void setUsers(List<UserEntity> userEntities) {
-        this.userEntities = userEntities;
+    public void setUsers(List<User> users) {
+        this.users = users;
     }
 }

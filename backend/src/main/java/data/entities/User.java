@@ -1,5 +1,7 @@
 package data.entities;
 
+import data.entities.Comment;
+import data.entities.Department;
 import jakarta.persistence.*;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
@@ -12,7 +14,7 @@ import java.util.Set;
 
 @Entity
 @Table(name = "users", schema = "application")
-public class UserEntity {
+public class User {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -26,15 +28,15 @@ public class UserEntity {
 
     @ManyToOne
     @JoinColumn(name = "department_id")
-    private DepartmentEntity departmentEntity;
+    private Department department;
 
     private String plant;
 
     @ManyToMany(mappedBy = "assignedUsers")
-    private Set<CertificateEntity> assignedCertificateEntities = new HashSet<>();
+    private Set<Certificate> assignedCertificates = new HashSet<>();
 
     @OneToMany(mappedBy = "user")
-    private List<CommentEntity> commentEntities = new ArrayList<>();
+    private List<Comment> comments = new ArrayList<>();
 
     public Long getId() {
         return id;
@@ -76,12 +78,12 @@ public class UserEntity {
         this.email = email;
     }
 
-    public DepartmentEntity getDepartment() {
-        return departmentEntity;
+    public Department getDepartment() {
+        return department;
     }
 
-    public void setDepartment(DepartmentEntity departmentEntity) {
-        this.departmentEntity = departmentEntity;
+    public void setDepartment(Department department) {
+        this.department = department;
     }
 
     public String getPlant() {
@@ -92,19 +94,19 @@ public class UserEntity {
         this.plant = plant;
     }
 
-    public Set<CertificateEntity> getAssignedCertificates() {
-        return assignedCertificateEntities;
+    public Set<Certificate> getAssignedCertificates() {
+        return assignedCertificates;
     }
 
-    public void setAssignedCertificates(Set<CertificateEntity> assignedCertificateEntities) {
-        this.assignedCertificateEntities = assignedCertificateEntities;
+    public void setAssignedCertificates(Set<Certificate> assignedCertificates) {
+        this.assignedCertificates = assignedCertificates;
     }
 
-    public List<CommentEntity> getComments() {
-        return commentEntities;
+    public List<Comment> getComments() {
+        return comments;
     }
 
-    public void setComments(List<CommentEntity> commentEntities) {
-        this.commentEntities = commentEntities;
+    public void setComments(List<Comment> comments) {
+        this.comments = comments;
     }
 }

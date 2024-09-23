@@ -5,8 +5,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 @Entity
-@Table(name = "suppliers",schema = "application")
-public class SupplierEntity {
+@Table(schema = "application")
+public class Supplier {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -15,7 +15,7 @@ public class SupplierEntity {
     private String city;
 
     @OneToMany(mappedBy = "supplier")
-    private List<CertificateEntity> certificateEntities = new ArrayList<>();
+    private List<Certificate> certificates = new ArrayList<>();
 
     public Long getId() {
         return id;
@@ -41,11 +41,11 @@ public class SupplierEntity {
         this.city = city;
     }
 
-    public List<CertificateEntity> getCertificates() {
-        return certificateEntities;
+    public List<Certificate> getCertificates() {
+        return certificates;
     }
 
-    public void setCertificates(List<CertificateEntity> certificateEntities) {
-        this.certificateEntities = certificateEntities;
+    public void setCertificates(List<Certificate> certificates) {
+        this.certificates = certificates;
     }
 }

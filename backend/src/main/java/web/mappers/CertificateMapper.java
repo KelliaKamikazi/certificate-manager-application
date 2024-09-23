@@ -1,8 +1,8 @@
 package web.mappers;
 
 import data.entities.*;
-import data.repositories.SupplierRepository;
-import data.repositories.UserRepository;
+import data.repositories.SupplierRepo;
+import data.repositories.UserRepo;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
 import web.dtos.CertificateDto;
@@ -16,70 +16,75 @@ import java.util.stream.Collectors;
 public class CertificateMapper {
 
     @Inject
-    SupplierRepository supplierRepository;
+    SupplierRepo supplierRepo;
 
     @Inject
-    UserRepository userRepository;
+    UserRepo userRepo;
 
-    public CertificateDto toDto(CertificateEntity certificateEntity) {
+    public CertificateDto toDto(Certificate certificate) {
         CertificateDto dto = new CertificateDto();
-        dto.setId(certificateEntity.getId());
-        dto.setSupplierId(certificateEntity.getSupplier().getId());
-        dto.setCertificateType(certificateEntity.getCertificateType());
-        dto.setValidFrom(certificateEntity.getValidFrom());
-        dto.setValidTo(certificateEntity.getValidTo());
-        dto.setPdfUrl(certificateEntity.getPdfUrl());
+        dto.setId(certificate.getId());
+        dto.setSupplierId(certificate.getSupplier().getId());
+        dto.setCertificateType(certificate.getCertificateType().getDisplayName());
+        dto.setValidFrom(certificate.getValidFrom());
+        dto.setValidTo(certificate.getValidTo());
+        dto.setPdfUrl(certificate.getPdfUrl());
 
-        Set<Long> userIds = certificateEntity.getAssignedUsers()
+        // No duplicates allowed for assigned users
+        Set<Long> userIds = certificate.getAssignedUsers()
                 .stream()
-                .map(UserEntity::getId)
+                .map(User::getId)
                 .collect(Collectors.toSet());
         dto.setAssignedUserIds(userIds);
 
-        List<String> commentContent = certificateEntity.getComments()
+        // Comments can have duplicates (just a list)
+        List<String> commentContent = certificate.getComments()
                 .stream()
-                .map(CommentEntity::getContent)
+                .map(Comment::getContent)
                 .collect(Collectors.toList());
         dto.setComments(commentContent);
         return dto;
     }
 
-    public CertificateEntity toEntity(CertificateDto certificateDto) {
-        CertificateEntity entity = new CertificateEntity();
+    public Certificate toEntity(CertificateDto certificateDto) {
+        Certificate entity = new Certificate();
         entity.setId(certificateDto.getId());
 
-        SupplierEntity supplierEntity = supplierRepository.findById(certificateDto.getId());
-        if (supplierEntity != null) {
-            entity.setSupplier(supplierEntity);
+        Supplier supplier = supplierRepo.findById(certificateDto.getId());
+        if (supplier != null) {
+            entity.setSupplier(supplier);
         } else {
             throw new RuntimeException("Supplier not found");
         }
-        entity.setCertificateType(certificateDto.getCertificateType());
+
+        entity.setCertificateType(Certificate_Type.valueOf(certificateDto.getCertificateType()));
         entity.setPdfUrl(certificateDto.getPdfUrl());
         entity.setValidFrom(certificateDto.getValidFrom());
         entity.setValidTo(certificateDto.getValidTo());
 
-        List<CommentEntity> commentEntities = certificateDto.getComments()
+        // Map comments to entity
+        List<Comment> comments = certificateDto.getComments()
                 .stream()
                 .map(content -> {
-                    CommentEntity commentEntity = new CommentEntity();
-                    commentEntity.setContent(content);
-                    return commentEntity;
+                    Comment comment = new Comment();
+                    comment.setContent(content);
+                    return comment;
                 })
                 .collect(Collectors.toList());
-        entity.setComments(commentEntities);
+        entity.setComments(comments);
 
-        Set<UserEntity> assignedUserEntities = certificateDto.getAssignedUserIds()
+        // Map assigned users to entity
+        Set<User> assignedUsers = certificateDto.getAssignedUserIds()
                 .stream()
                 .map(userId -> {
-                    UserEntity userEntity = userRepository.findUserById(userId);
-                    if (userEntity == null) {
+                    User user = userRepo.findUserById(userId);
+                    if (user == null) {
                         throw new RuntimeException("User not found for ID");
                     }
-                    return userEntity;
+                    return user;
                 })
                 .collect(Collectors.toSet());
-        entity.setAssignedUsers(assignedUserEntities);
+        entity.setAssignedUsers(assignedUsers);
 
         return entity;
     }

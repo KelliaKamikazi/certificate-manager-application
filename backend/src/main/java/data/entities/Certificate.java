@@ -9,15 +9,16 @@ import java.util.List;
 import java.util.Set;
 
 @Entity
-@Table(name = "certificates",schema = "application")
-public class CertificateEntity {
+@Table(schema = "application")
+public class Certificate {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+
     @ManyToOne
-    private SupplierEntity supplierEntity;
-    @Enumerated(EnumType.STRING)
-    private CertificateType certificateType;
+    private Supplier supplier;
+
+    private Certificate_Type certificateType;
     private LocalDate validFrom;
     private LocalDate validTo;
     @Lob
@@ -30,23 +31,23 @@ public class CertificateEntity {
             joinColumns = @JoinColumn(name = "certificate_id"),
             inverseJoinColumns = @JoinColumn(name = "user_id")
     )
-    private Set<UserEntity> assignedUserEntities = new HashSet<>();
+    private Set<User> assignedUsers = new HashSet<>();
 
     @OneToMany(mappedBy = "certificate", cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<CommentEntity> commentEntities = new ArrayList<>();
+    private List<Comment> comments = new ArrayList<>();
 
-    public CertificateEntity() {
+    public Certificate() {
     }
 
-    public CertificateEntity(Long id, SupplierEntity supplierEntity, CertificateType certificateType, LocalDate validFrom, LocalDate validTo, String pdfUrl, Set<UserEntity> assignedUserEntities, List<CommentEntity> commentEntities) {
+    public Certificate(Long id, Supplier supplier, Certificate_Type certificateType, LocalDate validFrom, LocalDate validTo, String pdfUrl, Set<User> assignedUsers, List<Comment> comments) {
         this.id = id;
-        this.supplierEntity = supplierEntity;
+        this.supplier = supplier;
         this.certificateType = certificateType;
         this.validFrom = validFrom;
         this.validTo = validTo;
         this.pdfUrl = pdfUrl;
-        this.assignedUserEntities = assignedUserEntities;
-        this.commentEntities = commentEntities;
+        this.assignedUsers = assignedUsers;
+        this.comments = comments;
     }
 
     public Long getId() {
@@ -57,19 +58,19 @@ public class CertificateEntity {
         this.id = id;
     }
 
-    public SupplierEntity getSupplier() {
-        return supplierEntity;
+    public Supplier getSupplier() {
+        return supplier;
     }
 
-    public void setSupplier(SupplierEntity supplierEntity) {
-        this.supplierEntity = supplierEntity;
+    public void setSupplier(Supplier supplier) {
+        this.supplier = supplier;
     }
 
-    public CertificateType getCertificateType() {
+    public Certificate_Type getCertificateType() {
         return certificateType;
     }
 
-    public void setCertificateType(CertificateType certificateType) {
+    public void setCertificateType(Certificate_Type certificateType) {
         this.certificateType = certificateType;
     }
 
@@ -97,19 +98,19 @@ public class CertificateEntity {
         this.pdfUrl = pdfUrl;
     }
 
-    public Set<UserEntity> getAssignedUsers() {
-        return assignedUserEntities;
+    public Set<User> getAssignedUsers() {
+        return assignedUsers;
     }
 
-    public void setAssignedUsers(Set<UserEntity> assignedUserEntities) {
-        this.assignedUserEntities = assignedUserEntities;
+    public void setAssignedUsers(Set<User> assignedUsers) {
+        this.assignedUsers = assignedUsers;
     }
 
-    public List<CommentEntity> getComments() {
-        return commentEntities;
+    public List<Comment> getComments() {
+        return comments;
     }
 
-    public void setComments(List<CommentEntity> commentEntities) {
-        this.commentEntities = commentEntities;
+    public void setComments(List<Comment> comments) {
+        this.comments = comments;
     }
 }
