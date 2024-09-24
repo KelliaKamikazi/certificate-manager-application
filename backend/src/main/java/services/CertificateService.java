@@ -8,6 +8,7 @@ import data.repositories.UserRepository;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
 import jakarta.transaction.Transactional;
+import jakarta.ws.rs.NotFoundException;
 import web.dtos.CertificateDto;
 import web.mappers.CertificateMapper;
 
@@ -42,58 +43,49 @@ public class CertificateService {
     public CertificateDto updateCertificateDto(Long id, CertificateDto certificateDto) {
         CertificateEntity existingCertificateEntity = certificateRepository.findById(id);
 
-        if (existingCertificateEntity != null) {
-            if (certificateDto.getCertificateType() != null) {
-                existingCertificateEntity.setCertificateType(certificateDto.getCertificateType());
-            }
-            if (certificateDto.getValidFrom() != null) {
-                existingCertificateEntity.setValidFrom(certificateDto.getValidFrom());
-            }
-            if (certificateDto.getValidTo() != null) {
-                existingCertificateEntity.setValidTo(certificateDto.getValidTo());
-            }
-            if (certificateDto.getPdfUrl() != null) {
-                existingCertificateEntity.setPdfUrl(certificateDto.getPdfUrl());
-            }
-            if (certificateDto.getAssignedUserIds() != null) {
-                Set<UserEntity> assignedUserEntities = certificateDto.getAssignedUserIds().stream()
-                        .map(userId -> userRepository.findUserById(userId))
-                        .collect(Collectors.toSet());
-                existingCertificateEntity.setAssignedUsers(assignedUserEntities);
-            }
-            if (certificateDto.getComments() != null) {
-                List<CommentEntity> commentEntities = certificateDto.getComments().stream()
-                        .map(content -> {
-                            CommentEntity commentEntity = new CommentEntity();
-                            commentEntity.setContent(content);
-                            return commentEntity;
-                        }).collect(Collectors.toList());
-                existingCertificateEntity.setComments(commentEntities);
-            }
-            return certificateMapper.toDto(existingCertificateEntity);
+        if (existingCertificateEntity == null) {
+            throw new NotFoundException("Certificate with id " + id + " not found");//for now let's use this notfound by the jakarta.ws.rs.NotFoundException;
         }
 
-        throw new RuntimeException("Certificate Not found");
+        if (certificateDto.getCertificateType() != null) {
+            existingCertificateEntity.setCertificateType(certificateDto.getCertificateType());
+        }
+        if (certificateDto.getValidFrom() != null) {
+            existingCertificateEntity.setValidFrom(certificateDto.getValidFrom());
+        }
+        if (certificateDto.getValidTo() != null) {
+            existingCertificateEntity.setValidTo(certificateDto.getValidTo());
+        }
+        if (certificateDto.getPdfUrl() != null) {
+            existingCertificateEntity.setPdfUrl(certificateDto.getPdfUrl());
+        }
+        if (certificateDto.getAssignedUserIds() != null) {
+            Set<UserEntity> assignedUserEntities = certificateDto.getAssignedUserIds().stream()
+                    .map(userId -> userRepository.findUserById(userId)) // Fetch user entities by ID
+                    .collect(Collectors.toSet());
+            existingCertificateEntity.setAssignedUsers(assignedUserEntities);
+        }
+        if (certificateDto.getComments() != null) {
+            List<CommentEntity> commentEntities = certificateDto.getComments().stream()
+                    .map(content -> {
+                        CommentEntity commentEntity = new CommentEntity();
+                        commentEntity.setContent(content);
+                        return commentEntity;
+                    }).collect(Collectors.toList());
+            existingCertificateEntity.setComments(commentEntities);
+        }
+        return certificateMapper.toDto(existingCertificateEntity);
     }
 
 
-    public CertificateDto deleteCertificateDto(Long id, CertificateDto certificateDto){
-        CertificateEntity toBeDeletedCertificateEntity =  certificateRepository.findById(id);
 
-        if(toBeDeletedCertificateEntity !=null){
+    public void deleteCertificateDto(Long id) {
+        CertificateEntity toBeDeletedCertificateEntity = certificateRepository.findById(id);
+        if (toBeDeletedCertificateEntity != null) {
             certificateRepository.delete(toBeDeletedCertificateEntity);
+        } else {
+            throw new RuntimeException("Certificate not found");
         }
-        else{
-            throw new RuntimeException("Certificate deleted");
-        }
-        return null;
     }
-
-
-
-
-
-
-
 
 }
