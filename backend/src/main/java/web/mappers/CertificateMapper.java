@@ -47,7 +47,7 @@ public class CertificateMapper {
         CertificateEntity entity = new CertificateEntity();
         entity.setId(certificateDto.getId());
 
-        SupplierEntity supplierEntity = supplierRepository.findById(certificateDto.getId());
+        SupplierEntity supplierEntity = supplierRepository.findById(certificateDto.getSupplierId());
         if (supplierEntity != null) {
             entity.setSupplier(supplierEntity);
         } else {
