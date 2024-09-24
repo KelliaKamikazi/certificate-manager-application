@@ -16,7 +16,7 @@ public class SupplierEntity {
     private String city;
 
     @OneToMany(mappedBy = "supplier")
-    private List<CertificateEntity> certificateEntities = new ArrayList<>();
+    private List<CertificateEntity> certificates = new ArrayList<>();
 
     public Long getId() {
         return id;
@@ -43,10 +43,10 @@ public class SupplierEntity {
     }
 
     public List<CertificateEntity> getCertificates() {
-        return certificateEntities;
+        return certificates;
     }
 
-    public void setCertificates(List<CertificateEntity> certificateEntities) {
-        this.certificateEntities = certificateEntities;
+    public void setCertificates(List<CertificateEntity> certificates) {
+        this.certificates = certificates;
     }
 }

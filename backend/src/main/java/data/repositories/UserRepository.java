@@ -15,4 +15,7 @@ public class UserRepository implements PanacheRepository<UserEntity> {
     public List<UserEntity> findByDepartment(DepartmentEntity department) {
         return find("department", department).list();
     }
+    public UserEntity findUserById(Long id) {
+        return findById(id);
+    }
 }
