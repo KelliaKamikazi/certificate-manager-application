@@ -82,7 +82,7 @@ export default () => {
     },
     devServer: {
       static: {
-        directory: path.join(__dirname, 'dist'),
+        directory: path.join(__dirname, 'public'),
       },
       port: 3000,
       hot: true,
@@ -91,7 +91,7 @@ export default () => {
     plugins: [
       new CleanWebpackPlugin(),
       new HtmlWebpackPlugin({
-        template: './src/index.html',
+        template: './public/index.html',
       }),
       new BundleAnalyzerPlugin({
         analyzerMode: 'static',
