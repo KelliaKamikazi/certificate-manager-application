@@ -18,7 +18,6 @@ public class CommentEntity {
     private UserEntity user;
 
     private String content;
-    private LocalDateTime timestamp;
 
     public Long getId() {
         return id;
@@ -52,11 +51,4 @@ public class CommentEntity {
         this.content = content;
     }
 
-    public LocalDateTime getTimestamp() {
-        return timestamp;
-    }
-
-    public void setTimestamp(LocalDateTime timestamp) {
-        this.timestamp = timestamp;
-    }
 }
