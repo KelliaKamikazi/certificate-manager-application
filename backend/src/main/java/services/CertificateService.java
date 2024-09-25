@@ -1,6 +1,7 @@
 package services;
 
 import data.entities.CertificateEntity;
+import data.entities.CertificateType;
 import data.entities.CommentEntity;
 import data.entities.UserEntity;
 import data.repositories.CertificateRepository;
@@ -12,6 +13,7 @@ import jakarta.ws.rs.NotFoundException;
 import web.dtos.CertificateDto;
 import web.mappers.CertificateMapper;
 
+import java.util.Arrays;
 import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -87,5 +89,10 @@ public class CertificateService {
             throw new RuntimeException("Certificate not found");
         }
     }
+
+    public List<CertificateType> getCertificateTypes() {
+        return Arrays.asList(CertificateType.values());
+    }
+
 
 }
