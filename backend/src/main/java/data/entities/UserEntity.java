@@ -1,7 +1,5 @@
 package data.entities;
 
-import data.entities.Comment;
-import data.entities.Department;
 import jakarta.persistence.*;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
@@ -14,7 +12,7 @@ import java.util.Set;
 
 @Entity
 @Table(name = "users", schema = "application")
-public class User {
+public class UserEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -28,15 +26,15 @@ public class User {
 
     @ManyToOne
     @JoinColumn(name = "department_id")
-    private Department department;
+    private DepartmentEntity department;
 
     private String plant;
 
     @ManyToMany(mappedBy = "assignedUsers")
-    private Set<Certificate> assignedCertificates = new HashSet<>();
+    private Set<CertificateEntity> assignedCertificates = new HashSet<>();
 
     @OneToMany(mappedBy = "user")
-    private List<Comment> comments = new ArrayList<>();
+    private List<CommentEntity> comments = new ArrayList<>();
 
     public Long getId() {
         return id;
@@ -78,11 +76,11 @@ public class User {
         this.email = email;
     }
 
-    public Department getDepartment() {
+    public DepartmentEntity getDepartment() {
         return department;
     }
 
-    public void setDepartment(Department department) {
+    public void setDepartment(DepartmentEntity department) {
         this.department = department;
     }
 
@@ -94,19 +92,19 @@ public class User {
         this.plant = plant;
     }
 
-    public Set<Certificate> getAssignedCertificates() {
+    public Set<CertificateEntity> getAssignedCertificates() {
         return assignedCertificates;
     }
 
-    public void setAssignedCertificates(Set<Certificate> assignedCertificates) {
+    public void setAssignedCertificates(Set<CertificateEntity> assignedCertificates) {
         this.assignedCertificates = assignedCertificates;
     }
 
-    public List<Comment> getComments() {
+    public List<CommentEntity> getComments() {
         return comments;
     }
 
-    public void setComments(List<Comment> comments) {
+    public void setComments(List<CommentEntity> comments) {
         this.comments = comments;
     }
 }

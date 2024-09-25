@@ -17,14 +17,14 @@ root.render(
   process.env.NODE_ENV === 'development' ? (
     <StrictMode>
       <TranslationProvider>
-        <BrowserRouter basename="/frontend">
+        <BrowserRouter >
           <App />
         </BrowserRouter>
       </TranslationProvider>
     </StrictMode>
   ) : (
     <TranslationProvider>
-      <BrowserRouter basename="/frontend">
+      <BrowserRouter >
         <App />
       </BrowserRouter>
     </TranslationProvider>

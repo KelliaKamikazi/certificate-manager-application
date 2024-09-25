@@ -1,3 +1,4 @@
+
 package data.entities;
 import jakarta.persistence.*;
 
@@ -5,18 +6,17 @@ import java.util.ArrayList;
 import java.util.List;
 
 @Entity
-@Table(schema = "application")
-public class Supplier {
+@Table(name = "suppliers",schema = "application")
+public class SupplierEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
     private String name;
-    private String supplierIndex;
     private String city;
 
     @OneToMany(mappedBy = "supplier")
-    private List<Certificate> certificates = new ArrayList<>();
+    private List<CertificateEntity> certificateEntities = new ArrayList<>();
 
     public Long getId() {
         return id;
@@ -34,14 +34,6 @@ public class Supplier {
         this.name = name;
     }
 
-    public String getSupplierIndex() {
-        return supplierIndex;
-    }
-
-    public void setSupplierIndex(String supplierIndex) {
-        this.supplierIndex = supplierIndex;
-    }
-
     public String getCity() {
         return city;
     }
@@ -50,11 +42,11 @@ public class Supplier {
         this.city = city;
     }
 
-    public List<Certificate> getCertificates() {
-        return certificates;
+    public List<CertificateEntity> getCertificates() {
+        return certificateEntities;
     }
 
-    public void setCertificates(List<Certificate> certificates) {
-        this.certificates = certificates;
+    public void setCertificates(List<CertificateEntity> certificateEntities) {
+        this.certificateEntities = certificateEntities;
     }
 }
