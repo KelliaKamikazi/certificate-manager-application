@@ -1,5 +1,6 @@
 package web.resources;
 
+import data.entities.CertificateType;
 import jakarta.inject.Inject;
 import jakarta.ws.rs.*;
 import jakarta.ws.rs.core.MediaType;
@@ -52,5 +53,13 @@ public class CertificateResource {
         } catch (RuntimeException e) {
             return Response.status(Response.Status.NOT_FOUND).entity(e.getMessage()).build();
         }
+    }
+
+    @GET
+    @Path("/types")
+    @Produces(MediaType.APPLICATION_JSON)
+    public Response getCertificateTypes() {
+        List<CertificateType> certificateTypes = certificateService.getCertificateTypes();
+        return Response.ok(certificateTypes).build();
     }
 }
