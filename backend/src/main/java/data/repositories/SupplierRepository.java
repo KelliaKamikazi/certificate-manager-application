@@ -18,4 +18,13 @@ public class SupplierRepository implements PanacheRepository<SupplierEntity> {
         cq.where(cb.equal(root.get(SupplierEntity_.name), name));
         return getEntityManager().createQuery(cq).getSingleResult();
     }
+    public SupplierEntity findByCity(String city){
+
+        CriteriaBuilder cb = getEntityManager().getCriteriaBuilder();
+        CriteriaQuery<SupplierEntity>cq = cb.createQuery(SupplierEntity.class);
+        Root<SupplierEntity>root= cq.from(SupplierEntity.class);
+        cq.where(cb.equal(root.get(SupplierEntity_.city),city));
+        return  getEntityManager().createQuery(cq).getSingleResult();
+    }
+
 }

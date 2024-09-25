@@ -4,17 +4,15 @@ public class SupplierDto {
 
     private Long id;
     private String name;
-    private String supplierIndex;
     private String city;
     private List<Long> certificateIds;
 
     public SupplierDto() {
     }
 
-    public SupplierDto(Long id, String name, String supplierIndex, String city, List<Long> certificateIds) {
+    public SupplierDto(Long id, String name,  String city, List<Long> certificateIds) {
         this.id = id;
         this.name = name;
-        this.supplierIndex = supplierIndex;
         this.city = city;
         this.certificateIds = certificateIds;
     }
@@ -35,13 +33,6 @@ public class SupplierDto {
         this.name = name;
     }
 
-    public String getSupplierIndex() {
-        return supplierIndex;
-    }
-
-    public void setSupplierIndex(String supplierIndex) {
-        this.supplierIndex = supplierIndex;
-    }
 
     public String getCity() {
         return city;
@@ -63,7 +54,6 @@ public class SupplierDto {
         return "SupplierDto{" +
                 "id=" + id +
                 ", name='" + name + '\'' +
-                ", supplierIndex='" + supplierIndex + '\'' +
                 ", city='" + city + '\'' +
                 ", certificateIds=" + certificateIds +
                 '}';

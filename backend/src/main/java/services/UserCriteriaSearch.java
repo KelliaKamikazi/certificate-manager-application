@@ -28,7 +28,7 @@ public class UserCriteriaSearch {
         CriteriaQuery<UserEntity> query = cb.createQuery(UserEntity.class);
         Root<UserEntity> root = query.from(UserEntity.class);
         List<Predicate> predicates = new ArrayList<>();
-        
+
         if (userId != null && !userId.isEmpty()) {
             predicates.add(cb.equal(root.get(UserEntity_.userId), userId));
         }
