@@ -12,4 +12,5 @@ import java.util.List;
 @Transactional(Transactional.TxType.MANDATORY)
 public class UserRepository implements PanacheRepository<UserEntity> {
     //Additional methods
+
 }

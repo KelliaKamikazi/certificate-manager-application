@@ -29,7 +29,7 @@ public class CertificateService {
     @Inject
     UserRepository userRepository;
 
-    public List<CertificateDto> getCertificates(){
+    public List<CertificateDto> getCertificates() {
         List<CertificateEntity> certificateEntities = certificateRepository.listAll();
         return certificateEntities.stream()
                 .map(certificateMapper::toDto)
@@ -46,7 +46,7 @@ public class CertificateService {
         CertificateEntity existingCertificateEntity = certificateRepository.findById(id);
 
         if (existingCertificateEntity == null) {
-            throw new NotFoundException("Certificate with id " + id + " not found");//for now let's use this notfound by the jakarta.ws.rs.NotFoundException;
+            throw new NotFoundException("Certificate with id " + id + " not found");
         }
 
         if (certificateDto.getCertificateType() != null) {
@@ -63,7 +63,8 @@ public class CertificateService {
         }
         if (certificateDto.getAssignedUserIds() != null) {
             Set<UserEntity> assignedUserEntities = certificateDto.getAssignedUserIds().stream()
-                    .map(userId -> userRepository.findUserById(userId)) // Fetch user entities by ID
+                    .map(userId -> userRepository.findById(userId))
+                    .filter(user -> user != null)
                     .collect(Collectors.toSet());
             existingCertificateEntity.setAssignedUsers(assignedUserEntities);
         }
@@ -79,8 +80,6 @@ public class CertificateService {
         return certificateMapper.toDto(existingCertificateEntity);
     }
 
-
-
     public void deleteCertificateDto(Long id) {
         CertificateEntity toBeDeletedCertificateEntity = certificateRepository.findById(id);
         if (toBeDeletedCertificateEntity != null) {
@@ -93,6 +92,4 @@ public class CertificateService {
     public List<CertificateType> getCertificateTypes() {
         return Arrays.asList(CertificateType.values());
     }
-
-
 }
