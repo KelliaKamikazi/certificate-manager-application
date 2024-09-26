@@ -16,6 +16,7 @@ import web.mappers.CertificateMapper;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Set;
+import java.util.function.Consumer;
 import java.util.stream.Collectors;
 
 @ApplicationScoped
@@ -29,9 +30,8 @@ public class CertificateService {
     @Inject
     UserRepository userRepository;
 
-    public List<CertificateDto> getCertificates(){
-        List<CertificateEntity> certificateEntities = certificateRepository.listAll();
-        return certificateEntities.stream()
+    public List<CertificateDto> getCertificates() {
+        return certificateRepository.listAll().stream()
                 .map(certificateMapper::toDto)
                 .collect(Collectors.toList());
     }
@@ -42,57 +42,57 @@ public class CertificateService {
         return certificateMapper.toDto(certificateEntity);
     }
 
+    private <T> void updateIfNotNull(T value, Consumer<T> updater) {
+        if (value != null) {
+            updater.accept(value);
+        }
+    }
     public CertificateDto updateCertificateDto(Long id, CertificateDto certificateDto) {
-        CertificateEntity existingCertificateEntity = certificateRepository.findById(id);
-
-        if (existingCertificateEntity == null) {
-            throw new NotFoundException("Certificate with id " + id + " not found");//for now let's use this notfound by the jakarta.ws.rs.NotFoundException;
-        }
-
-        if (certificateDto.getCertificateType() != null) {
-            existingCertificateEntity.setCertificateType(certificateDto.getCertificateType());
-        }
-        if (certificateDto.getValidFrom() != null) {
-            existingCertificateEntity.setValidFrom(certificateDto.getValidFrom());
-        }
-        if (certificateDto.getValidTo() != null) {
-            existingCertificateEntity.setValidTo(certificateDto.getValidTo());
-        }
-        if (certificateDto.getPdfUrl() != null) {
-            existingCertificateEntity.setPdfUrl(certificateDto.getPdfUrl());
-        }
-        if (certificateDto.getAssignedUserIds() != null) {
-            Set<UserEntity> assignedUserEntities = certificateDto.getAssignedUserIds().stream()
-                    .map(userId -> userRepository.findUserById(userId)) // Fetch user entities by ID
-                    .collect(Collectors.toSet());
-            existingCertificateEntity.setAssignedUsers(assignedUserEntities);
-        }
-        if (certificateDto.getComments() != null) {
-            List<CommentEntity> commentEntities = certificateDto.getComments().stream()
-                    .map(content -> {
-                        CommentEntity commentEntity = new CommentEntity();
-                        commentEntity.setContent(content);
-                        return commentEntity;
-                    }).collect(Collectors.toList());
-            existingCertificateEntity.setComments(commentEntities);
-        }
+        CertificateEntity existingCertificateEntity = findCertificateById(id);
+        updateIfNotNull(certificateDto.getCertificateType(), existingCertificateEntity::setCertificateType);
+        updateIfNotNull(certificateDto.getValidFrom(), existingCertificateEntity::setValidFrom);
+        updateIfNotNull(certificateDto.getValidTo(), existingCertificateEntity::setValidTo);
+        updateIfNotNull(certificateDto.getPdfUrl(), existingCertificateEntity::setPdfUrl);
+        updateAssignedUsers(existingCertificateEntity, certificateDto.getAssignedUserIds());
+        updateComments(existingCertificateEntity, certificateDto.getComments());
         return certificateMapper.toDto(existingCertificateEntity);
     }
 
-
-
     public void deleteCertificateDto(Long id) {
-        CertificateEntity toBeDeletedCertificateEntity = certificateRepository.findById(id);
-        if (toBeDeletedCertificateEntity != null) {
-            certificateRepository.delete(toBeDeletedCertificateEntity);
-        } else {
-            throw new RuntimeException("Certificate not found");
-        }
+        CertificateEntity toBeDeletedCertificateEntity = findCertificateById(id);
+        certificateRepository.delete(toBeDeletedCertificateEntity);
     }
 
     public List<CertificateType> getCertificateTypes() {
         return Arrays.asList(CertificateType.values());
     }
 
+    private CertificateEntity findCertificateById(Long id) {
+        return certificateRepository.findByIdOptional(id)
+                .orElseThrow(() -> new NotFoundException("Certificate with id " + id + " not found"));
+    }
 
+
+
+    private void updateAssignedUsers(CertificateEntity certificateEntity, Set<Long> userIds) {
+        if (userIds != null) {
+            Set<UserEntity> assignedUserEntities = userIds.stream()
+                    .map(userRepository::findById)
+                    .filter(user -> user != null)
+                    .collect(Collectors.toSet());
+            certificateEntity.setAssignedUsers(assignedUserEntities);
+        }
+    }
+
+    private void updateComments(CertificateEntity certificateEntity, List<String> comments) {
+        if (comments != null) {
+            List<CommentEntity> commentEntities = comments.stream()
+                    .map(content -> {
+                        CommentEntity commentEntity = new CommentEntity();
+                        commentEntity.setContent(content);
+                        return commentEntity;
+                    }).collect(Collectors.toList());
+            certificateEntity.setComments(commentEntities);
+        }
+    }
 }

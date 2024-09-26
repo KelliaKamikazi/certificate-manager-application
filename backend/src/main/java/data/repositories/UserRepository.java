@@ -12,10 +12,6 @@ import java.util.List;
 @Transactional(Transactional.TxType.MANDATORY)
 public class UserRepository implements PanacheRepository<UserEntity> {
     //Additional methods
-    public List<UserEntity> findByDepartment(DepartmentEntity department) {
-        return find("department", department).list();
-    }
-    public UserEntity findUserById(Long id) {
-        return findById(id);
-    }
+
+
 }

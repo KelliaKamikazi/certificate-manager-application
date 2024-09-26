@@ -77,6 +77,7 @@ const CertificateForm: React.FC = () => {
       pdfUrl: certificate.pdfUrl,
     };
 
+
     try {
       if (certificateId && certificateId !== '0') {
         await updateData({ ...newCertificate, id: Number(certificateId) });
