@@ -2,8 +2,6 @@ package data.entities;
 
 import jakarta.persistence.*;
 
-import java.time.LocalDateTime;
-
 @Entity
 @Table(name = "comments",schema = "application")
 public class CommentEntity {

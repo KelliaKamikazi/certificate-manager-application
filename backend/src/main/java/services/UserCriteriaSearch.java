@@ -34,7 +34,6 @@ public class UserCriteriaSearch {
 
         root.fetch(UserEntity_.department, JoinType.LEFT);
         root.fetch(UserEntity_.assignedCertificates, JoinType.LEFT);
-        root.fetch(UserEntity_.comments, JoinType.LEFT);
 
         List<Predicate> predicates = new ArrayList<>();
 
