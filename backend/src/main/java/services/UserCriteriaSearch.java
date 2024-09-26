@@ -52,10 +52,10 @@ public class UserCriteriaSearch {
         addPredicateIfNotEmpty(predicates, value,
                 v -> cb.like(cb.lower(root.get(attribute)), "%" + v.toLowerCase() + "%"));
     }
-    private void addDepartmentPredicateIfNotEmpty(List<Predicate> predicates, String departmentName, CriteriaBuilder cb, Root<UserEntity> root) {
-        if (departmentName != null && !departmentName.isEmpty()) {
+    private void addDepartmentPredicateIfNotEmpty(List<Predicate> predicates, String name, CriteriaBuilder cb, Root<UserEntity> root) {
+        if (name != null && !name.isEmpty()) {
             Join<UserEntity, DepartmentEntity> departmentJoin = root.join(UserEntity_.department);
-            predicates.add(cb.like(cb.lower(departmentJoin.get(DepartmentEntity_.name)), "%" + departmentName.toLowerCase() + "%"));
+            predicates.add(cb.like(cb.lower(departmentJoin.get(DepartmentEntity_.name)), "%" + name.toLowerCase() + "%"));
         }
     }
 

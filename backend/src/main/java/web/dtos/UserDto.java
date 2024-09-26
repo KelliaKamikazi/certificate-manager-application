@@ -10,7 +10,7 @@ public class UserDto {
     private String firstName;
     private String lastName;
     private String email;
-    private String departmentName;
+    private Long departmentId;
     private String plant;
     private Set<Long> assignedCertificateIds;
     private List<Long> commentIds;
@@ -18,13 +18,13 @@ public class UserDto {
     public UserDto() {
     }
 
-    public UserDto(Long id, String userId, String firstName, String lastName, String email, String departmentName, String plant, Set<Long> assignedCertificateIds, List<Long> commentIds) {
+    public UserDto(Long id, String userId, String firstName, String lastName, String email, Long departmentId, String plant, Set<Long> assignedCertificateIds, List<Long> commentIds) {
         this.id = id;
         this.userId = userId;
         this.firstName = firstName;
         this.lastName = lastName;
         this.email = email;
-        this.departmentName = departmentName;
+        this.departmentId = departmentId;
         this.plant = plant;
         this.assignedCertificateIds = assignedCertificateIds;
         this.commentIds = commentIds;
@@ -70,12 +70,12 @@ public class UserDto {
         this.email = email;
     }
 
-    public String getDepartmentName() {
-        return departmentName;
+    public Long getDepartmentId() {
+        return departmentId;
     }
 
-    public void setDepartmentName(String departmentName) {
-        this.departmentName = departmentName;
+    public void setDepartmentId(Long departmentName) {
+        this.departmentId = departmentId;
     }
 
     public String getPlant() {
@@ -110,7 +110,7 @@ public class UserDto {
                 ", firstName='" + firstName + '\'' +
                 ", lastName='" + lastName + '\'' +
                 ", email='" + email + '\'' +
-                ", departmentName='" + departmentName + '\'' +
+                ", departmentId='" + departmentId + '\'' +
                 ", plant='" + plant + '\'' +
                 ", assignedCertificateIds=" + assignedCertificateIds +
                 ", commentIds=" + commentIds +
