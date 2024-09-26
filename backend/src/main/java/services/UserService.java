@@ -17,8 +17,8 @@ public class UserService {
     @Inject
     private UserMapper userMapper;
 
-    public List<UserDto> searchUsers(String userId, String firstName,String lastName, String email, String plant) {
-        List<UserEntity> entities = userCriteriaSearch.searchUsers(userId, firstName,lastName, email, plant);
+    public List<UserDto> searchUsers(String userId, String firstName,String lastName, String email, String department,String plant) {
+        List<UserEntity> entities = userCriteriaSearch.searchUsers(userId, firstName,lastName, email,department, plant);
         return entities.stream().map(userMapper::toDTO).collect(Collectors.toList());
     }
 }
