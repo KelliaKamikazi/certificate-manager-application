@@ -77,6 +77,16 @@ const CertificateForm: React.FC = () => {
       pdfUrl: certificate.pdfUrl,
     };
 
+
+    // // const  response:Response = await fetch(" http://localhost:8080/certificate",{
+    // //     method:"POST",
+    // //     body: newCertificate,
+    // // })
+    //
+    // if (response) {
+    //   //
+    // }
+
     try {
       if (certificateId && certificateId !== '0') {
         await updateData({ ...newCertificate, id: Number(certificateId) });

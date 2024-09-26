@@ -1,4 +1,5 @@
 package services;
+
 import data.entities.UserEntity;
 import data.entities.UserEntity_;
 import jakarta.enterprise.context.ApplicationScoped;
@@ -8,9 +9,11 @@ import jakarta.persistence.criteria.CriteriaBuilder;
 import jakarta.persistence.criteria.CriteriaQuery;
 import jakarta.persistence.criteria.Predicate;
 import jakarta.persistence.criteria.Root;
+import jakarta.persistence.metamodel.SingularAttribute;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.function.Function;
 
 @ApplicationScoped
 public class UserCriteriaSearch {
@@ -23,29 +26,30 @@ public class UserCriteriaSearch {
     }
 
     public List<UserEntity> searchUsers(String userId, String firstName, String lastName, String email, String plant) {
-
         CriteriaBuilder cb = entityManager.getCriteriaBuilder();
         CriteriaQuery<UserEntity> query = cb.createQuery(UserEntity.class);
         Root<UserEntity> root = query.from(UserEntity.class);
         List<Predicate> predicates = new ArrayList<>();
 
-        if (userId != null && !userId.isEmpty()) {
-            predicates.add(cb.equal(root.get(UserEntity_.userId), userId));
-        }
-        if (firstName != null && !firstName.isEmpty()) {
-            predicates.add(cb.like(cb.lower(root.get(UserEntity_.firstName)), "%" + firstName.toLowerCase() + "%"));
-        }
-        if (lastName != null && !lastName.isEmpty()) {
-            predicates.add(cb.like(cb.lower(root.get(UserEntity_.lastName)), "%" + lastName.toLowerCase() + "%"));
-        }
-        if (email != null && !email.isEmpty()) {
-            predicates.add(cb.like(cb.lower(root.get(UserEntity_.email)), "%" + email.toLowerCase() + "%"));
-        }
-        if (plant != null && !plant.isEmpty()) {
-            predicates.add(cb.equal(root.get(UserEntity_.plant), plant));
-        }
+        addPredicateIfNotEmpty(predicates, userId, value -> cb.equal(root.get(UserEntity_.userId), value));
+        addLikePredicateIfNotEmpty(predicates, firstName, UserEntity_.firstName, cb, root);
+        addLikePredicateIfNotEmpty(predicates, lastName, UserEntity_.lastName, cb, root);
+        addLikePredicateIfNotEmpty(predicates, email, UserEntity_.email, cb, root);
+        addPredicateIfNotEmpty(predicates, plant, value -> cb.equal(root.get(UserEntity_.plant), value));
+
         query.where(predicates.toArray(new Predicate[0]));
 
         return entityManager.createQuery(query).getResultList();
+    }
+
+    private void addPredicateIfNotEmpty(List<Predicate> predicates, String value, Function<String, Predicate> predicateFunction) {
+        if (value != null && !value.isEmpty()) {
+            predicates.add(predicateFunction.apply(value));
+        }
+    }
+
+    private void addLikePredicateIfNotEmpty(List<Predicate> predicates, String value, SingularAttribute<UserEntity, String> attribute, CriteriaBuilder cb, Root<UserEntity> root) {
+        addPredicateIfNotEmpty(predicates, value,
+                v -> cb.like(cb.lower(root.get(attribute)), "%" + v.toLowerCase() + "%"));
     }
 }
