@@ -1,24 +1,22 @@
 package web.dtos;
 
-import java.time.LocalDateTime;
-
 public class CommentDto {
 
     private Long id;
     private Long certificateId;
     private Long userId;
     private String content;
-    private LocalDateTime timestamp;
+
 
     public CommentDto() {
     }
 
-    public CommentDto(Long id, Long certificateId, Long userId, String content, LocalDateTime timestamp) {
+    public CommentDto(Long id, Long certificateId, Long userId, String content) {
         this.id = id;
         this.certificateId = certificateId;
         this.userId = userId;
         this.content = content;
-        this.timestamp = timestamp;
+
     }
 
     public Long getId() {
@@ -53,13 +51,6 @@ public class CommentDto {
         this.content = content;
     }
 
-    public LocalDateTime getTimestamp() {
-        return timestamp;
-    }
-
-    public void setTimestamp(LocalDateTime timestamp) {
-        this.timestamp = timestamp;
-    }
     @Override
     public String toString() {
         return "CommentDto{" +
@@ -67,7 +58,6 @@ public class CommentDto {
                 ", certificateId=" + certificateId +
                 ", userId=" + userId +
                 ", content='" + content + '\'' +
-                ", timestamp=" + timestamp +
                 '}';
     }
 }

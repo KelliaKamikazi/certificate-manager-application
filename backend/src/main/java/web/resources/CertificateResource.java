@@ -10,7 +10,7 @@ import web.dtos.CertificateDto;
 
 import java.util.List;
 
-@Path("/certificate")
+@Path("/certificates")
 public class CertificateResource {
 
     @Inject

@@ -15,6 +15,7 @@ public class CertificateEntity {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     @ManyToOne
+    @JoinColumn(name = "supplier_id", nullable = false)
     private SupplierEntity supplier;
     @Enumerated(EnumType.STRING)
     private CertificateType certificateType;
@@ -35,8 +36,7 @@ public class CertificateEntity {
     @OneToMany(mappedBy = "certificate", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<CommentEntity> comments = new ArrayList<>();
 
-    public CertificateEntity() {
-    }
+    public CertificateEntity() {}
 
     public CertificateEntity(Long id, SupplierEntity supplier, CertificateType certificateType, LocalDate validFrom, LocalDate validTo, String pdfUrl, Set<UserEntity> assignedUsers, List<CommentEntity> comments) {
         this.id = id;

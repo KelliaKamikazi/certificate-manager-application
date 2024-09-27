@@ -27,7 +27,7 @@ public class UserResource {
             @QueryParam("department") String department,
             @QueryParam("plant") String plant) {
 
-        List<UserDto> users = userService.searchUsers(userId, firstName, lastName, email,department, plant);
+        List<UserDto> users = userService.searchUsers(userId, firstName, lastName, email, department, plant);
         return Response.ok(users).build();
     }
 }

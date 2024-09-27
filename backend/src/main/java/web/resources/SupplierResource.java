@@ -28,8 +28,6 @@ public class SupplierResource {
         }
         return Response.ok(supplierDTO).build();
     }
-
-
     @GET
     @Path("/name/{name}")
     public Response getSupplierByName(@PathParam("name") String name) {
@@ -39,7 +37,6 @@ public class SupplierResource {
         }
         return Response.ok(supplierDTO).build();
     }
-
     @GET
     @Path("/city/{city}")
     public Response getSupplierByCity(@PathParam("city") String city) {
@@ -49,6 +46,4 @@ public class SupplierResource {
         }
         return Response.ok(supplierDTO).build();
     }
-
-
 }

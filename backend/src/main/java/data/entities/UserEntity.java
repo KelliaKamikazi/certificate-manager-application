@@ -4,6 +4,7 @@ import jakarta.persistence.*;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.validation.constraints.Email;
 
 import java.util.ArrayList;
 import java.util.HashSet;
@@ -22,6 +23,7 @@ public class UserEntity {
 
     private String firstName;
     private String lastName;
+    @Email
     private String email;
 
     @ManyToOne
@@ -34,7 +36,7 @@ public class UserEntity {
     private Set<CertificateEntity> assignedCertificates = new HashSet<>();
 
     @OneToMany(mappedBy = "user")
-    private List<CommentEntity> comments = new ArrayList<>();
+    private Set<CommentEntity> comments = new HashSet<>();
 
     public Long getId() {
         return id;
@@ -100,11 +102,11 @@ public class UserEntity {
         this.assignedCertificates = assignedCertificates;
     }
 
-    public List<CommentEntity> getComments() {
+    public Set<CommentEntity> getComments() {
         return comments;
     }
 
-    public void setComments(List<CommentEntity> comments) {
+    public void setComments(Set<CommentEntity> comments) {
         this.comments = comments;
     }
 }
