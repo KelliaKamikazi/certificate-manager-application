@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
     <groupId>taskforce</groupId>
     <artifactId>certificate-manager-backend</artifactId>
@@ -109,7 +110,8 @@
                 </executions>
                 <configuration>
                     <systemPropertyVariables>
-                        <native.image.path>${project.build.directory}/${project.build.finalName}-runner</native.image.path>
+                        <native.image.path>${project.build.directory}/${project.build.finalName}-runner
+                        </native.image.path>
                         <java.util.logging.manager>org.jboss.logmanager.LogManager</java.util.logging.manager>
                     </systemPropertyVariables>
                 </configuration>
@@ -126,7 +128,8 @@
                             <goal>copy-resources</goal>
                         </goals>
                         <configuration>
-                            <outputDirectory>${project.build.directory}/classes/META-INF/resources/frontend</outputDirectory>
+                            <outputDirectory>${project.build.directory}/classes/META-INF/resources/frontend
+                            </outputDirectory>
                             <resources>
                                 <resource>
                                     <directory>${basedir}/../frontend/frontend</directory>
@@ -154,16 +157,20 @@
                 </executions>
                 <configuration>
                     <jsonLibrary>jackson2</jsonLibrary>
-                    <classes>
-                        <class>web.dtos.CertificateDto</class>
-                        <class>web.dtos.DepartmentDto</class>
-                        <class>web.dtos.SupplierDto</class>
-                        <class>web.dtos.CommentDto</class>
-                        <class>web.dtos.UserDto</class>
-                    </classes>
+                    <classPatterns>
+                        <pattern>web.dtos.*</pattern>
+                    </classPatterns>
                     <outputKind>module</outputKind>
                     <outputFileType>implementationFile</outputFileType>
+                    <mapEnum>asEnum</mapEnum>
+                    <nonConstEnums>true</nonConstEnums>
                     <outputFile>../frontend/src/components/data/certificate.ts</outputFile>
+
+                    <classesFromAutomaticJaxrsApplication>true</classesFromAutomaticJaxrsApplication>
+                    <extensions>
+                        <extension>cz.habarta.typescript.generator.ext.AxiosClientExtension</extension>
+                    </extensions>
+
                 </configuration>
             </plugin>
         </plugins>

@@ -58,6 +58,7 @@ web_modules/
 # Optional stylelint cache
 .stylelintcache
 
+
 # Microbundle cache
 .rpt2_cache/
 .rts2_cache_cjs/
@@ -130,7 +131,7 @@ dist
 .yarn/install-state.gz
 .pnp.*
 
-
+src/components/data/certificate.ts
 
 
 
