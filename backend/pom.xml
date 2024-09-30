@@ -139,7 +139,33 @@
                     </execution>
                 </executions>
             </plugin>
-
+            <plugin>
+                <groupId>cz.habarta.typescript-generator</groupId>
+                <artifactId>typescript-generator-maven-plugin</artifactId>
+                <version>3.2.1263</version>
+                <executions>
+                    <execution>
+                        <id>generate</id>
+                        <goals>
+                            <goal>generate</goal>
+                        </goals>
+                        <phase>process-classes</phase>
+                    </execution>
+                </executions>
+                <configuration>
+                    <jsonLibrary>jackson2</jsonLibrary>
+                    <classes>
+                        <class>web.dtos.CertificateDto</class>
+                        <class>web.dtos.DepartmentDto</class>
+                        <class>web.dtos.SupplierDto</class>
+                        <class>web.dtos.CommentDto</class>
+                        <class>web.dtos.UserDto</class>
+                    </classes>
+                    <outputKind>module</outputKind>
+                    <outputFileType>implementationFile</outputFileType>
+                    <outputFile>../frontend/src/components/data/certificate.ts</outputFile>
+                </configuration>
+            </plugin>
         </plugins>
     </build>
 

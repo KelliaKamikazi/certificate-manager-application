@@ -12,23 +12,23 @@ export interface Supplier {
   city?: string;
 }
 export const INITIAL_CERTIFICATE = {
-  supplier: { name: '' },
-  certificateType: '',
-  validTo: '',
-  validFrom: '',
+  supplier: { name: "" },
+  certificateType: "",
+  validTo: "",
+  validFrom: "",
   pdfUrl: undefined as string | undefined,
 };
 export const sampleCertificates: Certificate[] = [];
 
 export enum Certificate_Type {
-  PERMISSION_OF_PRINTING = 'Permission of Printing',
-  CCC_CERTIFICATE = 'CCC Certificate',
+  PERMISSION_OF_PRINTING = "Permission of Printing",
+  CCC_CERTIFICATE = "CCC Certificate",
 }
 export interface Participant {
   id?: number;
   userId: string;
-  name: string;
-  firstname: string;
+  lastName: string;
+  firstName: string;
   department: string;
   plant: string;
   email: string;

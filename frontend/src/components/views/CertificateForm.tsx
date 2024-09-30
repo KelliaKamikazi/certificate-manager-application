@@ -1,29 +1,29 @@
-import '../../styles/certificateForm.css';
+import "../../styles/certificateForm.css";
 import {
   useState,
   ChangeEvent,
   FormEvent,
   useEffect,
   useCallback,
-} from 'react';
-import '../../utils/indexedDB';
+} from "react";
+import "../../utils/indexedDB";
 import {
   Certificate,
   Supplier,
   INITIAL_CERTIFICATE,
   Participant,
-} from '../data/data';
-import { addData, getCertificateById, updateData } from '../../utils/indexedDB';
-import { SupplierField } from '../inputs/SupplierField';
-import { CertificateType } from '../inputs/CertificateType';
-import { Textfield } from '../base/Textfield';
-import { useParams } from 'react-router-dom';
-import SupplierLookup from './SupplierLookup';
-import IconSvg from '../icons/icons';
-import searchIcon from '../icons/searchIcon';
-import { useTranslation } from '../../useTranslation';
-import ParticipantLookup from './ParticipantLookup';
-import CommentForm from './CommentForm';
+} from "../data/data";
+import { addData, getCertificateById, updateData } from "../../utils/indexedDB";
+import { SupplierField } from "../inputs/SupplierField";
+import { CertificateType } from "../inputs/CertificateType";
+import { Textfield } from "../base/Textfield";
+import { useParams } from "react-router-dom";
+import SupplierLookup from "./SupplierLookup";
+import IconSvg from "../icons/icons";
+import searchIcon from "../icons/searchIcon";
+import { useTranslation } from "../../useTranslation";
+import ParticipantLookup from "./ParticipantLookup";
+import CommentForm from "./CommentForm";
 
 const CertificateForm: React.FC = () => {
   const { t } = useTranslation();
@@ -34,7 +34,7 @@ const CertificateForm: React.FC = () => {
   const [selectedParticipants] = useState<Participant[]>([]);
 
   useEffect(() => {
-    if (certificateId && certificateId !== '0') {
+    if (certificateId && certificateId !== "0") {
       fetchCertificate();
     }
   }, [certificateId]);
@@ -46,10 +46,10 @@ const CertificateForm: React.FC = () => {
         ...fetchedCertificate,
         validFrom: new Date(fetchedCertificate.validFrom)
           .toISOString()
-          .split('T')[0],
+          .split("T")[0],
         validTo: new Date(fetchedCertificate.validTo)
           .toISOString()
-          .split('T')[0],
+          .split("T")[0],
         pdfUrl: fetchedCertificate.pdfUrl,
       });
     }
@@ -58,13 +58,13 @@ const CertificateForm: React.FC = () => {
     event.preventDefault();
     const { supplier, certificateType, validTo, validFrom } = certificate;
     if (!supplier.name || !certificateType || !validTo || !validFrom) {
-      alert(t('allFieldsRequired'));
+      alert(t("allFieldsRequired"));
       return;
     }
     const validFromDate = new Date(validFrom);
     const validToDate = new Date(validTo);
     if (validFromDate > validToDate) {
-      alert(t('validFromLaterThanValidTo'));
+      alert(t("validFromLaterThanValidTo"));
       return;
     }
 
@@ -77,22 +77,21 @@ const CertificateForm: React.FC = () => {
       pdfUrl: certificate.pdfUrl,
     };
 
-
     try {
-      if (certificateId && certificateId !== '0') {
+      if (certificateId && certificateId !== "0") {
         await updateData({ ...newCertificate, id: Number(certificateId) });
-        alert(t('certificateUpdated'));
+        alert(t("certificateUpdated"));
       } else {
         await addData([newCertificate]);
-        alert(t('certificateSaved'));
+        alert(t("certificateSaved"));
       }
       handleResetFields();
     } catch (error) {
-      alert(t('certificateNotAddedOrUpdated'));
+      alert(t("certificateNotAddedOrUpdated"));
     }
   };
   const handleInputChange = (
-    e: ChangeEvent<HTMLInputElement | HTMLSelectElement>,
+    e: ChangeEvent<HTMLInputElement | HTMLSelectElement>
   ) => {
     const { name, value } = e.target;
     setCertificate((prevData) => ({
@@ -108,7 +107,7 @@ const CertificateForm: React.FC = () => {
   };
   const handleFileChange = (e: ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
-    if (file && file.type === 'application/pdf') {
+    if (file && file.type === "application/pdf") {
       const reader = new FileReader();
       reader.onloadend = () => {
         setCertificate((prevData) => ({
@@ -118,7 +117,7 @@ const CertificateForm: React.FC = () => {
       };
       reader.readAsDataURL(file);
     } else {
-      alert(t('onlyPDFAllowed'));
+      alert(t("onlyPDFAllowed"));
     }
   };
   const handleResetFields = () => {
@@ -165,7 +164,7 @@ const CertificateForm: React.FC = () => {
               onChange={handleInputChange}
             />
             <div className="form-input-container">
-              <label className="form-input-label">{t('validFrom')}</label>
+              <label className="form-input-label">{t("validFrom")}</label>
               <Textfield
                 name="validFrom"
                 className="form-input"
@@ -175,7 +174,7 @@ const CertificateForm: React.FC = () => {
               />
             </div>
             <div className="form-input-container">
-              <label className="form-input-label">{t('validTo')}</label>
+              <label className="form-input-label">{t("validTo")}</label>
               <Textfield
                 name="validTo"
                 className="form-input"
@@ -206,7 +205,7 @@ const CertificateForm: React.FC = () => {
                       {selectedParticipants.map((participant) => (
                         <tr key={participant.email}>
                           <td></td>
-                          <td>{participant.name}</td>
+                          <td>{participant.lastName}</td>
                           <td>{participant.department}</td>
                           <td>{participant.email}</td>
                         </tr>
@@ -226,40 +225,34 @@ const CertificateForm: React.FC = () => {
               className="upload-btn"
               onClick={() =>
                 (
-                  document.querySelector('.upload-input') as HTMLInputElement
+                  document.querySelector(".upload-input") as HTMLInputElement
                 )?.click()
               }
             >
-              {t('upload')}
+              {t("upload")}
             </button>
             <input
               type="file"
               className="upload-input"
               onChange={handleFileChange}
-              style={{ display: 'none' }}
+              style={{ display: "none" }}
             />
-            <div
-              className="file-preview-panel"
-              id="pdf-preview"
-            >
+            <div className="file-preview-panel" id="pdf-preview">
               <iframe src={certificate.pdfUrl}></iframe>
-              {certificate.pdfUrl ? null : <span>{t('noPdfAvailable')}</span>}
+              {certificate.pdfUrl ? null : <span>{t("noPdfAvailable")}</span>}
             </div>
           </div>
         </div>
         <div className="buttons-container">
-          <button
-            type="submit"
-            className="submit-cert-btn"
-          >
-            {t('save')}
+          <button type="submit" className="submit-cert-btn">
+            {t("save")}
           </button>
           <button
             type="reset"
             className="reset-cert-btn"
             onClick={handleResetFields}
           >
-            {t('reset')}
+            {t("reset")}
           </button>
         </div>
       </form>

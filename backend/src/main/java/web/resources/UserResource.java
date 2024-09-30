@@ -18,6 +18,13 @@ public class UserResource {
     private UserService userService;
 
     @GET
+    public Response getAllUsers(){
+        List<UserDto> users = userService.getAllUsers();
+        return Response.ok(users).build();
+    }
+
+
+    @GET
     @Path("/search")
     public Response searchUsers(
             @QueryParam("userId") String userId,

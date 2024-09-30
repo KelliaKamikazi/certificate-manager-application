@@ -1,9 +1,9 @@
-import { Certificate, Supplier, Participant } from '../components/data/data';
-const DB_NAME = 'exampleDB';
+import { Certificate, Supplier, Participant } from "../components/data/data";
+const DB_NAME = "exampleDB";
 const DB_VERSION = 1;
-const STORE_CERTIFICATES = 'certificates';
-const STORE_SUPPLIERS = 'suppliers';
-const STORE_PARTICIPANTS = 'participants';
+const STORE_CERTIFICATES = "certificates";
+const STORE_SUPPLIERS = "suppliers";
+const STORE_PARTICIPANTS = "participants";
 
 const openDB = (): Promise<IDBDatabase> => {
   return new Promise((resolve, reject) => {
@@ -15,21 +15,21 @@ const openDB = (): Promise<IDBDatabase> => {
       // Create stores if they don't exist
       if (!db.objectStoreNames.contains(STORE_CERTIFICATES)) {
         db.createObjectStore(STORE_CERTIFICATES, {
-          keyPath: 'id',
+          keyPath: "id",
           autoIncrement: true,
         });
       }
 
       if (!db.objectStoreNames.contains(STORE_SUPPLIERS)) {
         db.createObjectStore(STORE_SUPPLIERS, {
-          keyPath: 'supplierIndex',
+          keyPath: "supplierIndex",
           autoIncrement: false,
         });
       }
 
       if (!db.objectStoreNames.contains(STORE_PARTICIPANTS)) {
         db.createObjectStore(STORE_PARTICIPANTS, {
-          keyPath: 'id',
+          keyPath: "id",
           autoIncrement: true,
         });
       }
@@ -41,7 +41,7 @@ const openDB = (): Promise<IDBDatabase> => {
       // Function to check if a store is empty
       const isStoreEmpty = (storeName: string): Promise<boolean> => {
         return new Promise((resolve) => {
-          const transaction = db.transaction(storeName, 'readonly');
+          const transaction = db.transaction(storeName, "readonly");
           const store = transaction.objectStore(storeName);
           const countRequest = store.count();
           countRequest.onsuccess = () => {
@@ -53,7 +53,7 @@ const openDB = (): Promise<IDBDatabase> => {
       // Function to populate a store if it's empty
       const populateStoreIfEmpty = async (storeName: string, data: any[]) => {
         if (await isStoreEmpty(storeName)) {
-          const transaction = db.transaction(storeName, 'readwrite');
+          const transaction = db.transaction(storeName, "readwrite");
           const store = transaction.objectStore(storeName);
           data.forEach((item) => {
             store.add(item);
@@ -73,26 +73,26 @@ const openDB = (): Promise<IDBDatabase> => {
 
       // Initial data
       const suppliers: Supplier[] = [
-        { supplierIndex: 1, name: 'ANDEMIS GmbH', city: 'Stuttgart' },
-        { supplierIndex: 2, name: 'IMLER AG', city: 'Berlin' },
+        { supplierIndex: 1, name: "ANDEMIS GmbH", city: "Stuttgart" },
+        { supplierIndex: 2, name: "IMLER AG", city: "Berlin" },
       ];
 
       const participants = [
         {
-          userId: 'ZWOLFER',
-          name: 'Simon',
-          firstname: 'Zwölfer',
-          department: 'ITM/FP',
-          plant: '096',
-          email: 'simon@example.com',
+          userId: "ZWOLFER",
+          name: "Simon",
+          firstname: "Zwölfer",
+          department: "ITM/FP",
+          plant: "096",
+          email: "simon@example.com",
         },
         {
-          userId: 'WOLFGANG',
-          name: 'Wolfgang',
-          firstname: 'Stark',
-          department: 'ITM/FP',
-          plant: '094',
-          email: 'wolfgang@example.com',
+          userId: "WOLFGANG",
+          name: "Wolfgang",
+          firstname: "Stark",
+          department: "ITM/FP",
+          plant: "094",
+          email: "wolfgang@example.com",
         },
       ];
 
@@ -105,7 +105,7 @@ const openDB = (): Promise<IDBDatabase> => {
           resolve(db);
         })
         .catch((error) => {
-          console.error('Error during population:', error);
+          console.error("Error during population:", error);
           reject(error);
         });
     };
@@ -121,7 +121,7 @@ const initDB = async (): Promise<boolean> => {
     await openDB();
     return true;
   } catch (error) {
-    console.error('Error during initDB', error);
+    console.error("Error during initDB", error);
     return false;
   }
 };
@@ -129,7 +129,7 @@ const initDB = async (): Promise<boolean> => {
 // CRUD Operations for Certificates
 const addData = async (data: Certificate[]): Promise<void> => {
   const db = await openDB();
-  const transaction = db.transaction(STORE_CERTIFICATES, 'readwrite');
+  const transaction = db.transaction(STORE_CERTIFICATES, "readwrite");
   const store = transaction.objectStore(STORE_CERTIFICATES);
 
   const promises = data.map((item) => {
@@ -155,7 +155,7 @@ const addData = async (data: Certificate[]): Promise<void> => {
 
 const getData = async (): Promise<Certificate[]> => {
   const db = await openDB();
-  const transaction = db.transaction(STORE_CERTIFICATES, 'readonly');
+  const transaction = db.transaction(STORE_CERTIFICATES, "readonly");
   const store = transaction.objectStore(STORE_CERTIFICATES);
   const request = store.getAll();
 
@@ -174,7 +174,7 @@ const getData = async (): Promise<Certificate[]> => {
 
 const getCertificateById = async (id: number): Promise<Certificate | null> => {
   const db = await openDB();
-  const transaction = db.transaction(STORE_CERTIFICATES, 'readonly');
+  const transaction = db.transaction(STORE_CERTIFICATES, "readonly");
   const store = transaction.objectStore(STORE_CERTIFICATES);
   const request = store.get(id);
 
@@ -202,7 +202,7 @@ const getCertificateById = async (id: number): Promise<Certificate | null> => {
 
 const updateData = async (data: Certificate): Promise<void> => {
   const db = await openDB();
-  const transaction = db.transaction(STORE_CERTIFICATES, 'readwrite');
+  const transaction = db.transaction(STORE_CERTIFICATES, "readwrite");
   const store = transaction.objectStore(STORE_CERTIFICATES);
 
   return new Promise<void>((resolve, reject) => {
@@ -227,7 +227,7 @@ const updateData = async (data: Certificate): Promise<void> => {
 
 const deleteData = async (id: number): Promise<void> => {
   const db = await openDB();
-  const transaction = db.transaction(STORE_CERTIFICATES, 'readwrite');
+  const transaction = db.transaction(STORE_CERTIFICATES, "readwrite");
   const store = transaction.objectStore(STORE_CERTIFICATES);
 
   return new Promise<void>((resolve, reject) => {
@@ -245,10 +245,10 @@ const deleteData = async (id: number): Promise<void> => {
 export const searchSuppliers = async (
   name: string,
   supplierIndex: number | undefined,
-  city: string,
+  city: string
 ): Promise<Supplier[]> => {
   const db = await openDB();
-  const transaction = db.transaction(STORE_SUPPLIERS, 'readonly');
+  const transaction = db.transaction(STORE_SUPPLIERS, "readonly");
   const store = transaction.objectStore(STORE_SUPPLIERS);
 
   const request = store.getAll();
@@ -269,7 +269,7 @@ export const searchSuppliers = async (
 
 const fetchParticipants = async (): Promise<Participant[]> => {
   const db = await openDB();
-  const transaction = db.transaction(STORE_PARTICIPANTS, 'readonly');
+  const transaction = db.transaction(STORE_PARTICIPANTS, "readonly");
   const store = transaction.objectStore(STORE_PARTICIPANTS);
 
   return new Promise((resolve, reject) => {
@@ -291,8 +291,8 @@ const fetchParticipants = async (): Promise<Participant[]> => {
     request.onerror = (event) => {
       reject(
         new Error(
-          `Error fetching participants: ${(event.target as IDBRequest).error}`,
-        ),
+          `Error fetching participants: ${(event.target as IDBRequest).error}`
+        )
       );
     };
   });
@@ -303,10 +303,10 @@ const searchParticipant = async (
   firstname: string,
   department: string,
   plant: string,
-  email: string,
+  email: string
 ): Promise<Participant[]> => {
   const db = await openDB();
-  const transaction = db.transaction(STORE_PARTICIPANTS, 'readonly');
+  const transaction = db.transaction(STORE_PARTICIPANTS, "readonly");
   const store = transaction.objectStore(STORE_PARTICIPANTS);
 
   const request = store.getAll();
@@ -316,9 +316,9 @@ const searchParticipant = async (
       const result = request.result.filter((participant: Participant) => {
         return (
           (!name ||
-            participant.name.toLowerCase().includes(name.toLowerCase())) &&
+            participant.lastName.toLowerCase().includes(name.toLowerCase())) &&
           (!firstname ||
-            participant.firstname
+            participant.firstName
               .toLowerCase()
               .includes(firstname.toLowerCase())) &&
           (!department ||
