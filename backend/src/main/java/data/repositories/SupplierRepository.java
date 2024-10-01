@@ -1,4 +1,5 @@
 package data.repositories;
+
 import data.entities.SupplierEntity;
 import data.entities.SupplierEntity_;
 import io.quarkus.hibernate.orm.panache.PanacheRepository;
@@ -8,23 +9,25 @@ import jakarta.persistence.criteria.CriteriaQuery;
 import jakarta.persistence.criteria.Root;
 import jakarta.transaction.Transactional;
 
+import java.util.List;
+
 @ApplicationScoped
 @Transactional(Transactional.TxType.MANDATORY)
 public class SupplierRepository implements PanacheRepository<SupplierEntity> {
-    public SupplierEntity findByName(String name) {
+
+    public List<SupplierEntity> findByName(String name) {
         CriteriaBuilder cb = getEntityManager().getCriteriaBuilder();
         CriteriaQuery<SupplierEntity> cq = cb.createQuery(SupplierEntity.class);
         Root<SupplierEntity> root = cq.from(SupplierEntity.class);
-        cq.where(cb.equal(root.get(SupplierEntity_.name), name));
-        return getEntityManager().createQuery(cq).getSingleResult();
+        cq.where(cb.like(cb.lower(root.get(SupplierEntity_.name)), "%" + name.toLowerCase() + "%"));
+        return getEntityManager().createQuery(cq).getResultList();
     }
-    public SupplierEntity findByCity(String city){
+
+    public List<SupplierEntity> findByCity(String city) {
         CriteriaBuilder cb = getEntityManager().getCriteriaBuilder();
-        CriteriaQuery<SupplierEntity>cq = cb.createQuery(SupplierEntity.class);
-        Root<SupplierEntity>root= cq.from(SupplierEntity.class);
-        cq.where(cb.equal(root.get(SupplierEntity_.city),city));
-        return  getEntityManager().createQuery(cq).getSingleResult();
+        CriteriaQuery<SupplierEntity> cq = cb.createQuery(SupplierEntity.class);
+        Root<SupplierEntity> root = cq.from(SupplierEntity.class);
+        cq.where(cb.like(cb.lower(root.get(SupplierEntity_.city)), "%" + city.toLowerCase() + "%"));
+        return getEntityManager().createQuery(cq).getResultList();
     }
-
-
 }

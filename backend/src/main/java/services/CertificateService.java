@@ -36,6 +36,11 @@ public class CertificateService {
                 .collect(Collectors.toList());
     }
 
+    public CertificateDto getCertificateById(Long id) {
+        CertificateEntity certificate = findCertificateById(id);
+        return certificateMapper.toDto(certificate);
+    }
+
     public CertificateDto createCertificate(CertificateDto certificateDto) {
         CertificateEntity certificateEntity = certificateMapper.toEntity(certificateDto);
         certificateRepository.persist(certificateEntity);
@@ -47,6 +52,7 @@ public class CertificateService {
             updater.accept(value);
         }
     }
+
     public CertificateDto updateCertificateDto(Long id, CertificateDto certificateDto) {
         CertificateEntity existingCertificateEntity = findCertificateById(id);
         updateIfNotNull(certificateDto.getCertificateType(), existingCertificateEntity::setCertificateType);
@@ -67,11 +73,11 @@ public class CertificateService {
         return Arrays.asList(CertificateType.values());
     }
 
+
     private CertificateEntity findCertificateById(Long id) {
         return certificateRepository.findByIdOptional(id)
                 .orElseThrow(() -> new NotFoundException("Certificate with id " + id + " not found"));
     }
-
 
 
     private void updateAssignedUsers(CertificateEntity certificateEntity, Set<Long> userIds) {

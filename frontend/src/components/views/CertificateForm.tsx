@@ -120,12 +120,6 @@ const CertificateForm: React.FC = () => {
     });
   };
 
-  // const handleSupplierChange = (supplier: Supplier) => {
-  //   setCertificate((prevData) => ({
-  //     ...prevData,
-  //     supplier,
-  //   }));
-  // };
   const handleFileChange = (e: ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (file && file.type === "application/pdf") {
@@ -144,10 +138,7 @@ const CertificateForm: React.FC = () => {
   const handleResetFields = () => {
     setCertificate(INITIAL_CERTIFICATE);
   };
-  // const handleSupplierOnSelect = useCallback((supplierId: number) => {
-  //   handleSupplierChange(supplierId);
-  //   setShowSupplierLookup(false);
-  // }, []);
+
   const handleCloseSupplierLookup = useCallback(() => {
     setShowSupplierLookup(false);
   }, []);
@@ -161,22 +152,6 @@ const CertificateForm: React.FC = () => {
     if (!date) return "";
     return date.toISOString().split("T")[0];
   };
-
-  // const handleSupplierSelect = (supplier: SupplierDto) => {
-  //   setCertificate(prev => ({
-  //     ...prev,
-  //     supplierId: supplier.id
-  //   }));
-  //   setShowSupplierLookup(false);
-  // };
-
-  // const handleSupplierSelect = (supplier: SupplierDto) => {
-  //   setCertificate(prev => ({
-  //     ...prev,
-  //     supplierId: supplier.id
-  //   }));
-  //   setShowSupplierLookup(false);
-  // };
 
   const handleSupplierChange = (supplierId: number) => {
     setCertificate((prevData) => ({

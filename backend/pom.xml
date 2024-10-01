@@ -148,30 +148,27 @@
                 <version>3.2.1263</version>
                 <executions>
                     <execution>
-                        <id>generate</id>
+                        <id>generate-types-and-api-services</id>
                         <goals>
                             <goal>generate</goal>
                         </goals>
                         <phase>process-classes</phase>
+                        <configuration>
+                            <jsonLibrary>jackson2</jsonLibrary>
+                            <classPatterns>web.dtos.*</classPatterns>
+                            <outputKind>module</outputKind>
+                            <outputFileType>implementationFile</outputFileType>
+                            <mapEnum>asEnum</mapEnum>
+                            <nonConstEnums>true</nonConstEnums>
+                            <outputFile>../frontend/src/components/data/certificate.ts</outputFile>
+                            <classesFromAutomaticJaxrsApplication>true</classesFromAutomaticJaxrsApplication>
+                            <extensions>
+                                <extension>cz.habarta.typescript.generator.ext.AxiosClientExtension</extension>
+                            </extensions>
+                            <generateJaxrsApplicationClient>true</generateJaxrsApplicationClient>
+                        </configuration>
                     </execution>
                 </executions>
-                <configuration>
-                    <jsonLibrary>jackson2</jsonLibrary>
-                    <classPatterns>
-                        <pattern>web.dtos.*</pattern>
-                    </classPatterns>
-                    <outputKind>module</outputKind>
-                    <outputFileType>implementationFile</outputFileType>
-                    <mapEnum>asEnum</mapEnum>
-                    <nonConstEnums>true</nonConstEnums>
-                    <outputFile>../frontend/src/components/data/certificate.ts</outputFile>
-
-                    <classesFromAutomaticJaxrsApplication>true</classesFromAutomaticJaxrsApplication>
-                    <extensions>
-                        <extension>cz.habarta.typescript.generator.ext.AxiosClientExtension</extension>
-                    </extensions>
-
-                </configuration>
             </plugin>
         </plugins>
     </build>
