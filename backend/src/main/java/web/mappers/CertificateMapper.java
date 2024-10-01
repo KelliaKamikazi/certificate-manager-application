@@ -20,6 +20,9 @@ public class CertificateMapper {
     @Inject
     UserRepository userRepository;
 
+    @Inject
+    SupplierMapper supplierMapper;
+
     public CertificateDto toDto(CertificateEntity certificateEntity) {
         if (certificateEntity == null) {
             return null;
@@ -27,7 +30,7 @@ public class CertificateMapper {
 
         CertificateDto dto = new CertificateDto();
         dto.setId(certificateEntity.getId());
-        dto.setSupplierId(certificateEntity.getSupplier() != null ? certificateEntity.getSupplier().getId() : null);
+        dto.setSupplier(supplierMapper.toDTO(certificateEntity.getSupplier()));
         dto.setCertificateType(certificateEntity.getCertificateType());
         dto.setValidFrom(certificateEntity.getValidFrom());
         dto.setValidTo(certificateEntity.getValidTo());
@@ -58,10 +61,10 @@ public class CertificateMapper {
         entity.setValidFrom(certificateDto.getValidFrom());
         entity.setValidTo(certificateDto.getValidTo());
 
-        if (certificateDto.getSupplierId() != null) {
-            SupplierEntity supplierEntity = supplierRepository.findById(certificateDto.getSupplierId());
+        if (certificateDto.getSupplier() != null) {
+            SupplierEntity supplierEntity = supplierRepository.findById(certificateDto.getSupplier().getId());
             if (supplierEntity == null) {
-                throw new NotFoundException("Supplier not found with id: " + certificateDto.getSupplierId());
+                throw new NotFoundException("Supplier not found with id: " + certificateDto.getSupplier().getId());
             }
             entity.setSupplier(supplierEntity);
         }
