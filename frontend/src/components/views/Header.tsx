@@ -1,14 +1,15 @@
 import React, { useEffect, useState } from "react";
 import { useTranslation } from "../../useTranslation";
 import "../../styles/header.css";
-import { Participant } from "../data/data";
+
 import { useLocalStorageChange } from "../../useLocalStorageChange";
 import axios from "axios";
+import { UserDto } from "../data/certificate";
 
 const Header: React.FC = () => {
   const { t, changeLanguage } = useTranslation();
   const [language, setLanguage] = useState("English");
-  const [participants, setParticipants] = useState<Participant[]>([]);
+  const [participants, setParticipants] = useState<UserDto[]>([]);
 
   const selectedParticipant = useLocalStorageChange("participant");
 

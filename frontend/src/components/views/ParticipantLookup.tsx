@@ -9,7 +9,7 @@ import { apiClient } from "../data/client";
 
 interface ParticipantLookupProps {
   onClose: () => void;
-  onParticipantSelect: (participants: string[]) => void;
+  onParticipantSelect: (participants: UserDto[]) => void;
 }
 
 const ParticipantLookup: React.FC<ParticipantLookupProps> = ({
@@ -51,10 +51,8 @@ const ParticipantLookup: React.FC<ParticipantLookupProps> = ({
   };
 
   const handleParticipantSelect = () => {
-    if (selectedParticipants.length > 0) {
-      const selectedNames = selectedParticipants.map((p) => p.lastName);
-      onParticipantSelect(selectedNames);
-    }
+    console.log("participants: ", selectedParticipants);
+    onParticipantSelect(selectedParticipants);
     handleClose();
   };
 
