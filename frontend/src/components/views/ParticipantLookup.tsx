@@ -1,11 +1,11 @@
-import { useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 import { useTranslation } from "../../useTranslation";
 import "../../styles/lookup.css";
 import { Textfield } from "../base/Textfield";
 import "../../styles/globalbtn.css";
 import ParticipantTable from "../inputs/ParticipantTable";
-import { Participant } from "../data/data";
-import { fetchParticipants } from "../../utils/indexedDB";
+import { UserDto } from "../data/certificate";
+import { apiClient } from "../data/client";
 
 interface ParticipantLookupProps {
   onClose: () => void;
@@ -23,33 +23,30 @@ const ParticipantLookup: React.FC<ParticipantLookupProps> = ({
   const [department, setDepartment] = useState("");
   const [plant, setPlant] = useState("");
 
-  const [participants, setParticipants] = useState<Participant[]>([]);
-  const [filteredParticipants, setFilteredParticipants] = useState<
-    Participant[]
-  >([]);
-  const [selectedParticipants, setSelectedParticipants] = useState<
-    Participant[]
-  >([]);
+  const [participants, setParticipants] = useState<UserDto[]>([]);
+  const [selectedParticipants, setSelectedParticipants] = useState<UserDto[]>(
+    []
+  );
   const [showTable, setShowTable] = useState(false);
 
   useEffect(() => {
-    const fetchData = async () => {
-      try {
-        const fetchedParticipants = await fetchParticipants();
-        setParticipants(fetchedParticipants);
-      } catch (error) {
-        console.error("Error fetching participants:", error);
-      }
-    };
-
-    fetchData();
+    fetchAllUsers();
   }, []);
+
+  const fetchAllUsers = async () => {
+    try {
+      const fetchedParticipants = await apiClient.getAllUsers();
+      setParticipants(fetchedParticipants.data);
+    } catch (error) {
+      console.error("Error fetching all users:", error);
+    }
+  };
 
   const handleClose = () => {
     if (onClose) onClose();
   };
 
-  const handleSelectParticipants = (updatedParticipants: Participant[]) => {
+  const handleSelectParticipants = (updatedParticipants: UserDto[]) => {
     setSelectedParticipants(updatedParticipants);
   };
 
@@ -61,41 +58,21 @@ const ParticipantLookup: React.FC<ParticipantLookupProps> = ({
     handleClose();
   };
 
-  const filterParticipants = () => {
-    const filtered = participants.filter((participant) => {
-      const matchesName = name
-        ? participant.lastName.toLowerCase().includes(name.toLowerCase())
-        : true;
-      const matchesFirstName = firstName
-        ? participant.firstName.toLowerCase().includes(firstName.toLowerCase())
-        : true;
-      const matchesUserId = userId
-        ? participant.userId.toLowerCase().includes(userId.toLowerCase())
-        : true;
-      const matchesDepartment = department
-        ? participant.department
-            .toLowerCase()
-            .includes(department.toLowerCase())
-        : true;
-      const matchesPlant = plant
-        ? participant.plant.toLowerCase().includes(plant.toLowerCase())
-        : true;
-
-      return (
-        matchesName &&
-        matchesFirstName &&
-        matchesUserId &&
-        matchesDepartment &&
-        matchesPlant
-      );
-    });
-
-    setFilteredParticipants(filtered);
-  };
-
-  const handleSearch = (e: React.FormEvent) => {
+  const handleSearch = async (e: React.FormEvent) => {
     e.preventDefault();
-    filterParticipants();
+    try {
+      const response = await apiClient.searchUsers({
+        userId,
+        firstName,
+        lastName: name,
+        department,
+        plant,
+      });
+      setParticipants(response.data);
+      setShowTable(true);
+    } catch (error) {
+      console.error("Error searching users:", error);
+    }
   };
 
   const handleReset = () => {
@@ -104,13 +81,14 @@ const ParticipantLookup: React.FC<ParticipantLookupProps> = ({
     setUserId("");
     setDepartment("");
     setPlant("");
-    setFilteredParticipants([]);
+    setParticipants([]);
     setShowTable(false);
   };
 
   const handleShowTable = () => {
     setShowTable(true);
   };
+
   const handleNameChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setName(e.target.value);
   };
@@ -226,7 +204,7 @@ const ParticipantLookup: React.FC<ParticipantLookupProps> = ({
           {showTable && (
             <div className="suppliers-results-container">
               <ParticipantTable
-                participants={filteredParticipants}
+                participants={participants}
                 selectedParticipants={selectedParticipants}
                 onSelectParticipants={handleSelectParticipants}
               />
