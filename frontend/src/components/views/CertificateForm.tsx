@@ -27,7 +27,7 @@ import {
 import { apiClient } from "../data/client";
 
 const INITIAL_CERTIFICATE: Partial<CertificateDto> = {
-  supplierId: 0,
+  supplier: { id: 0, name: "", city: "" },
   certificateType: CertificateType.PERMISSION_OF_PRINTING,
   validFrom: new Date(),
   validTo: new Date(),
@@ -57,11 +57,11 @@ const CertificateForm: React.FC = () => {
     try {
       setLoading(true);
       const response = await apiClient;
-      const fetchedCertificate = response.getCertificateById(id);
+      const fetchedCertificate = await response.getCertificateById(id);
       setCertificate({
-        ...fetchedCertificate,
-        validFrom: new Date(),
-        validTo: new Date(),
+        ...(await fetchedCertificate).data,
+        validFrom: new Date(fetchedCertificate.data.validFrom),
+        validTo: new Date(fetchedCertificate.data.validTo),
       });
     } catch (err) {
       setError("Failed to fetch certificate");
@@ -74,7 +74,7 @@ const CertificateForm: React.FC = () => {
   const handleSubmit = async (event: FormEvent) => {
     event.preventDefault();
     if (
-      !certificate.supplierId ||
+      !certificate.supplier ||
       !certificate.certificateType ||
       !certificate.validFrom ||
       !certificate.validTo
@@ -153,17 +153,17 @@ const CertificateForm: React.FC = () => {
     return date.toISOString().split("T")[0];
   };
 
-  const handleSupplierChange = (supplierId: number) => {
+  const handleSupplierChange = (supplier: SupplierDto) => {
     setCertificate((prevData) => ({
       ...prevData,
-      supplierId,
+      supplier,
     }));
   };
 
   const handleSupplierSelect = (supplier: SupplierDto) => {
     setCertificate((prev) => ({
       ...prev,
-      supplierId: supplier.id,
+      supplier: supplier,
     }));
     setShowSupplierLookup(false);
   };
@@ -178,7 +178,7 @@ const CertificateForm: React.FC = () => {
       )}
       {showParticipantLookup && (
         <ParticipantLookup
-          onParticipantSelect={handleCloseParticipantLookup} // for now
+          onParticipantSelect={handleCloseParticipantLookup}
           onClose={handleCloseParticipantLookup}
         />
       )}
@@ -186,7 +186,7 @@ const CertificateForm: React.FC = () => {
         <div className="form-container">
           <div className="left-side">
             <SupplierField
-              supplierId={certificate.supplierId}
+              supplier={certificate?.supplier || { id: 0, name: "", city: "" }}
               onChange={handleSupplierChange}
               onOpenLookup={() => setShowSupplierLookup(true)}
             />

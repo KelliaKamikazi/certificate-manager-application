@@ -1,4 +1,4 @@
-import { Certificate, Supplier, Participant } from "../components/data/data";
+import { Participant } from "../components/data/data";
 const DB_NAME = "exampleDB";
 const DB_VERSION = 1;
 const STORE_CERTIFICATES = "certificates";
@@ -72,10 +72,10 @@ const openDB = (): Promise<IDBDatabase> => {
       };
 
       // Initial data
-      const suppliers: Supplier[] = [
-        { supplierIndex: 1, name: "ANDEMIS GmbH", city: "Stuttgart" },
-        { supplierIndex: 2, name: "IMLER AG", city: "Berlin" },
-      ];
+      // const suppliers: Supplier[] = [
+      //   { supplierIndex: 1, name: "ANDEMIS GmbH", city: "Stuttgart" },
+      //   { supplierIndex: 2, name: "IMLER AG", city: "Berlin" },
+      // ];
 
       const participants = [
         {
@@ -98,7 +98,7 @@ const openDB = (): Promise<IDBDatabase> => {
 
       // Populate stores if they're empty
       Promise.all([
-        populateStoreIfEmpty(STORE_SUPPLIERS, suppliers),
+        // populateStoreIfEmpty(STORE_SUPPLIERS, suppliers),
         populateStoreIfEmpty(STORE_PARTICIPANTS, participants),
       ])
         .then(() => {
@@ -126,104 +126,104 @@ const initDB = async (): Promise<boolean> => {
   }
 };
 
-// CRUD Operations for Certificates
-const addData = async (data: Certificate[]): Promise<void> => {
-  const db = await openDB();
-  const transaction = db.transaction(STORE_CERTIFICATES, "readwrite");
-  const store = transaction.objectStore(STORE_CERTIFICATES);
+// // CRUD Operations for Certificates
+// const addData = async (data: Certificate[]): Promise<void> => {
+//   const db = await openDB();
+//   const transaction = db.transaction(STORE_CERTIFICATES, "readwrite");
+//   const store = transaction.objectStore(STORE_CERTIFICATES);
 
-  const promises = data.map((item) => {
-    return new Promise<void>((resolve, reject) => {
-      const addRequest = store.add({
-        ...item,
-        validFrom: item.validFrom.toISOString(),
-        validTo: item.validTo.toISOString(),
-      });
+//   const promises = data.map((item) => {
+//     return new Promise<void>((resolve, reject) => {
+//       const addRequest = store.add({
+//         ...item,
+//         validFrom: item.validFrom.toISOString(),
+//         validTo: item.validTo.toISOString(),
+//       });
 
-      addRequest.onsuccess = () => resolve();
-      addRequest.onerror = () => reject(addRequest.error);
-    });
-  });
+//       addRequest.onsuccess = () => resolve();
+//       addRequest.onerror = () => reject(addRequest.error);
+//     });
+//   });
 
-  await Promise.all(promises);
+//   await Promise.all(promises);
 
-  return new Promise<void>((resolve, reject) => {
-    transaction.oncomplete = () => resolve();
-    transaction.onerror = () => reject(transaction.error);
-  });
-};
+//   return new Promise<void>((resolve, reject) => {
+//     transaction.oncomplete = () => resolve();
+//     transaction.onerror = () => reject(transaction.error);
+//   });
+// };
 
-const getData = async (): Promise<Certificate[]> => {
-  const db = await openDB();
-  const transaction = db.transaction(STORE_CERTIFICATES, "readonly");
-  const store = transaction.objectStore(STORE_CERTIFICATES);
-  const request = store.getAll();
+// const getData = async (): Promise<Certificate[]> => {
+//   const db = await openDB();
+//   const transaction = db.transaction(STORE_CERTIFICATES, "readonly");
+//   const store = transaction.objectStore(STORE_CERTIFICATES);
+//   const request = store.getAll();
 
-  return new Promise((resolve, reject) => {
-    request.onsuccess = () => {
-      const result = request.result.map((item: any) => ({
-        ...item,
-        validFrom: new Date(item.validFrom),
-        validTo: new Date(item.validTo),
-      }));
-      resolve(result);
-    };
-    request.onerror = () => reject(request.error);
-  });
-};
+//   return new Promise((resolve, reject) => {
+//     request.onsuccess = () => {
+//       const result = request.result.map((item: any) => ({
+//         ...item,
+//         validFrom: new Date(item.validFrom),
+//         validTo: new Date(item.validTo),
+//       }));
+//       resolve(result);
+//     };
+//     request.onerror = () => reject(request.error);
+// //   });
+// // };
 
-const getCertificateById = async (id: number): Promise<Certificate | null> => {
-  const db = await openDB();
-  const transaction = db.transaction(STORE_CERTIFICATES, "readonly");
-  const store = transaction.objectStore(STORE_CERTIFICATES);
-  const request = store.get(id);
+// const getCertificateById = async (id: number): Promise<Certificate | null> => {
+//   const db = await openDB();
+//   const transaction = db.transaction(STORE_CERTIFICATES, "readonly");
+//   const store = transaction.objectStore(STORE_CERTIFICATES);
+//   const request = store.get(id);
 
-  return new Promise((resolve, reject) => {
-    request.onsuccess = () => {
-      if (request.result) {
-        const result = {
-          ...request.result,
-          supplier: {
-            name: request.result.supplier.name,
-            supplierIndex: request.result.supplier.supplierIndex,
-            city: request.result.supplier.city,
-          },
-          validFrom: new Date(request.result.validFrom),
-          validTo: new Date(request.result.validTo),
-        };
-        resolve(result);
-      } else {
-        resolve(null);
-      }
-    };
-    request.onerror = () => reject(request.error);
-  });
-};
+//   return new Promise((resolve, reject) => {
+//     request.onsuccess = () => {
+//       if (request.result) {
+//         const result = {
+//           ...request.result,
+//           supplier: {
+//             name: request.result.supplier.name,
+//             supplierIndex: request.result.supplier.supplierIndex,
+//             city: request.result.supplier.city,
+//           },
+//           validFrom: new Date(request.result.validFrom),
+//           validTo: new Date(request.result.validTo),
+//         };
+//         resolve(result);
+//       } else {
+//         resolve(null);
+//       }
+//     };
+//     request.onerror = () => reject(request.error);
+//   });
+// };
 
-const updateData = async (data: Certificate): Promise<void> => {
-  const db = await openDB();
-  const transaction = db.transaction(STORE_CERTIFICATES, "readwrite");
-  const store = transaction.objectStore(STORE_CERTIFICATES);
+// const updateData = async (data: Certificate): Promise<void> => {
+//   const db = await openDB();
+//   const transaction = db.transaction(STORE_CERTIFICATES, "readwrite");
+//   const store = transaction.objectStore(STORE_CERTIFICATES);
 
-  return new Promise<void>((resolve, reject) => {
-    const updateRequest = store.put({
-      ...data,
-      supplier: {
-        name: data.supplier.name,
-        supplierIndex: data.supplier.supplierIndex,
-        city: data.supplier.city,
-      },
-      validFrom: data.validFrom.toISOString(),
-      validTo: data.validTo.toISOString(),
-    });
+//   return new Promise<void>((resolve, reject) => {
+//     const updateRequest = store.put({
+//       ...data,
+//       supplier: {
+//         name: data.supplier.name,
+//         supplierIndex: data.supplier.supplierIndex,
+//         city: data.supplier.city,
+//       },
+//       validFrom: data.validFrom.toISOString(),
+//       validTo: data.validTo.toISOString(),
+//     });
 
-    updateRequest.onsuccess = () => resolve();
-    updateRequest.onerror = () => reject(updateRequest.error);
+//     updateRequest.onsuccess = () => resolve();
+//     updateRequest.onerror = () => reject(updateRequest.error);
 
-    transaction.oncomplete = () => resolve();
-    transaction.onerror = () => reject(transaction.error);
-  });
-};
+//     transaction.oncomplete = () => resolve();
+//     transaction.onerror = () => reject(transaction.error);
+//   });
+// };
 
 const deleteData = async (id: number): Promise<void> => {
   const db = await openDB();
@@ -242,30 +242,30 @@ const deleteData = async (id: number): Promise<void> => {
 };
 
 // CRUD Operations for Suppliers
-export const searchSuppliers = async (
-  name: string,
-  supplierIndex: number | undefined,
-  city: string
-): Promise<Supplier[]> => {
-  const db = await openDB();
-  const transaction = db.transaction(STORE_SUPPLIERS, "readonly");
-  const store = transaction.objectStore(STORE_SUPPLIERS);
+// export const searchSuppliers = async (
+//   name: string,
+//   supplierIndex: number | undefined,
+//   city: string
+// ): Promise<Supplier[]> => {
+//   const db = await openDB();
+//   const transaction = db.transaction(STORE_SUPPLIERS, "readonly");
+//   const store = transaction.objectStore(STORE_SUPPLIERS);
 
-  const request = store.getAll();
-  return new Promise((resolve, reject) => {
-    request.onsuccess = () => {
-      const result = request.result.filter((supplier: Supplier) => {
-        return (
-          supplier.name.toLowerCase().includes(name.toLowerCase()) &&
-          (!supplierIndex || supplier.supplierIndex === supplierIndex) &&
-          (!city || supplier.city?.toLowerCase().includes(city.toLowerCase()))
-        );
-      });
-      resolve(result);
-    };
-    request.onerror = () => reject(request.error);
-  });
-};
+//   const request = store.getAll();
+//   return new Promise((resolve, reject) => {
+//     request.onsuccess = () => {
+//       const result = request.result.filter((supplier: Supplier) => {
+//         return (
+//           supplier.name.toLowerCase().includes(name.toLowerCase()) &&
+//           (!supplierIndex || supplier.supplierIndex === supplierIndex) &&
+//           (!city || supplier.city?.toLowerCase().includes(city.toLowerCase()))
+//         );
+//       });
+//       resolve(result);
+//     };
+//     request.onerror = () => reject(request.error);
+//   });
+// };
 
 const fetchParticipants = async (): Promise<Participant[]> => {
   const db = await openDB();
@@ -337,13 +337,4 @@ const searchParticipant = async (
   });
 };
 
-export {
-  initDB,
-  addData,
-  getData,
-  getCertificateById,
-  updateData,
-  deleteData,
-  fetchParticipants,
-  searchParticipant,
-};
+export { initDB, deleteData, fetchParticipants, searchParticipant };

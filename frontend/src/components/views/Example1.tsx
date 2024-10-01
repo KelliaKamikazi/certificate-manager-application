@@ -135,7 +135,7 @@ const Example1: React.FC = () => {
                     )}
                   </div>
                 </td>
-                <td>{cert.supplierId}</td>
+                <td>{cert.supplier.name}</td>
                 <td>{cert.certificateType}</td>
                 <td>{new Date(cert.validFrom).toDateString()}</td>
                 <td>{new Date(cert.validTo).toDateString()}</td>
