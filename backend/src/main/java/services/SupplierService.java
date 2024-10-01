@@ -8,6 +8,9 @@ import jakarta.transaction.Transactional;
 import web.dtos.SupplierDto;
 import web.mappers.SupplierMapper;
 
+import java.util.List;
+import java.util.stream.Collectors;
+
 @ApplicationScoped
 @Transactional
 public class SupplierService {
@@ -16,17 +19,28 @@ public class SupplierService {
     @Inject
     SupplierMapper supplierMapper;
 
-    public SupplierDto findByName(String name) {
-        SupplierEntity entity = supplierRepository.findByName(name);
-        return supplierMapper.toDTO(entity);
-    }
-    public SupplierDto findByCity(String city) {
-        SupplierEntity entity = supplierRepository.findByCity(city);
-        return supplierMapper.toDTO(entity);
+    public List<SupplierDto> getSuppliers() {
+        return supplierRepository.listAll().stream()
+                .map(supplierMapper::toDTO)
+                .collect(Collectors.toList());
     }
 
-    public SupplierDto findById(Long id){
-        SupplierEntity entity= supplierRepository.findById(id);
+    public List<SupplierDto> findByName(String name) {
+        List<SupplierEntity> entities = supplierRepository.findByName(name);
+        return entities.stream()
+                .map(supplierMapper::toDTO)
+                .collect(Collectors.toList());
+    }
+
+    public List<SupplierDto> findByCity(String city) {
+        List<SupplierEntity> entities = supplierRepository.findByCity(city);
+        return entities.stream()
+                .map(supplierMapper::toDTO)
+                .collect(Collectors.toList());
+    }
+
+    public SupplierDto findById(Long id) {
+        SupplierEntity entity = supplierRepository.findById(id);
         return supplierMapper.toDTO(entity);
     }
 }

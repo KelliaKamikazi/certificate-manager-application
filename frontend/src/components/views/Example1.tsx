@@ -1,42 +1,60 @@
-import React, { useEffect, useState } from 'react';
-import '../../styles/example1.css';
-import { Certificate } from '../data/data';
-import { useNavigate } from 'react-router-dom';
-import IconSvg from '../icons/icons';
-import gearIcon from '../icons/gearIcon';
-import { getData, deleteData } from '../../utils/indexedDB';
-import { useTranslation } from '../../useTranslation';
+import React, { useEffect, useState } from "react";
+import "../../styles/example1.css";
+import { useNavigate } from "react-router-dom";
+import IconSvg from "../icons/icons";
+import gearIcon from "../icons/gearIcon";
+import { useTranslation } from "../../useTranslation";
+import { CertificateDto } from "../data/certificate";
+import { apiClient } from "../data/client";
 const Example1: React.FC = () => {
   const { t } = useTranslation();
-  const [certificates, setCertificates] = useState<Certificate[]>([]);
+  const [certificates, setCertificates] = useState<CertificateDto[]>([]);
   const [openDropdownId, setOpenDropdownId] = useState<number | undefined>(
-    undefined,
+    undefined
   );
+  const [, setLoading] = useState(true);
+  const [, setError] = useState<Error | null>(null);
   const navigate = useNavigate();
 
   useEffect(() => {
-    const fetchData = async () => {
-      const data = await getData();
-      setCertificates(data);
+    const fetchCertificates = async () => {
+      try {
+        setLoading(true);
+        const response = await apiClient.getCertificates$GET$certificates();
+        setCertificates(response.data);
+        setLoading(false);
+      } catch (err) {
+        setError(err instanceof Error ? err : new Error("An error occurred"));
+        setLoading(false);
+      }
     };
-    fetchData();
+
+    fetchCertificates();
   }, []);
 
   const toggleDropdown = (certId: number | undefined) => {
     setOpenDropdownId(openDropdownId === certId ? undefined : certId);
   };
 
+  const deleteCertificate = async (id: number) => {
+    try {
+      await apiClient.deleteCertificate(id);
+      setCertificates((prevCertificates) =>
+        prevCertificates.filter((cert) => cert.id !== id)
+      );
+    } catch (err) {
+      throw err;
+    }
+  };
+
   const confirmAndDelete = async (id: number) => {
-    if (window.confirm(t('confirm_delete'))) {
+    if (window.confirm(t("confirm_delete"))) {
       try {
-        await deleteData(id);
-        alert(t('delete_success'));
-        setCertificates((prevCertificates) =>
-          prevCertificates.filter((cert) => cert.id !== id),
-        );
+        await deleteCertificate(id);
+        alert(t("delete_success"));
       } catch (error) {
-        console.error('Failed to delete the certificate', error);
-        alert(t('delete_failure'));
+        console.error("Failed to delete the certificate", error);
+        alert(t("delete_failure"));
       }
     }
   };
@@ -45,7 +63,7 @@ const Example1: React.FC = () => {
     if (id !== undefined) {
       confirmAndDelete(id);
     } else {
-      alert(t('undefined_id'));
+      alert(t("undefined_id"));
     }
   };
 
@@ -53,7 +71,7 @@ const Example1: React.FC = () => {
     if (id !== undefined) {
       navigate(`/CertificateForm/${id}`);
     } else {
-      alert(t('undefined_id'));
+      alert(t("undefined_id"));
     }
   };
 
@@ -61,32 +79,30 @@ const Example1: React.FC = () => {
     navigate(`/CertificateForm/0`);
   };
 
-  const handleEdit = (cert: Certificate) => () => {
-    console.log('cert 1 ', cert);
+  const handleEdit = (cert: CertificateDto) => () => {
+    console.log("cert 1 ", cert);
     handleEditClick(cert.id);
   };
-  const handleDelete = (cert: Certificate) => () => handleDeleteClick(cert.id);
-  const handleToggleDropdown = (cert: Certificate) => () =>
+  const handleDelete = (cert: CertificateDto) => () =>
+    handleDeleteClick(cert.id);
+  const handleToggleDropdown = (cert: CertificateDto) => () =>
     toggleDropdown(cert.id);
 
   return (
     <div className="container">
-      <h2 className="header_h">{t('example1_header')}</h2>
-      <button
-        className="btn-create"
-        onClick={handleCreateClick}
-      >
-        {t('new_certificate')}
+      <h2 className="header_h">{t("example1_header")}</h2>
+      <button className="btn-create" onClick={handleCreateClick}>
+        {t("new_certificate")}
       </button>
       <div className="table-wrapper">
         <table>
           <thead>
             <tr>
               <th></th>
-              <th>{t('supplier')}</th>
-              <th>{t('certificate_type')}</th>
-              <th>{t('valid_from')}</th>
-              <th>{t('valid_to')}</th>
+              <th>{t("supplier")}</th>
+              <th>{t("certificate_type")}</th>
+              <th>{t("valid_from")}</th>
+              <th>{t("valid_to")}</th>
             </tr>
           </thead>
           <tbody>
@@ -106,13 +122,13 @@ const Example1: React.FC = () => {
                             className="dropdown-button"
                             onClick={handleEdit(cert)}
                           >
-                            {t('edit')}
+                            {t("edit")}
                           </button>
                           <button
                             className="dropdown-button"
                             onClick={handleDelete(cert)}
                           >
-                            {t('delete')}
+                            {t("delete")}
                           </button>
                         </div>
                       </div>

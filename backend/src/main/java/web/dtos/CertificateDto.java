@@ -9,7 +9,7 @@ import java.util.Set;
 public class CertificateDto {
 
     private Long id;
-    private Long supplierId;
+    private SupplierDto supplier;
     private CertificateType certificateType;
     private LocalDate validFrom;
     private LocalDate validTo;
@@ -20,9 +20,9 @@ public class CertificateDto {
     public CertificateDto() {
     }
 
-    public CertificateDto(Long id, Long supplierId, CertificateType certificateType, LocalDate validFrom, LocalDate validTo, String pdfUrl, Set<Long> assignedUserIds, List<String> comments) {
+    public CertificateDto(Long id, SupplierDto supplier, CertificateType certificateType, LocalDate validFrom, LocalDate validTo, String pdfUrl, Set<Long> assignedUserIds, List<String> comments) {
         this.id = id;
-        this.supplierId = supplierId;
+        this.supplier = supplier;
         this.certificateType = certificateType;
         this.validFrom = validFrom;
         this.validTo = validTo;
@@ -39,12 +39,12 @@ public class CertificateDto {
         this.id = id;
     }
 
-    public Long getSupplierId() {
-        return supplierId;
+    public SupplierDto getSupplier() {
+        return supplier;
     }
 
-    public void setSupplierId(Long supplierId) {
-        this.supplierId = supplierId;
+    public void setSupplier(SupplierDto supplier) {
+        this.supplier = supplier;
     }
 
     public CertificateType getCertificateType() {
@@ -94,12 +94,13 @@ public class CertificateDto {
     public void setComments(List<String> comments) {
         this.comments = comments;
     }
+
     @Override
     public String toString() {
         return "CertificateDto{" +
                 "id=" + id +
-                ", supplierId=" + supplierId +
-                ", certificateType="+ certificateType +
+                ", supplier=" + supplier +
+                ", certificateType=" + certificateType +
                 ", validFrom=" + validFrom +
                 ", validTo=" + validTo +
                 ", pdfUrl='" + pdfUrl + '\'' +

@@ -1,14 +1,15 @@
-import { useState } from 'react';
-import '../../styles/lookup.css';
-import { Textfield } from '../base/Textfield';
-import '../../styles/globalbtn.css';
-import { Supplier } from '../data/data';
-import SupplierTable from '../inputs/SupplierTable';
-import { searchSuppliers } from '../../utils/indexedDB';
-import { useTranslation } from '../../useTranslation';
+import React, { useState } from "react";
+import "../../styles/lookup.css";
+import { Textfield } from "../base/Textfield";
+import "../../styles/globalbtn.css";
+import SupplierTable from "../inputs/SupplierTable";
+import { useTranslation } from "../../useTranslation";
+import { SupplierDto } from "../data/certificate";
+import { apiClient } from "../data/client";
+
 interface SupplierLookupProps {
   onClose: () => void;
-  onSupplierSelect: (supplier: Supplier) => void;
+  onSupplierSelect: (supplier: SupplierDto) => void;
 }
 
 const SupplierLookup: React.FC<SupplierLookupProps> = ({
@@ -16,13 +17,11 @@ const SupplierLookup: React.FC<SupplierLookupProps> = ({
   onSupplierSelect,
 }) => {
   const { t } = useTranslation();
-  const [name, setName] = useState('');
-  const [supplierIndex, setSupplierIndex] = useState<number | undefined>(
-    undefined,
-  );
-  const [city, setCity] = useState('');
-  const [filteredSuppliers, setFilteredSuppliers] = useState<Supplier[]>([]);
-  const [selectedSupplierIndex, setSelectedSupplierIndex] = useState<
+  const [name, setName] = useState("");
+  const [id, setId] = useState<number | undefined>(undefined);
+  const [city, setCity] = useState("");
+  const [filteredSuppliers, setFilteredSuppliers] = useState<SupplierDto[]>([]);
+  const [selectedSupplierId, setSelectedSupplierId] = useState<
     number | undefined
   >(undefined);
 
@@ -30,10 +29,8 @@ const SupplierLookup: React.FC<SupplierLookupProps> = ({
     setName(event.target.value);
   };
 
-  const handleIndexChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    setSupplierIndex(
-      event.target.value ? parseInt(event.target.value, 10) : undefined,
-    );
+  const handleIdChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    setId(event.target.value ? parseInt(event.target.value, 10) : undefined);
   };
 
   const handleCityChange = (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -43,33 +40,54 @@ const SupplierLookup: React.FC<SupplierLookupProps> = ({
   const handleSearch = async (event: React.FormEvent) => {
     event.preventDefault();
     try {
-      const filtered = await searchSuppliers(name, supplierIndex, city);
-      setFilteredSuppliers(filtered);
+      let response;
+      if (id !== undefined) {
+        response = await apiClient.getSupplierById(id);
+      } else if (name) {
+        response = await apiClient.getSuppliersByName(name);
+      } else if (city) {
+        response = await apiClient.getSuppliersByCity(city);
+      } else {
+        // If no specific criteria, fetch all suppliers
+        response = await apiClient.getSuppliers();
+      }
+
+      // Axios puts the response data directly in the `data` property
+      const suppliers = Array.isArray(response.data)
+        ? response.data
+        : [response.data];
+
+      if (suppliers.length === 0) {
+        console.log("No suppliers found");
+      }
+
+      setFilteredSuppliers(suppliers);
     } catch (error) {
-      console.error('Error fetching suppliers:', error);
+      console.error("Error fetching suppliers:", error);
+      setFilteredSuppliers([]);
     }
   };
 
   const handleReset = () => {
-    setName('');
-    setSupplierIndex(undefined);
-    setCity('');
+    setName("");
+    setId(undefined);
+    setCity("");
     setFilteredSuppliers([]);
-    setSelectedSupplierIndex(undefined);
+    setSelectedSupplierId(undefined);
   };
 
   const handleClose = () => {
     if (onClose) onClose();
   };
 
-  const handleSelectSupplier = (index: number | undefined) => {
-    setSelectedSupplierIndex(index);
+  const handleSelectSupplier = (id: number | undefined) => {
+    setSelectedSupplierId(id);
   };
 
   const handleSubmit = () => {
-    if (selectedSupplierIndex) {
+    if (selectedSupplierId !== undefined) {
       const selectedSupplier = filteredSuppliers.find(
-        (supplier) => supplier.supplierIndex === selectedSupplierIndex,
+        (supplier) => supplier.id === selectedSupplierId
       );
       if (selectedSupplier) {
         onSupplierSelect(selectedSupplier);
@@ -77,20 +95,19 @@ const SupplierLookup: React.FC<SupplierLookupProps> = ({
       }
     }
   };
+
   const handleKeyDownClose = (e: React.KeyboardEvent<HTMLDivElement>) => {
-    if (e.key === 'Enter' || e.key === ' ') {
+    if (e.key === "Enter" || e.key === " ") {
       handleClose();
     }
   };
+
   return (
     <dialog open>
       <div className="modal-backdrop">
-        <form
-          className="supplier-container"
-          onSubmit={handleSearch}
-        >
+        <form className="supplier-container" onSubmit={handleSearch}>
           <div className="top-bar">
-            <h2 className="top-bar-title">{t('searchForSuppliers')}</h2>
+            <h2 className="top-bar-title">{t("searchForSuppliers")}</h2>
             <div
               className="x-btn"
               onClick={handleClose}
@@ -103,12 +120,12 @@ const SupplierLookup: React.FC<SupplierLookupProps> = ({
           </div>
           <div className="search-supplier-inputs-container">
             <div className="top-bar-title-container">
-              <div className="top-bar-title">▼ {t('searchCriteria')}</div>
+              <div className="top-bar-title">▼ {t("searchCriteria")}</div>
             </div>
             <div className="form-inputs">
               <div className="inputs-container-supplier">
                 <div className="input-container">
-                  <label className="input-label">{t('supplierName')}</label>
+                  <label className="input-label">{t("supplierName")}</label>
                   <Textfield
                     name="supplierName"
                     type="text"
@@ -119,17 +136,17 @@ const SupplierLookup: React.FC<SupplierLookupProps> = ({
                 </div>
 
                 <div className="input-container">
-                  <label className="input-label">{t('supplierIndex')}</label>
+                  <label className="input-label">{t("supplierId")}</label>
                   <Textfield
-                    name="supplierIndex"
+                    name="supplierId"
                     type="number"
-                    value={supplierIndex !== undefined ? supplierIndex : ''}
-                    onChange={handleIndexChange}
+                    value={id !== undefined ? id : ""}
+                    onChange={handleIdChange}
                     className="input-container"
                   />
                 </div>
                 <div className="input-container">
-                  <label className="input-label">{t('city')}</label>
+                  <label className="input-label">{t("city")}</label>
                   <Textfield
                     name="supplierCity"
                     type="text"
@@ -140,18 +157,15 @@ const SupplierLookup: React.FC<SupplierLookupProps> = ({
                 </div>
               </div>
               <div className="buttons-container">
-                <button
-                  type="submit"
-                  className="btn yellow-btn"
-                >
-                  {t('search')}
+                <button type="submit" className="btn yellow-btn">
+                  {t("search")}
                 </button>
                 <button
                   type="button"
                   className="btn neutral-btn"
                   onClick={handleReset}
                 >
-                  {t('reset')}
+                  {t("reset")}
                 </button>
               </div>
             </div>
@@ -159,7 +173,7 @@ const SupplierLookup: React.FC<SupplierLookupProps> = ({
           <div className="suppliers-results-container">
             <SupplierTable
               suppliers={filteredSuppliers}
-              selectSupplierIndex={selectedSupplierIndex}
+              selectSupplierId={selectedSupplierId}
               onSelectSupplier={handleSelectSupplier}
             />
             <div className="buttons-container">
@@ -168,14 +182,14 @@ const SupplierLookup: React.FC<SupplierLookupProps> = ({
                 className="btn yellow-btn"
                 onClick={handleSubmit}
               >
-                {t('select')}
+                {t("select")}
               </button>
               <button
                 type="button"
                 onClick={handleClose}
                 className="btn neutral-btn"
               >
-                {t('cancel')}
+                {t("cancel")}
               </button>
             </div>
           </div>

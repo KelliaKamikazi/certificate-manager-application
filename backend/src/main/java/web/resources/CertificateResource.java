@@ -22,6 +22,19 @@ public class CertificateResource {
         return certificateService.getCertificates();
     }
 
+
+    @GET
+    @Path("/{id}")
+    @Produces(MediaType.APPLICATION_JSON)
+    public Response getCertificateById(@PathParam("id") Long id) {
+        try {
+            CertificateDto certificate = certificateService.getCertificateById(id);
+            return Response.ok(certificate).build();
+        } catch (NotFoundException e) {
+            return Response.status(Response.Status.NOT_FOUND).entity(e.getMessage()).build();
+        }
+    }
+
     @POST
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)

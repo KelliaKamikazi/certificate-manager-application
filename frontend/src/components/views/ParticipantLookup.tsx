@@ -1,11 +1,11 @@
-import { useEffect, useState } from 'react';
-import { useTranslation } from '../../useTranslation';
-import '../../styles/lookup.css';
-import { Textfield } from '../base/Textfield';
-import '../../styles/globalbtn.css';
-import ParticipantTable from '../inputs/ParticipantTable';
-import { Participant } from '../data/data';
-import { fetchParticipants } from '../../utils/indexedDB';
+import { useEffect, useState } from "react";
+import { useTranslation } from "../../useTranslation";
+import "../../styles/lookup.css";
+import { Textfield } from "../base/Textfield";
+import "../../styles/globalbtn.css";
+import ParticipantTable from "../inputs/ParticipantTable";
+import { Participant } from "../data/data";
+import { fetchParticipants } from "../../utils/indexedDB";
 
 interface ParticipantLookupProps {
   onClose: () => void;
@@ -17,11 +17,11 @@ const ParticipantLookup: React.FC<ParticipantLookupProps> = ({
   onParticipantSelect,
 }) => {
   const { t } = useTranslation();
-  const [name, setName] = useState('');
-  const [firstName, setFirstName] = useState('');
-  const [userId, setUserId] = useState('');
-  const [department, setDepartment] = useState('');
-  const [plant, setPlant] = useState('');
+  const [name, setName] = useState("");
+  const [firstName, setFirstName] = useState("");
+  const [userId, setUserId] = useState("");
+  const [department, setDepartment] = useState("");
+  const [plant, setPlant] = useState("");
 
   const [participants, setParticipants] = useState<Participant[]>([]);
   const [filteredParticipants, setFilteredParticipants] = useState<
@@ -38,7 +38,7 @@ const ParticipantLookup: React.FC<ParticipantLookupProps> = ({
         const fetchedParticipants = await fetchParticipants();
         setParticipants(fetchedParticipants);
       } catch (error) {
-        console.error('Error fetching participants:', error);
+        console.error("Error fetching participants:", error);
       }
     };
 
@@ -55,7 +55,7 @@ const ParticipantLookup: React.FC<ParticipantLookupProps> = ({
 
   const handleParticipantSelect = () => {
     if (selectedParticipants.length > 0) {
-      const selectedNames = selectedParticipants.map((p) => p.name);
+      const selectedNames = selectedParticipants.map((p) => p.lastName);
       onParticipantSelect(selectedNames);
     }
     handleClose();
@@ -64,10 +64,10 @@ const ParticipantLookup: React.FC<ParticipantLookupProps> = ({
   const filterParticipants = () => {
     const filtered = participants.filter((participant) => {
       const matchesName = name
-        ? participant.name.toLowerCase().includes(name.toLowerCase())
+        ? participant.lastName.toLowerCase().includes(name.toLowerCase())
         : true;
       const matchesFirstName = firstName
-        ? participant.firstname.toLowerCase().includes(firstName.toLowerCase())
+        ? participant.firstName.toLowerCase().includes(firstName.toLowerCase())
         : true;
       const matchesUserId = userId
         ? participant.userId.toLowerCase().includes(userId.toLowerCase())
@@ -99,11 +99,11 @@ const ParticipantLookup: React.FC<ParticipantLookupProps> = ({
   };
 
   const handleReset = () => {
-    setName('');
-    setFirstName('');
-    setUserId('');
-    setDepartment('');
-    setPlant('');
+    setName("");
+    setFirstName("");
+    setUserId("");
+    setDepartment("");
+    setPlant("");
     setFilteredParticipants([]);
     setShowTable(false);
   };
@@ -134,12 +134,9 @@ const ParticipantLookup: React.FC<ParticipantLookupProps> = ({
   return (
     <dialog open>
       <div className="modal-backdrop">
-        <form
-          className="supplier-container"
-          onSubmit={handleSearch}
-        >
+        <form className="supplier-container" onSubmit={handleSearch}>
           <div className="top-bar">
-            <h2 className="top-bar-title">{t('searchForParticipants')}</h2>
+            <h2 className="top-bar-title">{t("searchForParticipants")}</h2>
             <div
               className="x-btn"
               onClick={handleClose}
@@ -152,12 +149,12 @@ const ParticipantLookup: React.FC<ParticipantLookupProps> = ({
 
           <div className="search-supplier-inputs-container">
             <div className="top-bar-title-container">
-              <div className="top-bar-title">▼ {t('searchCriteria')}</div>
+              <div className="top-bar-title">▼ {t("searchCriteria")}</div>
             </div>
 
             <div className="input-container-participant">
               <div className="input-container-one">
-                <label className="input-label">{t('participantName')}</label>
+                <label className="input-label">{t("participantName")}</label>
                 <Textfield
                   name="name"
                   type="text"
@@ -167,7 +164,7 @@ const ParticipantLookup: React.FC<ParticipantLookupProps> = ({
                 />
               </div>
               <div className="input-container-one">
-                <label className="input-label">{t('firstName')}</label>
+                <label className="input-label">{t("firstName")}</label>
                 <Textfield
                   name="firstName"
                   type="text"
@@ -177,7 +174,7 @@ const ParticipantLookup: React.FC<ParticipantLookupProps> = ({
                 />
               </div>
               <div className="input-container-one">
-                <label className="input-label">{t('user_id')}</label>
+                <label className="input-label">{t("user_id")}</label>
                 <Textfield
                   name="userId"
                   type="text"
@@ -187,7 +184,7 @@ const ParticipantLookup: React.FC<ParticipantLookupProps> = ({
                 />
               </div>
               <div className="input-container-one">
-                <label className="input-label">{t('department')}</label>
+                <label className="input-label">{t("department")}</label>
                 <Textfield
                   name="department"
                   type="text"
@@ -197,7 +194,7 @@ const ParticipantLookup: React.FC<ParticipantLookupProps> = ({
                 />
               </div>
               <div className="input-container-one">
-                <label className="input-label">{t('plant')}</label>
+                <label className="input-label">{t("plant")}</label>
                 <Textfield
                   name="plant"
                   type="text"
@@ -214,14 +211,14 @@ const ParticipantLookup: React.FC<ParticipantLookupProps> = ({
                 className="btn yellow-btn"
                 onClick={handleShowTable}
               >
-                {t('search')}
+                {t("search")}
               </button>
               <button
                 type="button"
                 className="btn neutral-btn"
                 onClick={handleReset}
               >
-                {t('reset')}
+                {t("reset")}
               </button>
             </div>
           </div>
@@ -242,14 +239,14 @@ const ParticipantLookup: React.FC<ParticipantLookupProps> = ({
               className="btn yellow-btn"
               onClick={handleParticipantSelect}
             >
-              {t('select')}
+              {t("select")}
             </button>
             <button
               type="button"
               onClick={handleClose}
               className="btn neutral-btn"
             >
-              {t('cancel')}
+              {t("cancel")}
             </button>
           </div>
         </form>

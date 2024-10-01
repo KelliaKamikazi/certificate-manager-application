@@ -1,20 +1,21 @@
 package web.dtos;
+
 import java.util.List;
+
 public class SupplierDto {
 
     private Long id;
     private String name;
     private String city;
-    private List<Long> certificateIds;
+
 
     public SupplierDto() {
     }
 
-    public SupplierDto(Long id, String name,  String city, List<Long> certificateIds) {
+    public SupplierDto(Long id, String name, String city) {
         this.id = id;
         this.name = name;
         this.city = city;
-        this.certificateIds = certificateIds;
     }
 
     public Long getId() {
@@ -42,20 +43,12 @@ public class SupplierDto {
         this.city = city;
     }
 
-    public List<Long> getCertificateIds() {
-        return certificateIds;
-    }
-
-    public void setCertificateIds(List<Long> certificateIds) {
-        this.certificateIds = certificateIds;
-    }
     @Override
     public String toString() {
         return "SupplierDto{" +
                 "id=" + id +
                 ", name='" + name + '\'' +
                 ", city='" + city + '\'' +
-                ", certificateIds=" + certificateIds +
                 '}';
     }
 }

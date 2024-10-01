@@ -1,16 +1,17 @@
-import { useTranslation } from '../../useTranslation';
-import IconSvg from '../icons/icons';
-import searchIcon from '../icons/searchIcon';
-import closeIcon from '../icons/closeIcon';
-import { ChangeEvent } from 'react';
-import { Textfield } from '../base/Textfield';
-import { Supplier } from '../data/data';
-import '../../styles/certificateForm.css';
+import { useTranslation } from "../../useTranslation";
+import IconSvg from "../icons/icons";
+import searchIcon from "../icons/searchIcon";
+import closeIcon from "../icons/closeIcon";
+import { ChangeEvent } from "react";
+import { Textfield } from "../base/Textfield";
+
+import "../../styles/certificateForm.css";
+import { SupplierDto } from "../data/certificate";
 
 interface SupplierFieldProps {
-  supplier: Supplier;
+  supplier: SupplierDto;
   onClose?: () => void;
-  onChange: (supplier: Supplier) => void;
+  onChange: (supplier: SupplierDto) => void;
   onOpenLookup: () => void;
 }
 
@@ -23,9 +24,11 @@ export function SupplierField(props: SupplierFieldProps) {
     props.onChange(newSupplier);
   };
 
+  console.log(props.supplier, "----------");
+
   return (
     <div className="form-input-container">
-      <label className="form-input-label">{t('supplierLabel')}</label>
+      <label className="form-input-label">{t("supplierLabel")}</label>
       <div className="form-input-container form-input-multiple">
         <Textfield
           name="supplier"
@@ -33,16 +36,10 @@ export function SupplierField(props: SupplierFieldProps) {
           value={props.supplier.name}
           onChange={handleInputChange}
         />
-        <button
-          type="button"
-          onClick={props.onOpenLookup}
-        >
+        <button type="button" onClick={props.onOpenLookup}>
           <IconSvg Icon={searchIcon} />
         </button>
-        <button
-          type="button"
-          onClick={props.onClose}
-        >
+        <button type="button" onClick={props.onClose}>
           <IconSvg Icon={closeIcon} />
         </button>
       </div>
