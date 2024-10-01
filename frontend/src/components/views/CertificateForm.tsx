@@ -7,104 +7,125 @@ import {
   useCallback,
 } from "react";
 import "../../utils/indexedDB";
-import {
-  Certificate,
-  Supplier,
-  INITIAL_CERTIFICATE,
-  Participant,
-} from "../data/data";
-import { addData, getCertificateById, updateData } from "../../utils/indexedDB";
+import { Participant } from "../data/data";
+
 import { SupplierField } from "../inputs/SupplierField";
-import { CertificateType } from "../inputs/CertificateType";
+import { CertificateTypes } from "../inputs/CertificateTypes";
 import { Textfield } from "../base/Textfield";
-import { useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import SupplierLookup from "./SupplierLookup";
 import IconSvg from "../icons/icons";
 import searchIcon from "../icons/searchIcon";
 import { useTranslation } from "../../useTranslation";
 import ParticipantLookup from "./ParticipantLookup";
 import CommentForm from "./CommentForm";
+import {
+  CertificateDto,
+  CertificateType,
+  SupplierDto,
+} from "../data/certificate";
+import { apiClient } from "../data/client";
+
+const INITIAL_CERTIFICATE: Partial<CertificateDto> = {
+  supplierId: 0,
+  certificateType: CertificateType.PERMISSION_OF_PRINTING,
+  validFrom: new Date(),
+  validTo: new Date(),
+  pdfUrl: "",
+  assignedUserIds: [],
+  comments: [],
+};
 
 const CertificateForm: React.FC = () => {
   const { t } = useTranslation();
   const { certificateId } = useParams<{ certificateId: string }>();
-  const [certificate, setCertificate] = useState(INITIAL_CERTIFICATE);
+  const [certificate, setCertificate] =
+    useState<Partial<CertificateDto>>(INITIAL_CERTIFICATE);
   const [showSupplierLookup, setShowSupplierLookup] = useState(false);
   const [showParticipantLookup, setShowParticipantLookup] = useState(false);
+  const [, setLoading] = useState(false);
+  const [, setError] = useState<string | null>(null);
   const [selectedParticipants] = useState<Participant[]>([]);
+  const navigate = useNavigate();
 
   useEffect(() => {
     if (certificateId && certificateId !== "0") {
-      fetchCertificate();
+      fetchCertificate(Number(certificateId));
     }
   }, [certificateId]);
-  const fetchCertificate = async () => {
-    const id = Number(certificateId);
-    const fetchedCertificate = await getCertificateById(id);
-    if (fetchedCertificate) {
+  const fetchCertificate = async (id: number) => {
+    try {
+      setLoading(true);
+      const response = await apiClient;
+      const fetchedCertificate = response.getCertificateById(id);
       setCertificate({
         ...fetchedCertificate,
-        validFrom: new Date(fetchedCertificate.validFrom)
-          .toISOString()
-          .split("T")[0],
-        validTo: new Date(fetchedCertificate.validTo)
-          .toISOString()
-          .split("T")[0],
-        pdfUrl: fetchedCertificate.pdfUrl,
+        validFrom: new Date(),
+        validTo: new Date(),
       });
+    } catch (err) {
+      setError("Failed to fetch certificate");
+      console.error("Error fetching certificate:", err);
+    } finally {
+      setLoading(false);
     }
   };
-  const handleSaving = async (event: FormEvent) => {
-    event.preventDefault();
-    const { supplier, certificateType, validTo, validFrom } = certificate;
-    if (!supplier.name || !certificateType || !validTo || !validFrom) {
-      alert(t("allFieldsRequired"));
-      return;
-    }
-    const validFromDate = new Date(validFrom);
-    const validToDate = new Date(validTo);
-    if (validFromDate > validToDate) {
-      alert(t("validFromLaterThanValidTo"));
-      return;
-    }
 
-    const newCertificate: Certificate = {
-      id: Date.now(),
-      supplier,
-      certificateType,
-      validFrom: validFromDate,
-      validTo: validToDate,
-      pdfUrl: certificate.pdfUrl,
-    };
+  const handleSubmit = async (event: FormEvent) => {
+    event.preventDefault();
+    if (
+      !certificate.supplierId ||
+      !certificate.certificateType ||
+      !certificate.validFrom ||
+      !certificate.validTo
+    ) {
+      setError(t("allFieldsRequired"));
+      return;
+    }
 
     try {
+      setLoading(true);
+      const certificateToSend: CertificateDto = {
+        ...(certificate as CertificateDto),
+      };
+
       if (certificateId && certificateId !== "0") {
-        await updateData({ ...newCertificate, id: Number(certificateId) });
+        await apiClient.updateCertificate(
+          Number(certificateId),
+          certificateToSend
+        );
         alert(t("certificateUpdated"));
       } else {
-        await addData([newCertificate]);
+        await apiClient.createCertificate(certificateToSend);
         alert(t("certificateSaved"));
       }
-      handleResetFields();
-    } catch (error) {
-      alert(t("certificateNotAddedOrUpdated"));
+      navigate("/example1");
+    } catch (err) {
+      setError(t("certificateNotAddedOrUpdated"));
+      console.error("Error saving certificate:", err);
+    } finally {
+      setLoading(false);
     }
   };
+
   const handleInputChange = (
     e: ChangeEvent<HTMLInputElement | HTMLSelectElement>
   ) => {
     const { name, value } = e.target;
-    setCertificate((prevData) => ({
-      ...prevData,
-      [name]: value,
-    }));
+    setCertificate((prev) => {
+      if (name === "validFrom" || name === "validTo") {
+        return { ...prev, [name]: new Date(value) };
+      }
+      return { ...prev, [name]: value };
+    });
   };
-  const handleSupplierChange = (supplier: Supplier) => {
-    setCertificate((prevData) => ({
-      ...prevData,
-      supplier,
-    }));
-  };
+
+  // const handleSupplierChange = (supplier: Supplier) => {
+  //   setCertificate((prevData) => ({
+  //     ...prevData,
+  //     supplier,
+  //   }));
+  // };
   const handleFileChange = (e: ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (file && file.type === "application/pdf") {
@@ -123,10 +144,10 @@ const CertificateForm: React.FC = () => {
   const handleResetFields = () => {
     setCertificate(INITIAL_CERTIFICATE);
   };
-  const handleSupplierOnSelect = useCallback((supplier: Supplier) => {
-    handleSupplierChange(supplier);
-    setShowSupplierLookup(false);
-  }, []);
+  // const handleSupplierOnSelect = useCallback((supplierId: number) => {
+  //   handleSupplierChange(supplierId);
+  //   setShowSupplierLookup(false);
+  // }, []);
   const handleCloseSupplierLookup = useCallback(() => {
     setShowSupplierLookup(false);
   }, []);
@@ -136,13 +157,48 @@ const CertificateForm: React.FC = () => {
   const handleOpenParticipantLookup = useCallback(() => {
     setShowParticipantLookup(true);
   }, []);
+  const formatDateForInput = (date: Date | undefined): string => {
+    if (!date) return "";
+    return date.toISOString().split("T")[0];
+  };
+
+  // const handleSupplierSelect = (supplier: SupplierDto) => {
+  //   setCertificate(prev => ({
+  //     ...prev,
+  //     supplierId: supplier.id
+  //   }));
+  //   setShowSupplierLookup(false);
+  // };
+
+  // const handleSupplierSelect = (supplier: SupplierDto) => {
+  //   setCertificate(prev => ({
+  //     ...prev,
+  //     supplierId: supplier.id
+  //   }));
+  //   setShowSupplierLookup(false);
+  // };
+
+  const handleSupplierChange = (supplierId: number) => {
+    setCertificate((prevData) => ({
+      ...prevData,
+      supplierId,
+    }));
+  };
+
+  const handleSupplierSelect = (supplier: SupplierDto) => {
+    setCertificate((prev) => ({
+      ...prev,
+      supplierId: supplier.id,
+    }));
+    setShowSupplierLookup(false);
+  };
 
   return (
     <div className="new-cert-form">
       {showSupplierLookup && (
         <SupplierLookup
           onClose={handleCloseSupplierLookup}
-          onSupplierSelect={handleSupplierOnSelect}
+          onSupplierSelect={handleSupplierSelect}
         />
       )}
       {showParticipantLookup && (
@@ -151,16 +207,19 @@ const CertificateForm: React.FC = () => {
           onClose={handleCloseParticipantLookup}
         />
       )}
-      <form onSubmit={handleSaving}>
+      <form onSubmit={handleSubmit}>
         <div className="form-container">
           <div className="left-side">
             <SupplierField
-              supplier={certificate.supplier}
+              supplierId={certificate.supplierId}
               onChange={handleSupplierChange}
               onOpenLookup={() => setShowSupplierLookup(true)}
             />
-            <CertificateType
-              value={certificate.certificateType}
+            <CertificateTypes
+              value={
+                certificate.certificateType ||
+                CertificateType.PERMISSION_OF_PRINTING
+              }
               onChange={handleInputChange}
             />
             <div className="form-input-container">
@@ -169,7 +228,7 @@ const CertificateForm: React.FC = () => {
                 name="validFrom"
                 className="form-input"
                 type="date"
-                value={certificate.validFrom}
+                value={formatDateForInput(certificate.validFrom)}
                 onChange={handleInputChange}
               />
             </div>
@@ -179,7 +238,7 @@ const CertificateForm: React.FC = () => {
                 name="validTo"
                 className="form-input"
                 type="date"
-                value={certificate.validTo}
+                value={formatDateForInput(certificate.validTo)}
                 onChange={handleInputChange}
               />
               <div className="form-input-container">

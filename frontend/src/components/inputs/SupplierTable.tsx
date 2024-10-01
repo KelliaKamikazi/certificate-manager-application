@@ -1,53 +1,53 @@
-import React from 'react';
-import { useTranslation } from '../../useTranslation';
-import { Supplier } from '../data/data';
+import React from "react";
+import { useTranslation } from "../../useTranslation";
+import { SupplierDto } from "../data/certificate";
 
 interface SupplierTableProps {
-  suppliers: Supplier[];
-  selectSupplierIndex: number | undefined;
+  suppliers: SupplierDto[];
+  selectSupplierId: number | undefined;
   onSelectSupplier: (index: number | undefined) => void;
 }
 
 const SupplierTable: React.FC<SupplierTableProps> = ({
   suppliers,
-  selectSupplierIndex,
+  selectSupplierId,
   onSelectSupplier,
 }) => {
   const { t } = useTranslation();
-  const handleSelectSupplier = (supplierIndex: number | undefined) => {
-    onSelectSupplier(supplierIndex);
+  const handleSelectSupplier = (supplierId: number | undefined) => {
+    onSelectSupplier(supplierId);
   };
-  const handleRadioChange = (supplier: Supplier) => {
-    handleSelectSupplier(supplier.supplierIndex);
+  const handleRadioChange = (supplier: SupplierDto) => {
+    handleSelectSupplier(supplier.id);
   };
 
   return (
     <div className="suppliers-results-container">
       <div className="top-bar-title-container">
-        <div className="top-bar-title">{t('supplierList')}</div>
+        <div className="top-bar-title">{t("supplierList")}</div>
       </div>
       <table>
         <thead>
           <tr>
             <th></th>
-            <th>{t('supplierName')}</th>
-            <th>{t('supplierIndex')}</th>
-            <th>{t('city')}</th>
+            <th>{t("supplierName")}</th>
+            <th>{t("supplierIndex")}</th>
+            <th>{t("city")}</th>
           </tr>
         </thead>
         <tbody>
           {suppliers.map((supplier) => (
-            <tr key={supplier.supplierIndex}>
+            <tr key={supplier.id}>
               <td>
                 <input
                   type="radio"
                   name="supplier"
-                  checked={supplier.supplierIndex === selectSupplierIndex}
+                  checked={supplier.id === selectSupplierId}
                   onChange={() => handleRadioChange(supplier)}
                 />
               </td>
               <td>{supplier.name}</td>
-              <td>{supplier.supplierIndex}</td>
+              <td>{supplier.id}</td>
               <td>{supplier.city}</td>
             </tr>
           ))}

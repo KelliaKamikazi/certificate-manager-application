@@ -4,24 +4,28 @@ import { useNavigate } from "react-router-dom";
 import IconSvg from "../icons/icons";
 import gearIcon from "../icons/gearIcon";
 import { useTranslation } from "../../useTranslation";
-import axios from "axios";
 import { CertificateDto } from "../data/certificate";
+import { apiClient } from "../data/client";
 const Example1: React.FC = () => {
   const { t } = useTranslation();
   const [certificates, setCertificates] = useState<CertificateDto[]>([]);
   const [openDropdownId, setOpenDropdownId] = useState<number | undefined>(
     undefined
   );
+  const [, setLoading] = useState(true);
+  const [, setError] = useState<Error | null>(null);
   const navigate = useNavigate();
 
   useEffect(() => {
     const fetchCertificates = async () => {
       try {
-        const response = await axios.get("/certificates");
-        console.log("Certificates:", response.data);
+        setLoading(true);
+        const response = await apiClient.getCertificates$GET$certificates();
         setCertificates(response.data);
-      } catch (error) {
-        console.error("Error fetching certificates:", error);
+        setLoading(false);
+      } catch (err) {
+        setError(err instanceof Error ? err : new Error("An error occurred"));
+        setLoading(false);
       }
     };
 
@@ -32,14 +36,22 @@ const Example1: React.FC = () => {
     setOpenDropdownId(openDropdownId === certId ? undefined : certId);
   };
 
+  const deleteCertificate = async (id: number) => {
+    try {
+      await apiClient.deleteCertificate(id);
+      setCertificates((prevCertificates) =>
+        prevCertificates.filter((cert) => cert.id !== id)
+      );
+    } catch (err) {
+      throw err;
+    }
+  };
+
   const confirmAndDelete = async (id: number) => {
     if (window.confirm(t("confirm_delete"))) {
       try {
-        await axios.delete(`/certificates/${id}`);
+        await deleteCertificate(id);
         alert(t("delete_success"));
-        setCertificates((prevCertificates) =>
-          prevCertificates.filter((cert) => cert.id !== id)
-        );
       } catch (error) {
         console.error("Failed to delete the certificate", error);
         alert(t("delete_failure"));

@@ -1,16 +1,13 @@
-import { useTranslation } from '../../useTranslation';
-import IconSvg from '../icons/icons';
-import searchIcon from '../icons/searchIcon';
-import closeIcon from '../icons/closeIcon';
-import { ChangeEvent } from 'react';
-import { Textfield } from '../base/Textfield';
-import { Supplier } from '../data/data';
-import '../../styles/certificateForm.css';
+import { useTranslation } from "../../useTranslation";
+import IconSvg from "../icons/icons";
+import searchIcon from "../icons/searchIcon";
+import { ChangeEvent } from "react";
+import { Textfield } from "../base/Textfield";
+import "../../styles/certificateForm.css";
 
 interface SupplierFieldProps {
-  supplier: Supplier;
-  onClose?: () => void;
-  onChange: (supplier: Supplier) => void;
+  supplierId?: number;
+  onChange: (supplierId: number) => void;
   onOpenLookup: () => void;
 }
 
@@ -19,31 +16,22 @@ export function SupplierField(props: SupplierFieldProps) {
 
   const handleInputChange = (e: ChangeEvent<HTMLInputElement>) => {
     const { value } = e.target;
-    const newSupplier = { ...props.supplier, name: value };
-    props.onChange(newSupplier);
+    const supplierId = parseInt(value, 10);
+    props.onChange(supplierId);
   };
 
   return (
     <div className="form-input-container">
-      <label className="form-input-label">{t('supplierLabel')}</label>
+      <label className="form-input-label">{t("supplierLabel")}</label>
       <div className="form-input-container form-input-multiple">
         <Textfield
-          name="supplier"
-          type="text"
-          value={props.supplier.name}
+          name="supplierId"
+          type="number"
+          value={props.supplierId?.toString() || ""}
           onChange={handleInputChange}
         />
-        <button
-          type="button"
-          onClick={props.onOpenLookup}
-        >
+        <button type="button" onClick={props.onOpenLookup}>
           <IconSvg Icon={searchIcon} />
-        </button>
-        <button
-          type="button"
-          onClick={props.onClose}
-        >
-          <IconSvg Icon={closeIcon} />
         </button>
       </div>
     </div>
