@@ -1,6 +1,7 @@
 package web.resources;
 
 import data.entities.CertificateType;
+import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
 import jakarta.ws.rs.*;
 import jakarta.ws.rs.core.MediaType;
@@ -11,13 +12,15 @@ import web.dtos.CertificateDto;
 import java.util.List;
 
 @Path("/certificates")
+@Produces(MediaType.APPLICATION_JSON)
+@Consumes(MediaType.APPLICATION_JSON)
+@ApplicationScoped
 public class CertificateResource {
 
     @Inject
     CertificateService certificateService;
 
     @GET
-    @Produces(MediaType.APPLICATION_JSON)
     public List<CertificateDto> getCertificates() {
         return certificateService.getCertificates();
     }
@@ -25,7 +28,6 @@ public class CertificateResource {
 
     @GET
     @Path("/{id}")
-    @Produces(MediaType.APPLICATION_JSON)
     public Response getCertificateById(@PathParam("id") Long id) {
         try {
             CertificateDto certificate = certificateService.getCertificateById(id);
@@ -36,8 +38,6 @@ public class CertificateResource {
     }
 
     @POST
-    @Consumes(MediaType.APPLICATION_JSON)
-    @Produces(MediaType.APPLICATION_JSON)
     public Response createCertificate(CertificateDto certificateDto) {
         CertificateDto createdCertificate = certificateService.createCertificate(certificateDto);
         return Response.status(Response.Status.CREATED).entity(createdCertificate).build();
@@ -45,8 +45,6 @@ public class CertificateResource {
 
     @PUT
     @Path("/{id}")
-    @Consumes(MediaType.APPLICATION_JSON)
-    @Produces(MediaType.APPLICATION_JSON)
     public Response updateCertificate(@PathParam("id") Long id, CertificateDto certificateDto) {
         try {
             CertificateDto updatedCertificate = certificateService.updateCertificateDto(id, certificateDto);
@@ -58,7 +56,6 @@ public class CertificateResource {
 
     @DELETE
     @Path("/{id}")
-    @Produces(MediaType.APPLICATION_JSON)
     public Response deleteCertificate(@PathParam("id") Long id) {
         try {
             certificateService.deleteCertificateDto(id);
@@ -70,7 +67,6 @@ public class CertificateResource {
 
     @GET
     @Path("/types")
-    @Produces(MediaType.APPLICATION_JSON)
     public Response getCertificateTypes() {
         List<CertificateType> certificateTypes = certificateService.getCertificateTypes();
         return Response.ok(certificateTypes).build();

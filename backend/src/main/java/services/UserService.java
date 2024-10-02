@@ -5,6 +5,7 @@ import data.repositories.UserRepository;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
 import jakarta.transaction.Transactional;
+import jakarta.ws.rs.NotFoundException;
 import web.dtos.UserDto;
 import web.mappers.UserMapper;
 
@@ -29,4 +30,19 @@ public class UserService {
         List<UserEntity> users = userRepository.listAll();
         return users.stream().map(UserMapper::toDto).collect(Collectors.toList());
     }
+
+    public UserDto getUserById(Long id) {
+        UserEntity user = userRepository.findById(id);
+        if (user == null) {
+            throw new NotFoundException("User with id " + id + " not found");
+        }
+        return UserMapper.toDto(user);
+    }
+
+    public List<UserDto> getUsersByIds(List<Long> ids) {
+        return ids.stream()
+                .map(this::getUserById)
+                .collect(Collectors.toList());
+    }
+
 }

@@ -3,6 +3,7 @@ import "../../styles/commentForm.css";
 import { useLocalStorageChange } from "../../useLocalStorageChange";
 import { apiClient } from "../data/client";
 import { CommentDto, UserDto } from "../data/certificate";
+import { useTranslation } from "../../useTranslation";
 
 interface CommentFormProps {
   certificateId?: number;
@@ -16,7 +17,7 @@ const CommentForm: React.FC<CommentFormProps> = ({
 }) => {
   const user = useLocalStorageChange("participant");
   const [comment, setComment] = useState("");
-
+  const { t } = useTranslation();
   const [showCommentForm, setShowCommentForm] = useState(false);
   const [users, setUsers] = useState<UserDto[]>([]);
 
@@ -66,7 +67,7 @@ const CommentForm: React.FC<CommentFormProps> = ({
           className="btn blue-btn"
           onClick={toggleCommentForm}
         >
-          {showCommentForm ? "Cancel" : "New comment"}
+          {showCommentForm ? t("cancel") : t("newComment")}
         </button>
       </div>
       <div className="comment-body">
@@ -74,20 +75,20 @@ const CommentForm: React.FC<CommentFormProps> = ({
           comments.map((comment) => (
             <div className="comment" key={comment.id}>
               <h2>
-                User: <span>{getUserName(comment.userId, users)}</span>
+                {t("user")}: <span>{getUserName(comment.userId, users)}</span>
               </h2>
               <h4>
-                Comment: <span>{comment.content}</span>
+                {t("comment")}: <span>{comment.content}</span>
               </h4>
             </div>
           ))
         ) : (
-          <div>No Comments</div>
+          <div>{t("noComments")}</div>
         )}
       </div>
       {showCommentForm && (
         <div className="comment-form">
-          <label htmlFor="comment">{user?.firstName || "Anonymous"}*</label>
+          <label htmlFor="comment">{user?.firstName || t("anonymous")}*</label>
           <textarea
             id="comment"
             name="comment"
@@ -102,7 +103,7 @@ const CommentForm: React.FC<CommentFormProps> = ({
             className="btn red-btn"
             onClick={handleAddComment}
           >
-            Send
+            {t("send")}
           </button>
         </div>
       )}

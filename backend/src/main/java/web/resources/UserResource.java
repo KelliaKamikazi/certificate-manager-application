@@ -1,5 +1,6 @@
 package web.resources;
 
+import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
 import jakarta.ws.rs.*;
 import jakarta.ws.rs.core.MediaType;
@@ -12,15 +13,41 @@ import java.util.List;
 @Path("/users")
 @Produces(MediaType.APPLICATION_JSON)
 @Consumes(MediaType.APPLICATION_JSON)
+@ApplicationScoped
 public class UserResource {
 
     @Inject
     private UserService userService;
 
     @GET
-    public Response getAllUsers(){
+    public Response getAllUsers() {
         List<UserDto> users = userService.getAllUsers();
         return Response.ok(users).build();
+    }
+
+    @GET
+    @Path("/{id}")
+    public Response getUserById(@PathParam("id") Long id) {
+        try {
+            UserDto user = userService.getUserById(id);
+            return Response.ok(user).build();
+        } catch (NotFoundException e) {
+            return Response.status(Response.Status.NOT_FOUND).entity(e.getMessage()).build();
+        }
+    }
+
+    @GET
+    @Path("/ids")
+    public Response getUsersByIds(@QueryParam("ids") List<Long> ids) {
+        if (ids == null || ids.isEmpty()) {
+            return Response.status(Response.Status.BAD_REQUEST).entity("No user IDs provided").build();
+        }
+        try {
+            List<UserDto> users = userService.getUsersByIds(ids);
+            return Response.ok(users).build();
+        } catch (NotFoundException e) {
+            return Response.status(Response.Status.NOT_FOUND).entity(e.getMessage()).build();
+        }
     }
 
 

@@ -75,8 +75,9 @@ public class CertificateService {
                 }
 
                 UserEntity user = userRepository.findById(commentDto.getUserId());
-                commentEntity.setUser(user);
-                updatedComments.add(commentEntity);
+                if (user == null) {
+                    throw new NotFoundException("User with id " + commentDto.getUserId() + " not found");
+                }
             }
             existingCertificateEntity.getComments().clear();
             existingCertificateEntity.getComments().addAll(updatedComments);
@@ -104,10 +105,17 @@ public class CertificateService {
     private void updateAssignedUsers(CertificateEntity certificateEntity, Set<Long> userIds) {
         if (userIds != null) {
             Set<UserEntity> assignedUserEntities = userIds.stream()
-                    .map(userRepository::findById)
-                    .filter(user -> user != null)
+                    .map(userId -> {
+                        UserEntity user = userRepository.findById(userId);
+                        if (user == null) {
+                            throw new NotFoundException("User with id " + userId + " not found");
+                        }
+                        return user;
+                    })
                     .collect(Collectors.toSet());
             certificateEntity.setAssignedUsers(assignedUserEntities);
+        } else {
+            certificateEntity.getAssignedUsers().clear();
         }
     }
 

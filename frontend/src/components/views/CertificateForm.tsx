@@ -58,13 +58,23 @@ const CertificateForm: React.FC = () => {
   const fetchCertificate = async (id: number) => {
     try {
       setLoading(true);
-      const response = await apiClient;
-      const fetchedCertificate = await response.getCertificateById(id);
+      const response = await apiClient.getCertificateById(id);
+      const fetchedCertificate = response.data as CertificateDto;
       setCertificate({
-        ...(await fetchedCertificate).data,
-        validFrom: new Date(fetchedCertificate.data.validFrom),
-        validTo: new Date(fetchedCertificate.data.validTo),
+        ...fetchedCertificate,
+        validFrom: new Date(fetchedCertificate.validFrom),
+        validTo: new Date(fetchedCertificate.validTo),
       });
+
+      if (
+        fetchedCertificate.assignedUserIds &&
+        fetchedCertificate.assignedUserIds.length > 0
+      ) {
+        const usersResponse = await apiClient.getUsersByIds({
+          ids: fetchedCertificate.assignedUserIds,
+        });
+        setSelectedParticipants(usersResponse.data as UserDto[]);
+      }
     } catch (err) {
       setError("Failed to fetch certificate");
       console.error("Error fetching certificate:", err);
@@ -79,9 +89,7 @@ const CertificateForm: React.FC = () => {
       !certificate.supplier ||
       !certificate.certificateType ||
       !certificate.validFrom ||
-      !certificate.validTo ||
-      !certificate.assignedUserIds ||
-      !certificate.comments
+      !certificate.validTo
     ) {
       setError(t("allFieldsRequired"));
       return;
@@ -234,22 +242,24 @@ const CertificateForm: React.FC = () => {
                 onChange={handleInputChange}
               />
               <div className="form-input-container">
-                <label className="form-input-label mb-1">Assigned Users</label>
+                <label className="form-input-label mb-1">
+                  {t("assignedUsers")}
+                </label>
                 <span
                   className="btn gray-btn"
                   onClick={handleOpenParticipantLookup}
                 >
                   <IconSvg Icon={searchIcon} />
-                  <span>Add participant</span>
+                  <span>{t("addParticipant")}</span>
                 </span>
                 <div className="suppliers-results-container mt-1">
                   <table>
                     <thead>
                       <tr>
                         <th></th>
-                        <th>Name</th>
-                        <th>Department</th>
-                        <th>E-mail</th>
+                        <th>{t("name")}</th>
+                        <th>{t("department")}</th>
+                        <th>{t("email")}</th>
                       </tr>
                     </thead>
                     <tbody>
