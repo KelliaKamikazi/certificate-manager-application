@@ -7,6 +7,7 @@ import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
 import jakarta.ws.rs.NotFoundException;
 import web.dtos.CertificateDto;
+import web.dtos.CommentDto;
 
 import java.util.List;
 import java.util.Set;
@@ -22,6 +23,8 @@ public class CertificateMapper {
 
     @Inject
     SupplierMapper supplierMapper;
+    @Inject
+    CommentMapper commentMapper;
 
     public CertificateDto toDto(CertificateEntity certificateEntity) {
         if (certificateEntity == null) {
@@ -41,10 +44,10 @@ public class CertificateMapper {
                 .collect(Collectors.toSet());
         dto.setAssignedUserIds(userIds);
 
-        List<String> commentContent = certificateEntity.getComments().stream()
-                .map(CommentEntity::getContent)
+        List<CommentDto> comments = certificateEntity.getComments().stream()
+                .map(commentMapper::toDto)
                 .collect(Collectors.toList());
-        dto.setComments(commentContent);
+        dto.setComments(comments);
 
         return dto;
     }
@@ -71,12 +74,7 @@ public class CertificateMapper {
 
         if (certificateDto.getComments() != null) {
             List<CommentEntity> commentEntities = certificateDto.getComments().stream()
-                    .map(content -> {
-                        CommentEntity commentEntity = new CommentEntity();
-                        commentEntity.setContent(content);
-                        return commentEntity;
-                    })
-                    .collect(Collectors.toList());
+                    .map(commentMapper::toEntity).collect(Collectors.toList());
             entity.setComments(commentEntities);
         }
 

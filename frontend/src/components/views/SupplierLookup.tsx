@@ -48,17 +48,13 @@ const SupplierLookup: React.FC<SupplierLookupProps> = ({
       } else if (city) {
         response = await apiClient.getSuppliersByCity(city);
       } else {
-        // If no specific criteria, fetch all suppliers
         response = await apiClient.getSuppliers();
       }
-
-      // Axios puts the response data directly in the `data` property
       const suppliers = Array.isArray(response.data)
         ? response.data
         : [response.data];
 
       if (suppliers.length === 0) {
-        console.log("No suppliers found");
       }
 
       setFilteredSuppliers(suppliers);

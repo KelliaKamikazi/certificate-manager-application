@@ -15,12 +15,12 @@ public class CertificateDto {
     private LocalDate validTo;
     private String pdfUrl;
     private Set<Long> assignedUserIds;
-    private List<String> comments;
+    private List<CommentDto> comments;
 
     public CertificateDto() {
     }
 
-    public CertificateDto(Long id, SupplierDto supplier, CertificateType certificateType, LocalDate validFrom, LocalDate validTo, String pdfUrl, Set<Long> assignedUserIds, List<String> comments) {
+    public CertificateDto(Long id, SupplierDto supplier, CertificateType certificateType, LocalDate validFrom, LocalDate validTo, String pdfUrl, Set<Long> assignedUserIds, List<CommentDto> comments) {
         this.id = id;
         this.supplier = supplier;
         this.certificateType = certificateType;
@@ -87,11 +87,11 @@ public class CertificateDto {
         this.assignedUserIds = assignedUserIds;
     }
 
-    public List<String> getComments() {
+    public List<CommentDto> getComments() {
         return comments;
     }
 
-    public void setComments(List<String> comments) {
+    public void setComments(List<CommentDto> comments) {
         this.comments = comments;
     }
 

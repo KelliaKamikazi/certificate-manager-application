@@ -1,11 +1,11 @@
 import React from "react";
 import { useTranslation } from "../../useTranslation";
-import { Participant } from "../data/data";
+import { UserDto } from "../data/certificate";
 
 interface ParticipantTableProps {
-  participants: Participant[];
-  selectedParticipants: Participant[];
-  onSelectParticipants: (selectedParticipants: Participant[]) => void;
+  participants: UserDto[];
+  selectedParticipants: UserDto[];
+  onSelectParticipants: (selectedParticipants: UserDto[]) => void;
 }
 
 const ParticipantTable: React.FC<ParticipantTableProps> = ({
@@ -14,7 +14,7 @@ const ParticipantTable: React.FC<ParticipantTableProps> = ({
   onSelectParticipants,
 }) => {
   const { t } = useTranslation();
-  const handleSelectParticipant = (participant: Participant) => {
+  const handleSelectParticipant = (participant: UserDto) => {
     let updatedSelectedParticipants;
     if (selectedParticipants.some((p) => p.id === participant.id)) {
       updatedSelectedParticipants = selectedParticipants.filter(
@@ -60,7 +60,7 @@ const ParticipantTable: React.FC<ParticipantTableProps> = ({
               <td>{participant.lastName}</td>
               <td>{participant.firstName}</td>
               <td>{participant.userId}</td>
-              <td>{participant.department}</td>
+              <td>{participant.departmentId}</td>
               <td>{participant.plant}</td>
             </tr>
           ))}

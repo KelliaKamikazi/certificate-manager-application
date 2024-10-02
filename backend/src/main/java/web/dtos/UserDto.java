@@ -74,7 +74,7 @@ public class UserDto {
         return departmentId;
     }
 
-    public void setDepartmentId(Long departmentName) {
+    public void setDepartmentId(Long departmentId) {
         this.departmentId = departmentId;
     }
 

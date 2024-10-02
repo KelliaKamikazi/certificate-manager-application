@@ -6,8 +6,6 @@ import {
   useEffect,
   useCallback,
 } from "react";
-import "../../utils/indexedDB";
-import { Participant } from "../data/data";
 
 import { SupplierField } from "../inputs/SupplierField";
 import { CertificateTypes } from "../inputs/CertificateTypes";
@@ -23,6 +21,7 @@ import {
   CertificateDto,
   CertificateType,
   SupplierDto,
+  UserDto,
 } from "../data/certificate";
 import { apiClient } from "../data/client";
 
@@ -45,7 +44,9 @@ const CertificateForm: React.FC = () => {
   const [showParticipantLookup, setShowParticipantLookup] = useState(false);
   const [, setLoading] = useState(false);
   const [, setError] = useState<string | null>(null);
-  const [selectedParticipants] = useState<Participant[]>([]);
+  const [selectedParticipants, setSelectedParticipants] = useState<UserDto[]>(
+    []
+  );
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -77,7 +78,9 @@ const CertificateForm: React.FC = () => {
       !certificate.supplier ||
       !certificate.certificateType ||
       !certificate.validFrom ||
-      !certificate.validTo
+      !certificate.validTo ||
+      !certificate.assignedUserIds ||
+      !certificate.comments
     ) {
       setError(t("allFieldsRequired"));
       return;
@@ -102,12 +105,10 @@ const CertificateForm: React.FC = () => {
       navigate("/example1");
     } catch (err) {
       setError(t("certificateNotAddedOrUpdated"));
-      console.error("Error saving certificate:", err);
     } finally {
       setLoading(false);
     }
   };
-
   const handleInputChange = (
     e: ChangeEvent<HTMLInputElement | HTMLSelectElement>
   ) => {
@@ -119,7 +120,6 @@ const CertificateForm: React.FC = () => {
       return { ...prev, [name]: value };
     });
   };
-
   const handleFileChange = (e: ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (file && file.type === "application/pdf") {
@@ -142,6 +142,15 @@ const CertificateForm: React.FC = () => {
   const handleCloseSupplierLookup = useCallback(() => {
     setShowSupplierLookup(false);
   }, []);
+
+  const handleSelectedParticipants = useCallback(
+    (allparticipants: UserDto[]) => {
+      setSelectedParticipants((prev) => [...prev, ...allparticipants]);
+      setShowParticipantLookup(false);
+    },
+    []
+  );
+
   const handleCloseParticipantLookup = useCallback(() => {
     setShowParticipantLookup(false);
   }, []);
@@ -178,7 +187,7 @@ const CertificateForm: React.FC = () => {
       )}
       {showParticipantLookup && (
         <ParticipantLookup
-          onParticipantSelect={handleCloseParticipantLookup}
+          onParticipantSelect={handleSelectedParticipants}
           onClose={handleCloseParticipantLookup}
         />
       )}
@@ -240,16 +249,17 @@ const CertificateForm: React.FC = () => {
                         <tr key={participant.email}>
                           <td></td>
                           <td>{participant.lastName}</td>
-                          <td>{participant.department}</td>
+                          <td>{participant.departmentId}</td>
                           <td>{participant.email}</td>
                         </tr>
                       ))}
                     </tbody>
                   </table>
                 </div>
-
-                {/* Add CommentForm below the participant table */}
-                <CommentForm />
+                <CommentForm
+                  certificateId={certificate.id}
+                  comments={certificate.comments}
+                />
               </div>
             </div>
           </div>
