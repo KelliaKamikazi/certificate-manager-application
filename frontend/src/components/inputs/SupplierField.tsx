@@ -24,8 +24,6 @@ export function SupplierField(props: SupplierFieldProps) {
     props.onChange(newSupplier);
   };
 
-  console.log(props.supplier, "----------");
-
   return (
     <div className="form-input-container">
       <label className="form-input-label">{t("supplierLabel")}</label>

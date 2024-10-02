@@ -1,10 +1,9 @@
 import React, { useEffect, useState } from "react";
 import { useTranslation } from "../../useTranslation";
 import "../../styles/header.css";
-
 import { useLocalStorageChange } from "../../useLocalStorageChange";
-import axios from "axios";
 import { UserDto } from "../data/certificate";
+import { apiClient } from "../data/client";
 
 const Header: React.FC = () => {
   const { t, changeLanguage } = useTranslation();
@@ -18,8 +17,12 @@ const Header: React.FC = () => {
     changeLanguage(lang === "English" ? "en" : "de");
   };
 
-  const handleParticipantSelect = (participantName: string) => {
-    localStorage.setItem("participant", participantName);
+  const handleParticipantSelect = (participant: UserDto) => {
+    const participantObj = {
+      id: participant.id,
+      firstName: participant.firstName,
+    };
+    localStorage.setItem("participant", JSON.stringify(participantObj));
   };
 
   const handleEnglishSelect = () => handleLanguageChange("English");
@@ -28,10 +31,9 @@ const Header: React.FC = () => {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const backendResponse = await axios.get("/users");
-        setParticipants(backendResponse.data);
-        console.log("DATA", backendResponse.data);
-        console.log("PARTICCCC", participants);
+        const response = await apiClient;
+        const fetchedParticipants = await response.getAllUsers();
+        setParticipants(fetchedParticipants.data);
       } catch (error) {
         console.error("Error fetching participants:", error);
       }
@@ -47,14 +49,19 @@ const Header: React.FC = () => {
         <div className="lang-dropdown-container">
           <span>{t("user")}:</span>
           <div className="languages">
-            <button className="lang-button">{selectedParticipant} ▼</button>
+            <button className="lang-button">
+              {selectedParticipant
+                ? selectedParticipant.firstName
+                : t("selectUser")}{" "}
+              ▼
+            </button>
             <div className="dropdown-content">
               {participants.map((participant, index) => (
                 <a
                   key={index}
-                  onClick={() => handleParticipantSelect(participant.lastName)}
+                  onClick={() => handleParticipantSelect(participant)}
                 >
-                  {participant.lastName}
+                  {participant.firstName}
                 </a>
               ))}
             </div>

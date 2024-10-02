@@ -3,13 +3,15 @@ package data.entities;
 import jakarta.persistence.*;
 
 @Entity
-@Table(name = "comments",schema = "application")
+@Table(name = "comments", schema = "application")
 public class CommentEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+
     @ManyToOne
+    @JoinColumn(name = "certificate_id")
     private CertificateEntity certificate;
 
     @ManyToOne

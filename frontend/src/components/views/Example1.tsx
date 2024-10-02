@@ -80,7 +80,6 @@ const Example1: React.FC = () => {
   };
 
   const handleEdit = (cert: CertificateDto) => () => {
-    console.log("cert 1 ", cert);
     handleEditClick(cert.id);
   };
   const handleDelete = (cert: CertificateDto) => () =>

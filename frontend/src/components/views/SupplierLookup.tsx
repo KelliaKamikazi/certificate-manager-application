@@ -55,7 +55,6 @@ const SupplierLookup: React.FC<SupplierLookupProps> = ({
         : [response.data];
 
       if (suppliers.length === 0) {
-        console.log("No suppliers found");
       }
 
       setFilteredSuppliers(suppliers);

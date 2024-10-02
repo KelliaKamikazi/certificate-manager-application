@@ -11,7 +11,6 @@ interface ParticipantLookupProps {
   onClose: () => void;
   onParticipantSelect: (participants: UserDto[]) => void;
 }
-
 const ParticipantLookup: React.FC<ParticipantLookupProps> = ({
   onClose,
   onParticipantSelect,
@@ -22,7 +21,6 @@ const ParticipantLookup: React.FC<ParticipantLookupProps> = ({
   const [userId, setUserId] = useState("");
   const [department, setDepartment] = useState("");
   const [plant, setPlant] = useState("");
-
   const [participants, setParticipants] = useState<UserDto[]>([]);
   const [selectedParticipants, setSelectedParticipants] = useState<UserDto[]>(
     []
@@ -51,11 +49,9 @@ const ParticipantLookup: React.FC<ParticipantLookupProps> = ({
   };
 
   const handleParticipantSelect = () => {
-    console.log("participants: ", selectedParticipants);
     onParticipantSelect(selectedParticipants);
     handleClose();
   };
-
   const handleSearch = async (e: React.FormEvent) => {
     e.preventDefault();
     try {
@@ -72,7 +68,6 @@ const ParticipantLookup: React.FC<ParticipantLookupProps> = ({
       console.error("Error searching users:", error);
     }
   };
-
   const handleReset = () => {
     setName("");
     setFirstName("");
@@ -86,7 +81,6 @@ const ParticipantLookup: React.FC<ParticipantLookupProps> = ({
   const handleShowTable = () => {
     setShowTable(true);
   };
-
   const handleNameChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setName(e.target.value);
   };
@@ -106,7 +100,6 @@ const ParticipantLookup: React.FC<ParticipantLookupProps> = ({
   const handlePlantChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setPlant(e.target.value);
   };
-
   return (
     <dialog open>
       <div className="modal-backdrop">

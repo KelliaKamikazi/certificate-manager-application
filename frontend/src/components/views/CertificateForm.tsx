@@ -78,7 +78,9 @@ const CertificateForm: React.FC = () => {
       !certificate.supplier ||
       !certificate.certificateType ||
       !certificate.validFrom ||
-      !certificate.validTo
+      !certificate.validTo ||
+      !certificate.assignedUserIds ||
+      !certificate.comments
     ) {
       setError(t("allFieldsRequired"));
       return;
@@ -103,7 +105,6 @@ const CertificateForm: React.FC = () => {
       navigate("/example1");
     } catch (err) {
       setError(t("certificateNotAddedOrUpdated"));
-      console.error("Error saving certificate:", err);
     } finally {
       setLoading(false);
     }
@@ -255,9 +256,10 @@ const CertificateForm: React.FC = () => {
                     </tbody>
                   </table>
                 </div>
-
-                {/* Add CommentForm below the participant table */}
-                <CommentForm />
+                <CommentForm
+                  certificateId={certificate.id}
+                  comments={certificate.comments}
+                />
               </div>
             </div>
           </div>
