@@ -59,7 +59,7 @@ const ParticipantTable: React.FC<ParticipantTableProps> = ({
               <td>{participant.id}</td>
               <td>{participant.lastName}</td>
               <td>{participant.firstName}</td>
-              <td>{participant.userId}</td>
+              <td>{participant.userIndex}</td>
               <td>{participant.departmentId}</td>
               <td>{participant.plant}</td>
             </tr>

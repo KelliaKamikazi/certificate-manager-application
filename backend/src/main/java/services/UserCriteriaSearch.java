@@ -29,7 +29,7 @@ public class UserCriteriaSearch {
         this.entityManager = entityManager;
     }
 
-    public List<UserDto> searchUsers(String userId, String firstName, String lastName, String email, String department, String plant) {
+    public List<UserDto> searchUsers(String userIndex, String firstName, String lastName, String email, String department, String plant) {
         CriteriaBuilder cb = entityManager.getCriteriaBuilder();
         CriteriaQuery<UserEntity> query = cb.createQuery(UserEntity.class);
         Root<UserEntity> root = query.from(UserEntity.class);
@@ -39,7 +39,7 @@ public class UserCriteriaSearch {
 
         List<Predicate> predicates = new ArrayList<>();
 
-        addPredicateIfNotEmpty(predicates, userId, value -> cb.equal(root.get(UserEntity_.userId), value));
+        addPredicateIfNotEmpty(predicates, userIndex, value -> cb.equal(root.get(UserEntity_.userIndex), value));
         addLikePredicateIfNotEmpty(predicates, firstName, UserEntity_.firstName, cb, root);
         addLikePredicateIfNotEmpty(predicates, lastName, UserEntity_.lastName, cb, root);
         addLikePredicateIfNotEmpty(predicates, email, UserEntity_.email, cb, root);

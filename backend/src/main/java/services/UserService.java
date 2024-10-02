@@ -21,8 +21,8 @@ public class UserService {
     @Inject
     private UserCriteriaSearch userCriteriaSearch;
 
-    public List<UserDto> searchUsers(String userId, String firstName, String lastName, String email, String department, String plant) {
-        return userCriteriaSearch.searchUsers(userId, firstName, lastName, email, department, plant);
+    public List<UserDto> searchUsers(String userIndex, String firstName, String lastName, String email, String department, String plant) {
+        return userCriteriaSearch.searchUsers(userIndex, firstName, lastName, email, department, plant);
     }
 
     public List<UserDto> getAllUsers() {

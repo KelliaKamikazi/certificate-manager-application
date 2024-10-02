@@ -13,7 +13,7 @@ public class UserMapper {
     public static UserDto toDto(UserEntity entity) {
         return new UserDto(
                 entity.getId(),
-                entity.getUserId(),
+                entity.getUserIndex(),
                 entity.getFirstName(),
                 entity.getLastName(),
                 entity.getEmail(),

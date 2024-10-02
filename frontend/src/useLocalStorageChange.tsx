@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
 
 export const useLocalStorageChange = (key: string) => {
-  const [value, setValue] = useState<{ id: string; firstName: string } | null>(
+  const [value, setValue] = useState<{ id: number; firstName: string } | null>(
     () => {
       const storedValue = localStorage.getItem(key);
       return storedValue ? JSON.parse(storedValue) : null;

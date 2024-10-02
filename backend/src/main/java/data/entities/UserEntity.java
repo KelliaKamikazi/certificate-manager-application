@@ -19,7 +19,7 @@ public class UserEntity {
     private Long id;
 
     @Column(unique = true)
-    private String userId;
+    private String userIndex;
 
     private String firstName;
     private String lastName;
@@ -46,12 +46,12 @@ public class UserEntity {
         this.id = id;
     }
 
-    public String getUserId() {
-        return userId;
+    public String getUserIndex() {
+        return userIndex;
     }
 
-    public void setUserId(String userId) {
-        this.userId = userId;
+    public void setUserIndex(String userIndex) {
+        this.userIndex = userIndex;
     }
 
     public String getFirstName() {

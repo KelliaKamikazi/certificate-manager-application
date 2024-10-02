@@ -6,7 +6,7 @@ import java.util.Set;
 public class UserDto {
 
     private Long id;
-    private String userId;
+    private String userIndex;
     private String firstName;
     private String lastName;
     private String email;
@@ -18,9 +18,9 @@ public class UserDto {
     public UserDto() {
     }
 
-    public UserDto(Long id, String userId, String firstName, String lastName, String email, Long departmentId, String plant, Set<Long> assignedCertificateIds, List<Long> commentIds) {
+    public UserDto(Long id, String userIndex, String firstName, String lastName, String email, Long departmentId, String plant, Set<Long> assignedCertificateIds, List<Long> commentIds) {
         this.id = id;
-        this.userId = userId;
+        this.userIndex = userIndex;
         this.firstName = firstName;
         this.lastName = lastName;
         this.email = email;
@@ -38,12 +38,12 @@ public class UserDto {
         this.id = id;
     }
 
-    public String getUserId() {
-        return userId;
+    public String getUserIndex() {
+        return userIndex;
     }
 
-    public void setUserId(String userId) {
-        this.userId = userId;
+    public void setUserIndex(String userIndex) {
+        this.userIndex = userIndex;
     }
 
     public String getFirstName() {
@@ -106,7 +106,7 @@ public class UserDto {
     public String toString() {
         return "UserDto{" +
                 "id=" + id +
-                ", userId='" + userId + '\'' +
+                ", userIndex='" + userIndex + '\'' +
                 ", firstName='" + firstName + '\'' +
                 ", lastName='" + lastName + '\'' +
                 ", email='" + email + '\'' +
