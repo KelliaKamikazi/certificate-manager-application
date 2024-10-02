@@ -3,6 +3,7 @@ package web.dtos;
 import data.entities.CertificateType;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Set;
 
@@ -11,8 +12,8 @@ public class CertificateDto {
     private Long id;
     private SupplierDto supplier;
     private CertificateType certificateType;
-    private LocalDate validFrom;
-    private LocalDate validTo;
+    private LocalDateTime validFrom;
+    private LocalDateTime validTo;
     private String pdfUrl;
     private Set<Long> assignedUserIds;
     private List<CommentDto> comments;
@@ -20,7 +21,7 @@ public class CertificateDto {
     public CertificateDto() {
     }
 
-    public CertificateDto(Long id, SupplierDto supplier, CertificateType certificateType, LocalDate validFrom, LocalDate validTo, String pdfUrl, Set<Long> assignedUserIds, List<CommentDto> comments) {
+    public CertificateDto(Long id, SupplierDto supplier, CertificateType certificateType, LocalDateTime validFrom, LocalDateTime validTo, String pdfUrl, Set<Long> assignedUserIds, List<CommentDto> comments) {
         this.id = id;
         this.supplier = supplier;
         this.certificateType = certificateType;
@@ -55,19 +56,19 @@ public class CertificateDto {
         this.certificateType = certificateType;
     }
 
-    public LocalDate getValidFrom() {
+    public LocalDateTime getValidFrom() {
         return validFrom;
     }
 
-    public void setValidFrom(LocalDate validFrom) {
+    public void setValidFrom(LocalDateTime validFrom) {
         this.validFrom = validFrom;
     }
 
-    public LocalDate getValidTo() {
+    public LocalDateTime getValidTo() {
         return validTo;
     }
 
-    public void setValidTo(LocalDate validTo) {
+    public void setValidTo(LocalDateTime validTo) {
         this.validTo = validTo;
     }
 

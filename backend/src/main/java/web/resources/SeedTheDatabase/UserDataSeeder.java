@@ -9,6 +9,7 @@ import jakarta.persistence.criteria.CriteriaBuilder;
 import jakarta.persistence.criteria.CriteriaQuery;
 import jakarta.persistence.criteria.Root;
 import jakarta.inject.Inject;
+
 import java.util.Arrays;
 import java.util.List;
 
@@ -47,13 +48,13 @@ public class UserDataSeeder {
         }
     }
 
-    private UserEntity createUser(String email, String firstName, String lastName, String plant, String userId, Long departmentId) {
+    private UserEntity createUser(String email, String firstName, String lastName, String plant, String userIndex, Long departmentId) {
         UserEntity user = new UserEntity();
         user.setEmail(email);
         user.setFirstName(firstName);
         user.setLastName(lastName);
         user.setPlant(plant);
-        user.setUserId(userId);
+        user.setUserIndex(userIndex);
         user.setDepartment(departmentRepository.findById(departmentId));
         return user;
     }

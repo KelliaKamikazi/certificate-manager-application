@@ -7,15 +7,16 @@ import { CommentDto, UserDto } from "../data/certificate";
 interface CommentFormProps {
   certificateId?: number;
   comments?: CommentDto[];
+  onAddComment: (newComment: CommentDto) => void;
 }
 
 const CommentForm: React.FC<CommentFormProps> = ({
-  certificateId,
   comments,
+  onAddComment,
 }) => {
   const user = useLocalStorageChange("participant");
   const [comment, setComment] = useState("");
-  const [, setIsSubmitting] = useState(false);
+
   const [showCommentForm, setShowCommentForm] = useState(false);
   const [users, setUsers] = useState<UserDto[]>([]);
 
@@ -35,32 +36,6 @@ const CommentForm: React.FC<CommentFormProps> = ({
     const user = users.find((user) => user.id === userId);
     return user ? user.firstName : "Invalid User";
   };
-  const handleSubmit = useCallback(
-    async (e: React.FormEvent) => {
-      e.preventDefault();
-      if (!comment.trim() || !user || certificateId === undefined) return;
-
-      setIsSubmitting(true);
-
-      const commentDto: CommentDto = {
-        userId: parseInt(user.id, 10),
-        certificateId: certificateId,
-        content: comment,
-        id: 0,
-      };
-
-      try {
-        await apiClient.createComment(commentDto);
-
-        setComment("");
-      } catch (error) {
-        console.error("Error saving comment:", error);
-      } finally {
-        setIsSubmitting(false);
-      }
-    },
-    [comment, user, certificateId]
-  );
 
   const handleCommentChange = useCallback(
     (e: React.ChangeEvent<HTMLTextAreaElement>) => {
@@ -68,6 +43,17 @@ const CommentForm: React.FC<CommentFormProps> = ({
     },
     []
   );
+  const handleAddComment = () => {
+    const newComment = {
+      userId: user?.id || 0,
+      content: comment,
+    } as CommentDto;
+
+    onAddComment(newComment);
+    setComment("");
+    setShowCommentForm(false);
+  };
+
   const toggleCommentForm = useCallback(() => {
     setShowCommentForm((prevState) => !prevState);
   }, []);
@@ -75,14 +61,18 @@ const CommentForm: React.FC<CommentFormProps> = ({
   return (
     <div className="comment-form-container">
       <div className="form-header">
-        <button className="btn blue-btn" onClick={toggleCommentForm}>
+        <button
+          type="button"
+          className="btn blue-btn"
+          onClick={toggleCommentForm}
+        >
           {showCommentForm ? "Cancel" : "New comment"}
         </button>
       </div>
       <div className="comment-body">
         {comments?.length ? (
           comments.map((comment) => (
-            <div className="comment">
+            <div className="comment" key={comment.id}>
               <h2>
                 User: <span>{getUserName(comment.userId, users)}</span>
               </h2>
@@ -95,19 +85,27 @@ const CommentForm: React.FC<CommentFormProps> = ({
           <div>No Comments</div>
         )}
       </div>
-      <form className="comment-form" onSubmit={handleSubmit}>
-        <label htmlFor="comment">{user?.firstName || "Anonymous"}*</label>
-        <textarea
-          id="comment"
-          name="comment"
-          rows={4}
-          cols={50}
-          placeholder="comment"
-          value={comment}
-          onChange={handleCommentChange}
-        />
-        <button type="submit" className="btn red-btn"></button>
-      </form>
+      {showCommentForm && (
+        <div className="comment-form">
+          <label htmlFor="comment">{user?.firstName || "Anonymous"}*</label>
+          <textarea
+            id="comment"
+            name="comment"
+            rows={4}
+            cols={50}
+            placeholder="comment"
+            value={comment}
+            onChange={handleCommentChange}
+          />
+          <button
+            type="button"
+            className="btn red-btn"
+            onClick={handleAddComment}
+          >
+            Send
+          </button>
+        </div>
+      )}
     </div>
   );
 };

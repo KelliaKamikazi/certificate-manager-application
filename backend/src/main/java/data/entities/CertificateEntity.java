@@ -3,13 +3,14 @@ package data.entities;
 import jakarta.persistence.*;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
 @Entity
-@Table(name = "certificates",schema = "application")
+@Table(name = "certificates", schema = "application")
 public class CertificateEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -19,8 +20,8 @@ public class CertificateEntity {
     private SupplierEntity supplier;
     @Enumerated(EnumType.STRING)
     private CertificateType certificateType;
-    private LocalDate validFrom;
-    private LocalDate validTo;
+    private LocalDateTime validFrom;
+    private LocalDateTime validTo;
     @Lob
     private String pdfUrl;
 
@@ -36,9 +37,10 @@ public class CertificateEntity {
     @OneToMany(mappedBy = "certificate", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<CommentEntity> comments = new ArrayList<>();
 
-    public CertificateEntity() {}
+    public CertificateEntity() {
+    }
 
-    public CertificateEntity(Long id, SupplierEntity supplier, CertificateType certificateType, LocalDate validFrom, LocalDate validTo, String pdfUrl, Set<UserEntity> assignedUsers, List<CommentEntity> comments) {
+    public CertificateEntity(Long id, SupplierEntity supplier, CertificateType certificateType, LocalDateTime validFrom, LocalDateTime validTo, String pdfUrl, Set<UserEntity> assignedUsers, List<CommentEntity> comments) {
         this.id = id;
         this.supplier = supplier;
         this.certificateType = certificateType;
@@ -73,19 +75,19 @@ public class CertificateEntity {
         this.certificateType = certificateType;
     }
 
-    public LocalDate getValidFrom() {
+    public LocalDateTime getValidFrom() {
         return validFrom;
     }
 
-    public void setValidFrom(LocalDate validFrom) {
+    public void setValidFrom(LocalDateTime validFrom) {
         this.validFrom = validFrom;
     }
 
-    public LocalDate getValidTo() {
+    public LocalDateTime getValidTo() {
         return validTo;
     }
 
-    public void setValidTo(LocalDate validTo) {
+    public void setValidTo(LocalDateTime validTo) {
         this.validTo = validTo;
     }
 

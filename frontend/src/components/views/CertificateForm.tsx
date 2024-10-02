@@ -20,6 +20,7 @@ import CommentForm from "./CommentForm";
 import {
   CertificateDto,
   CertificateType,
+  CommentDto,
   SupplierDto,
   UserDto,
 } from "../data/certificate";
@@ -51,7 +52,7 @@ const CertificateForm: React.FC = () => {
 
   useEffect(() => {
     if (certificateId && certificateId !== "0") {
-      fetchCertificate(Number(certificateId));
+      fetchCertificate(parseInt(certificateId));
     }
   }, [certificateId]);
   const fetchCertificate = async (id: number) => {
@@ -94,7 +95,7 @@ const CertificateForm: React.FC = () => {
 
       if (certificateId && certificateId !== "0") {
         await apiClient.updateCertificate(
-          Number(certificateId),
+          parseInt(certificateId),
           certificateToSend
         );
         alert(t("certificateUpdated"));
@@ -175,6 +176,13 @@ const CertificateForm: React.FC = () => {
       supplier: supplier,
     }));
     setShowSupplierLookup(false);
+  };
+
+  const handleAddComment = (newComment: CommentDto) => {
+    setCertificate((prevCertificate) => ({
+      ...prevCertificate,
+      comments: [...(prevCertificate.comments || []), newComment],
+    }));
   };
 
   return (
@@ -259,6 +267,7 @@ const CertificateForm: React.FC = () => {
                 <CommentForm
                   certificateId={certificate.id}
                   comments={certificate.comments}
+                  onAddComment={handleAddComment}
                 />
               </div>
             </div>

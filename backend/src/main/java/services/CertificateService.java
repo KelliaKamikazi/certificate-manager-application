@@ -12,9 +12,7 @@ import web.dtos.CommentDto;
 import web.mappers.CertificateMapper;
 import web.mappers.CommentMapper;
 
-import java.util.Arrays;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 import java.util.function.Consumer;
 import java.util.stream.Collectors;
 
@@ -61,22 +59,29 @@ public class CertificateService {
         updateIfNotNull(certificateDto.getValidTo(), existingCertificateEntity::setValidTo);
         updateIfNotNull(certificateDto.getPdfUrl(), existingCertificateEntity::setPdfUrl);
         updateAssignedUsers(existingCertificateEntity, certificateDto.getAssignedUserIds());
+        if (certificateDto.getComments() != null) {
+            Map<Long, CommentEntity> existingComments = existingCertificateEntity.getComments().stream()
+                    .collect(Collectors.toMap(CommentEntity::getId, comment -> comment));
+            List<CommentEntity> updatedComments = new ArrayList<>();
+            for (CommentDto commentDto : certificateDto.getComments()) {
+                CommentEntity commentEntity;
+                if (commentDto.getId() != null && existingComments.containsKey(commentDto.getId())) {
 
-        if (certificateDto.getComments() != null && !certificateDto.getComments().isEmpty()) {
-            List<CommentEntity> newComments = certificateDto.getComments().stream()
-                    .map(commentDto -> {
-                        CommentEntity commentEntity = commentMapper.toEntity(commentDto);
-                        UserEntity user = userRepository.findById(commentDto.getUserId());
-                        commentEntity.setUser(user);
-                        commentEntity.setCertificate(existingCertificateEntity);
-                        return commentEntity;
-                    })
-                    .collect(Collectors.toList());
-            existingCertificateEntity.getComments().addAll(newComments);
+                    commentEntity = existingComments.get(commentDto.getId());
+                    commentEntity.setContent(commentDto.getContent());
+                } else {
+                    commentEntity = commentMapper.toEntity(commentDto);
+                    commentEntity.setCertificate(existingCertificateEntity);
+                }
+
+                UserEntity user = userRepository.findById(commentDto.getUserId());
+                commentEntity.setUser(user);
+                updatedComments.add(commentEntity);
+            }
+            existingCertificateEntity.getComments().clear();
+            existingCertificateEntity.getComments().addAll(updatedComments);
         }
-
         certificateRepository.persist(existingCertificateEntity);
-
         return certificateMapper.toDto(existingCertificateEntity);
     }
 
@@ -104,8 +109,6 @@ public class CertificateService {
                     .collect(Collectors.toSet());
             certificateEntity.setAssignedUsers(assignedUserEntities);
         }
-    }
-    
     }
 
 }
