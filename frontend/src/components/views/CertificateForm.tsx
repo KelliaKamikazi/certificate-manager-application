@@ -25,6 +25,7 @@ import {
   UserDto,
 } from "../data/certificate";
 import { apiClient } from "../data/client";
+import Alert from "../base/Alert";
 
 const INITIAL_CERTIFICATE: Partial<CertificateDto> = {
   supplier: { id: 0, name: "", city: "" },
@@ -41,6 +42,8 @@ const CertificateForm: React.FC = () => {
   const { certificateId } = useParams<{ certificateId: string }>();
   const [certificate, setCertificate] =
     useState<Partial<CertificateDto>>(INITIAL_CERTIFICATE);
+  const [fetchedCertificate, setFetchedCertificate] =
+    useState<Partial<CertificateDto> | null>(null);
   const [showSupplierLookup, setShowSupplierLookup] = useState(false);
   const [showParticipantLookup, setShowParticipantLookup] = useState(false);
   const [, setLoading] = useState(false);
@@ -48,6 +51,12 @@ const CertificateForm: React.FC = () => {
   const [selectedParticipants, setSelectedParticipants] = useState<UserDto[]>(
     []
   );
+  const [users, setUsers] = useState<UserDto[]>([]);
+  const [alertMessage, setAlertMessage] = useState("");
+  const [alertType, setAlertType] = useState<
+    "success" | "error" | "info" | "warning"
+  >("info");
+  const [isAlertVisible, setAlertVisible] = useState(false);
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -55,23 +64,47 @@ const CertificateForm: React.FC = () => {
       fetchCertificate(parseInt(certificateId));
     }
   }, [certificateId]);
+
   const fetchCertificate = async (id: number) => {
     try {
       setLoading(true);
       const response = await apiClient;
       const fetchedCertificate = await response.getCertificateById(id);
-      setCertificate({
+      const certificateData = {
         ...(await fetchedCertificate).data,
         validFrom: new Date(fetchedCertificate.data.validFrom),
         validTo: new Date(fetchedCertificate.data.validTo),
-      });
+      };
+      setCertificate(certificateData);
+      setFetchedCertificate(certificateData);
     } catch (err) {
       setError("Failed to fetch certificate");
-      console.error("Error fetching certificate:", err);
     } finally {
       setLoading(false);
     }
   };
+
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const response = await apiClient;
+        const fetchedUsers = await response.getAllUsers();
+        setUsers(fetchedUsers.data);
+      } catch (error) {
+        console.error("Error fetching users:", error);
+      }
+    };
+
+    fetchData();
+  }, []);
+
+  useEffect(() => {
+    const assignedUserIds = certificate.assignedUserIds as number[];
+    const selectedParticipants = users.filter((user) =>
+      assignedUserIds.includes(user.id)
+    );
+    setSelectedParticipants(selectedParticipants);
+  }, [users]);
 
   const handleSubmit = async (event: FormEvent) => {
     event.preventDefault();
@@ -80,10 +113,18 @@ const CertificateForm: React.FC = () => {
       !certificate.certificateType ||
       !certificate.validFrom ||
       !certificate.validTo ||
-      !certificate.assignedUserIds ||
+      !certificate.assignedUserIds?.length ||
       !certificate.comments
     ) {
-      setError(t("allFieldsRequired"));
+      setAlertMessage(t("allFieldsRequired"));
+      setAlertType("error");
+      setAlertVisible(true);
+      return;
+    }
+    if (certificate.validTo <= certificate.validFrom) {
+      setAlertMessage(t("validToMustBeLaterThanValidFrom"));
+      setAlertType("error");
+      setAlertVisible(true);
       return;
     }
 
@@ -98,14 +139,22 @@ const CertificateForm: React.FC = () => {
           parseInt(certificateId),
           certificateToSend
         );
-        alert(t("certificateUpdated"));
+        setAlertMessage(t("certificateUpdated"));
+        setAlertType("success");
+        setAlertVisible(true);
       } else {
         await apiClient.createCertificate(certificateToSend);
-        alert(t("certificateSaved"));
+        setAlertMessage(t("certificateSaved"));
+        setAlertType("success");
+        setAlertVisible(true);
       }
-      navigate("/example1");
+      setTimeout(() => {
+        navigate("/example1");
+      }, 5000);
     } catch (err) {
-      setError(t("certificateNotAddedOrUpdated"));
+      setAlertMessage(t("certificateNotAddedOrUpdated"));
+      setAlertType("error");
+      setAlertVisible(true);
     } finally {
       setLoading(false);
     }
@@ -133,11 +182,20 @@ const CertificateForm: React.FC = () => {
       };
       reader.readAsDataURL(file);
     } else {
-      alert(t("onlyPDFAllowed"));
+      setAlertMessage(t("onlyPDFAllowed"));
+      setAlertType("error");
+      setAlertVisible(true);
     }
   };
+  const handleCloseAlert = () => {
+    setAlertVisible(false);
+  };
   const handleResetFields = () => {
-    setCertificate(INITIAL_CERTIFICATE);
+    if (certificateId === "0") {
+      setCertificate(INITIAL_CERTIFICATE);
+    } else if (certificate) {
+      setCertificate(fetchedCertificate as CertificateDto);
+    }
   };
 
   const handleCloseSupplierLookup = useCallback(() => {
@@ -145,9 +203,26 @@ const CertificateForm: React.FC = () => {
   }, []);
 
   const handleSelectedParticipants = useCallback(
-    (allparticipants: UserDto[]) => {
-      setSelectedParticipants((prev) => [...prev, ...allparticipants]);
-      setShowParticipantLookup(false);
+    (newParticipants: UserDto[]) => {
+      setSelectedParticipants((currentParticipants) => {
+        const updatedParticipants = [...currentParticipants];
+        newParticipants.forEach((newParticipant) => {
+          if (!updatedParticipants.some((p) => p.id === newParticipant.id)) {
+            updatedParticipants.push(newParticipant);
+          }
+        });
+        return updatedParticipants;
+      });
+
+      setCertificate((prev) => ({
+        ...prev,
+        assignedUserIds: Array.from(
+          new Set([
+            ...(prev.assignedUserIds || []),
+            ...newParticipants.map((p) => p.id),
+          ])
+        ),
+      }));
     },
     []
   );
@@ -185,6 +260,18 @@ const CertificateForm: React.FC = () => {
     }));
   };
 
+  const removeParticipant = useCallback((participantId: number) => {
+    setSelectedParticipants((current) =>
+      current.filter((participant) => participant.id !== participantId)
+    );
+    setCertificate((prev) => ({
+      ...prev,
+      assignedUserIds: prev.assignedUserIds?.filter(
+        (id) => id !== participantId
+      ),
+    }));
+  }, []);
+
   return (
     <div className="new-cert-form">
       {showSupplierLookup && (
@@ -197,9 +284,17 @@ const CertificateForm: React.FC = () => {
         <ParticipantLookup
           onParticipantSelect={handleSelectedParticipants}
           onClose={handleCloseParticipantLookup}
+          initialSelectedParticipants={selectedParticipants}
         />
       )}
       <form onSubmit={handleSubmit}>
+        {isAlertVisible && (
+          <Alert
+            message={alertMessage}
+            type={alertType}
+            onClose={handleCloseAlert}
+          />
+        )}
         <div className="form-container">
           <div className="left-side">
             <SupplierField
@@ -234,28 +329,36 @@ const CertificateForm: React.FC = () => {
                 onChange={handleInputChange}
               />
               <div className="form-input-container">
-                <label className="form-input-label mb-1">Assigned Users</label>
+                <label className="form-input-label mb-1">
+                  {t("assigned_users")}
+                </label>
                 <span
                   className="btn gray-btn"
                   onClick={handleOpenParticipantLookup}
                 >
                   <IconSvg Icon={searchIcon} />
-                  <span>Add participant</span>
+                  <span>{t("add_participant")}</span>
                 </span>
                 <div className="suppliers-results-container mt-1">
                   <table>
                     <thead>
                       <tr>
                         <th></th>
-                        <th>Name</th>
-                        <th>Department</th>
-                        <th>E-mail</th>
+                        <th>{t("name")}</th>
+                        <th>{t("department")}</th>
+                        <th>{t("email")}</th>
                       </tr>
                     </thead>
                     <tbody>
                       {selectedParticipants.map((participant) => (
                         <tr key={participant.email}>
-                          <td></td>
+                          <td>
+                            <button
+                              onClick={() => removeParticipant(participant.id)}
+                            >
+                              &#10005;
+                            </button>
+                          </td>
                           <td>{participant.lastName}</td>
                           <td>{participant.departmentId}</td>
                           <td>{participant.email}</td>

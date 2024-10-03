@@ -42,6 +42,7 @@ public class CertificateService {
 
     public CertificateDto createCertificate(CertificateDto certificateDto) {
         CertificateEntity certificateEntity = certificateMapper.toEntity(certificateDto);
+        updateAssignedUsers(certificateEntity, certificateDto.getAssignedUserIds());
         certificateRepository.persist(certificateEntity);
         return certificateMapper.toDto(certificateEntity);
     }
@@ -105,7 +106,7 @@ public class CertificateService {
         if (userIds != null) {
             Set<UserEntity> assignedUserEntities = userIds.stream()
                     .map(userRepository::findById)
-                    .filter(user -> user != null)
+                    .filter(Objects::nonNull) // Ensure the user is found
                     .collect(Collectors.toSet());
             certificateEntity.setAssignedUsers(assignedUserEntities);
         }

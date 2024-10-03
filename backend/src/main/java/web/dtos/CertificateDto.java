@@ -1,8 +1,8 @@
 package web.dtos;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
 import data.entities.CertificateType;
 
-import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Set;
@@ -101,7 +101,7 @@ public class CertificateDto {
         return "CertificateDto{" +
                 "id=" + id +
                 ", supplier=" + supplier +
-                ", certificateType=" + certificateType +
+                ", certificateType=" + certificateType.getDisplayName() +
                 ", validFrom=" + validFrom +
                 ", validTo=" + validTo +
                 ", pdfUrl='" + pdfUrl + '\'' +

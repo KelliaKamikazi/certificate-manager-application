@@ -10,10 +10,12 @@ import { apiClient } from "../data/client";
 interface ParticipantLookupProps {
   onClose: () => void;
   onParticipantSelect: (participants: UserDto[]) => void;
+  initialSelectedParticipants: UserDto[];
 }
 const ParticipantLookup: React.FC<ParticipantLookupProps> = ({
   onClose,
   onParticipantSelect,
+  initialSelectedParticipants,
 }) => {
   const { t } = useTranslation();
   const [name, setName] = useState("");
@@ -23,9 +25,11 @@ const ParticipantLookup: React.FC<ParticipantLookupProps> = ({
   const [plant, setPlant] = useState("");
   const [participants, setParticipants] = useState<UserDto[]>([]);
   const [selectedParticipants, setSelectedParticipants] = useState<UserDto[]>(
-    []
+    initialSelectedParticipants
   );
-  const [showTable, setShowTable] = useState(false);
+  const [showTable, setShowTable] = useState(
+    initialSelectedParticipants.length > 0
+  );
 
   useEffect(() => {
     fetchAllUsers();
@@ -75,7 +79,6 @@ const ParticipantLookup: React.FC<ParticipantLookupProps> = ({
     setDepartment("");
     setPlant("");
     setParticipants([]);
-    setShowTable(false);
   };
 
   const handleShowTable = () => {

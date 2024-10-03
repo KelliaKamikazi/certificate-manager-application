@@ -13,6 +13,8 @@ import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
 
+import static data.entities.CertificateType.convertor;
+
 @ApplicationScoped
 public class CertificateMapper {
     @Inject
@@ -34,7 +36,7 @@ public class CertificateMapper {
         CertificateDto dto = new CertificateDto();
         dto.setId(certificateEntity.getId());
         dto.setSupplier(supplierMapper.toDTO(certificateEntity.getSupplier()));
-        dto.setCertificateType(certificateEntity.getCertificateType());
+        dto.setCertificateType(convertor(certificateEntity.getCertificateType().getDisplayName()));
         dto.setValidFrom(certificateEntity.getValidFrom());
         dto.setValidTo(certificateEntity.getValidTo());
         dto.setPdfUrl(certificateEntity.getPdfUrl());

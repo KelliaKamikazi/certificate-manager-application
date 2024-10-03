@@ -13,7 +13,8 @@ const Sidebar: React.FC = () => {
   const [isSidebarVisible, setIsSidebarVisible] = useState<boolean>(false);
   const [isMobile, setIsMobile] = useState<boolean>(window.innerWidth < 1200);
   console.log(currentLanguage, "language");
-  const sidebarRef = useRef<HTMLDivElement>(null); // Ref to sidebar element
+  const sidebarRef = useRef<HTMLDivElement>(null);
+  const [activeSection, setActiveSection] = useState<string>("start");
   const handleMenuClick = () => {
     setIsSubmenuOpen((prev) => !prev);
   };
@@ -27,7 +28,7 @@ const Sidebar: React.FC = () => {
         sidebarRef.current &&
         !sidebarRef.current.contains(event.target as Node)
       ) {
-        setIsSubmenuOpen(false); // Close submenu
+        setIsSubmenuOpen(false);
       }
     };
 
@@ -37,7 +38,15 @@ const Sidebar: React.FC = () => {
     };
   }, []);
 
-  // Handle window resize
+  const handleSectionClick = (section: string) => {
+    setActiveSection(section);
+    if (section === "machineLearning") {
+      setIsSubmenuOpen(true);
+    } else {
+      setIsSubmenuOpen(false);
+    }
+  };
+
   useEffect(() => {
     const handleResize = () => {
       setIsMobile(window.innerWidth < 1200);
@@ -52,12 +61,10 @@ const Sidebar: React.FC = () => {
     };
   }, []);
 
-  // Handle sidebar overlay click
   const handleSidebarOverlayClick = () => {
     setIsSidebarVisible(false);
   };
 
-  // Stop propagation in submenu
   const handleSubmenuClick = (e: React.MouseEvent) => {
     e.stopPropagation();
   };
@@ -88,15 +95,18 @@ const Sidebar: React.FC = () => {
         className={`sidebar ${isSidebarVisible ? "visible" : ""}`}
         ref={sidebarRef}
       >
-        <div className="sidebarStart">
+        <div
+          className={`sidebarStart ${activeSection === "start" ? "active" : ""}`}
+          onClick={() => handleSectionClick("start")}
+        >
           <Link to="/">
             <IconSvg Icon={HomeIcon} className="homeIcon" />
             <span>{t("start")}</span>
           </Link>
         </div>
         <div
-          className={`sidebarMenu ${isSubmenuOpen ? "show" : ""}`}
-          onClick={handleMenuClick}
+          className={`sidebarMenu ${activeSection === "machineLearning" ? "active" : ""} ${isSubmenuOpen ? "show" : ""}`}
+          onClick={() => handleSectionClick("machineLearning")}
           role="button"
           aria-expanded={isSubmenuOpen}
           tabIndex={0}

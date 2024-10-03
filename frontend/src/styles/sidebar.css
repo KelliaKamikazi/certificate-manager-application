@@ -1,7 +1,7 @@
 @font-face {
-  font-family: 'PMNCaeciliaSansHead';
-  src: url('./items/Fonts/pmncaeciliasans-head-cufonfonts/PMNCaeciliaSansHeadLight.TTF')
-    format('truetype');
+  font-family: "PMNCaeciliaSansHead";
+  src: url("./items/Fonts/pmncaeciliasans-head-cufonfonts/PMNCaeciliaSansHeadLight.TTF")
+    format("truetype");
   font-weight: 100;
   font-style: normal;
 }
@@ -10,7 +10,7 @@
   margin: 0;
   padding: 0;
   box-sizing: border-box;
-  font-family: 'PMNCaeciliaSansHead', sans-serif;
+  font-family: "PMNCaeciliaSansHead", sans-serif;
   text-decoration: none;
   font-weight: normal;
 }
@@ -35,7 +35,7 @@
 }
 
 .sidebarStart::before {
-  content: '';
+  content: "";
   position: fixed;
   left: 0;
   top: 18%;

@@ -25,7 +25,7 @@ export function CertificateTypes(props: CertificateTypeProps) {
           {t("printingOfPermission")}
         </option>
         <option value={CertificateType.CCC_CERTIFICATE}>
-          {t("ohsas18001")}
+          {t("CCCcertificate")}
         </option>
       </select>
     </div>

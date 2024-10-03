@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import "../../styles/example1.css";
 import { useNavigate } from "react-router-dom";
 import IconSvg from "../icons/icons";
@@ -6,6 +6,7 @@ import gearIcon from "../icons/gearIcon";
 import { useTranslation } from "../../useTranslation";
 import { CertificateDto } from "../data/certificate";
 import { apiClient } from "../data/client";
+
 const Example1: React.FC = () => {
   const { t } = useTranslation();
   const [certificates, setCertificates] = useState<CertificateDto[]>([]);
@@ -14,6 +15,7 @@ const Example1: React.FC = () => {
   );
   const [, setLoading] = useState(true);
   const [, setError] = useState<Error | null>(null);
+  const dropdownRefs = useRef<(HTMLDivElement | null)[]>([]);
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -30,6 +32,23 @@ const Example1: React.FC = () => {
     };
 
     fetchCertificates();
+  }, []);
+
+  useEffect(() => {
+    const handleClickOutside = (event: MouseEvent) => {
+      if (
+        dropdownRefs.current.some(
+          (ref) => ref && ref.contains(event.target as Node)
+        )
+      ) {
+        return;
+      }
+      setOpenDropdownId(undefined);
+    };
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => {
+      document.removeEventListener("mousedown", handleClickOutside);
+    };
   }, []);
 
   const toggleDropdown = (certId: number | undefined) => {
@@ -82,11 +101,16 @@ const Example1: React.FC = () => {
   const handleEdit = (cert: CertificateDto) => () => {
     handleEditClick(cert.id);
   };
+
   const handleDelete = (cert: CertificateDto) => () =>
     handleDeleteClick(cert.id);
+
   const handleToggleDropdown = (cert: CertificateDto) => () =>
     toggleDropdown(cert.id);
 
+  const handleClick = (e: React.MouseEvent<HTMLDivElement>) => {
+    e.stopPropagation();
+  };
   return (
     <div className="container">
       <h2 className="header_h">{t("example1_header")}</h2>
@@ -105,7 +129,7 @@ const Example1: React.FC = () => {
             </tr>
           </thead>
           <tbody>
-            {certificates.map((cert) => (
+            {certificates.map((cert, index) => (
               <tr key={cert.id}>
                 <td>
                   <div className="dropdown-container">
@@ -115,7 +139,11 @@ const Example1: React.FC = () => {
                       onClick={handleToggleDropdown(cert)}
                     />
                     {openDropdownId === cert.id && (
-                      <div className="dropdown-menu">
+                      <div
+                        className="dropdown-menu"
+                        ref={(el) => (dropdownRefs.current[index] = el)}
+                        onClick={handleClick}
+                      >
                         <div className="dropdown-options">
                           <button
                             className="dropdown-button"
@@ -136,8 +164,8 @@ const Example1: React.FC = () => {
                 </td>
                 <td>{cert.supplier.name}</td>
                 <td>{cert.certificateType}</td>
-                <td>{new Date(cert.validFrom).toDateString()}</td>
-                <td>{new Date(cert.validTo).toDateString()}</td>
+                <td>{new Date(cert.validFrom).toLocaleDateString("de-DE")}</td>
+                <td>{new Date(cert.validTo).toLocaleDateString("de-DE")}</td>
               </tr>
             ))}
           </tbody>
