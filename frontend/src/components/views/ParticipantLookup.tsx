@@ -126,22 +126,22 @@ const ParticipantLookup: React.FC<ParticipantLookupProps> = ({
 
             <div className="input-container-participant">
               <div className="input-container-one">
-                <label className="input-label">{t("participantName")}</label>
-                <Textfield
-                  name="name"
-                  type="text"
-                  value={name}
-                  onChange={handleNameChange}
-                  className="input-container"
-                />
-              </div>
-              <div className="input-container-one">
                 <label className="input-label">{t("firstName")}</label>
                 <Textfield
                   name="firstName"
                   type="text"
                   value={firstName}
                   onChange={handleFirstNameChange}
+                  className="input-container"
+                />
+              </div>
+              <div className="input-container-one">
+                <label className="input-label">{t("lastName")}</label>
+                <Textfield
+                  name="name"
+                  type="text"
+                  value={name}
+                  onChange={handleNameChange}
                   className="input-container"
                 />
               </div>

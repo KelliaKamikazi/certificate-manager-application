@@ -28,12 +28,12 @@
 
 .red-btn {
   background-color: var(--alert-error-color);
-  color: white;
+  color: var(--background-color);
 }
 .gray-btn {
   background-color: #cccccc00;
   color: rgb(0, 0, 0);
-  border: thin solid #ccc;
+  border: thin solid var(--border-color);
 }
 
 .yellow-btn {
@@ -49,4 +49,34 @@
 }
 .mb-1 {
   margin-bottom: 1rem;
+}
+
+.big-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+
+  background-color: var(--background-color);
+  color: rgb(0, 0, 0);
+  border: thin solid var(--border-color);
+
+  height: 2.9rem;
+  width: 10rem;
+  font-family: inherit;
+  font-size: 1rem;
+  padding: 0 1rem;
+  cursor: pointer;
+  border-radius: 4px;
+}
+
+.big-btn span {
+  display: inline-flex;
+  align-items: center;
+}
+
+.big-btn svg {
+  width: 16px;
+  height: 16px;
+  fill: currentColor;
 }

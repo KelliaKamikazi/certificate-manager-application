@@ -85,7 +85,7 @@ thead th {
   padding: 1rem 2rem;
   height: 2.9rem;
   width: 13rem;
-  background-color: var(--button-color1);
+  background-color: var(--button-color);
   border: none;
   border-radius: 0.25rem;
   cursor: pointer;
@@ -95,14 +95,7 @@ thead th {
   align-items: center;
 }
 .btn-create-large:hover {
-  background-color: var(--button-color);
-}
-
-.gearIcon {
-  width: 30px;
-  height: 25px;
-  fill: var(--secondarycolor);
-  margin-top: 12px;
+  background-color: var(--button-color1);
 }
 
 .dropdown-container {
@@ -112,8 +105,13 @@ thead th {
 
 .gear-icon {
   width: 20px;
+  fill: var(--primary-color);
   height: 20px;
   cursor: pointer;
+}
+
+.gear-icon:hover {
+  fill: var(--secondarycolor);
 }
 
 .dropdown-menu {
@@ -158,12 +156,12 @@ thead th {
 /* Media query for screens smaller than 1200px */
 @media (max-width: 1200px) {
   .table-wrapper {
-    margin: 2rem auto 20px auto; /* Center the table-wrapper horizontally */
-    padding: 0 1rem; /* Reduce padding to fit better on smaller screens */
+    margin: 2rem auto 20px auto;
+    padding: 0 1rem;
   }
 
   .header_h {
-    text-align: center; /* Center the header text */
-    padding-left: 0; /* Remove left padding */
+    text-align: center;
+    padding-left: 0;
   }
 }

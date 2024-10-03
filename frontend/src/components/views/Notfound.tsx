@@ -1,10 +1,14 @@
-import '../../styles/notfound.css';
+import React from "react";
+import "../../styles/notfound.css";
+import { useTranslation } from "../../useTranslation";
 
 const NotFound: React.FC = () => {
+  const { t } = useTranslation();
+
   return (
-    <div>
-      <h1>404 - Page Not Found</h1>
-      <p>Not found, Not found!!!!.</p>
+    <div className="not-found">
+      <h1>{t("404_title")}</h1>
+      <p>{t("404_message")}</p>
     </div>
   );
 };

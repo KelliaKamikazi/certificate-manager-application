@@ -61,7 +61,7 @@
   "CCCcertificate": "CCC certificate",
   "supplierLabel": "Supplier",
   "searchForParticipants": "Search for Participants",
-  "participantName": "Participant Name",
+  "lastName": "Last Name",
   "firstName": "First Name",
   "user_id": "User ID",
   "department": "Department",
@@ -83,5 +83,7 @@
   "id": "ID",
   "firstname": "First Name",
   "userid": "User ID",
-  "validToMustBeLaterThanValidFrom": "The end date (valid to) must be later than the start date (valid from)."
+  "validToMustBeLaterThanValidFrom": "The end date (valid to) must be later than the start date (valid from).",
+  "404_title": "404 - Page Not Found",
+  "404_message": "Not found, Not found!!!!"
 }

@@ -24,6 +24,7 @@ import {
   SupplierDto,
   UserDto,
 } from "../data/certificate";
+import "../../styles/globalbtn.css";
 import { apiClient } from "../data/client";
 import Alert from "../base/Alert";
 
@@ -332,13 +333,16 @@ const CertificateForm: React.FC = () => {
                 <label className="form-input-label mb-1">
                   {t("assigned_users")}
                 </label>
-                <span
-                  className="btn gray-btn"
+                <button
+                  type="button"
+                  className="big-btn"
                   onClick={handleOpenParticipantLookup}
                 >
-                  <IconSvg Icon={searchIcon} />
-                  <span>{t("add_participant")}</span>
-                </span>
+                  <span>
+                    <IconSvg Icon={searchIcon} />
+                    {t("add_participant")}
+                  </span>
+                </button>
                 <div className="suppliers-results-container mt-1">
                   <table>
                     <thead>
