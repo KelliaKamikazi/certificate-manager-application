@@ -76,7 +76,7 @@
 }
 
 .upload-btn:hover {
-  background-color: var(--light-blue);
+  background-color: var(--secondary-color);
 }
 
 .upload-input {
@@ -116,7 +116,7 @@
 }
 
 .submit-cert-btn:hover {
-  background-color: var(--button-color);
+  background-color: var(--button-color1);
 }
 
 .reset-cert-btn {

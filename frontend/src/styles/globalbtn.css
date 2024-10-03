@@ -5,7 +5,7 @@
   margin-right: 10px;
 }
 .blue-btn {
-  background-color: var(--secondary-color);
+  background-color: var(--primarycolor);
   color: white;
 }
 .blue-btn:hover {
@@ -25,12 +25,9 @@
   cursor: pointer;
   margin-right: 10px;
 }
-.blue-btn {
-  background-color: var(--secondary-color);
-  color: white;
-}
+
 .red-btn {
-  background-color: #a82d2d;
+  background-color: var(--alert-error-color);
   color: white;
 }
 .gray-btn {
@@ -38,10 +35,7 @@
   color: rgb(0, 0, 0);
   border: thin solid #ccc;
 }
-.blue-btn:hover {
-  background-color: var(--secondary-color);
-  color: white;
-}
+
 .yellow-btn {
   background-color: var(--button-color);
   color: white;
@@ -49,6 +43,7 @@
 .yellow-btn:hover {
   background-color: var(--button-color1);
 }
+
 .mt-1 {
   margin-top: 1rem;
 }
