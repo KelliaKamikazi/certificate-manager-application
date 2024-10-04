@@ -83,5 +83,7 @@
   "validToMustBeLaterThanValidFrom": "Das Enddatum (gültig bis) muss nach dem Startdatum (gültig von) liegen.",
   "404_title": "404 - Seite nicht gefunden",
   "404_message": "Nicht gefunden, nicht gefunden!!!!",
-  "noDepartment": "Keine Abteilung"
+  "noDepartment": "Keine Abteilung",
+  "participantRemoved": "Teilnehmer erfolgreich entfernt",
+  "errorRemovingParticipant": "Fehler beim Entfernen des Teilnehmers"
 }

@@ -72,4 +72,17 @@ public class CertificateResource {
         List<CertificateType> certificateTypes = certificateService.getCertificateTypes();
         return Response.ok(certificateTypes).build();
     }
+
+    @DELETE
+    @Path("/{certificateId}/assignedUsers/{userId}")
+    public Response removeAssignedUser(@PathParam("certificateId") Long certificateId, @PathParam("userId") Long userId) {
+        try {
+            certificateService.removeAssignedUser(certificateId, userId);
+            return Response.ok().build();
+        } catch (NotFoundException e) {
+            return Response.status(Response.Status.NOT_FOUND).entity(e.getMessage()).build();
+        } catch (Exception e) {
+            return Response.status(Response.Status.INTERNAL_SERVER_ERROR).entity("Error removing assigned user").build();
+        }
+    }
 }

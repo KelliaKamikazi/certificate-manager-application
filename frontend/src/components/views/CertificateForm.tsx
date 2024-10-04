@@ -261,17 +261,38 @@ const CertificateForm: React.FC = () => {
     }));
   };
 
-  const removeParticipant = useCallback((participantId: number) => {
-    setSelectedParticipants((current) =>
-      current.filter((participant) => participant.id !== participantId)
-    );
-    setCertificate((prev) => ({
-      ...prev,
-      assignedUserIds: prev.assignedUserIds?.filter(
-        (id) => id !== participantId
-      ),
-    }));
-  }, []);
+  const removeParticipant = useCallback(
+    async (participantId: number) => {
+      if (!certificate.id) {
+        console.error("Certificate ID is not available");
+        return;
+      }
+
+      try {
+        await apiClient.removeAssignedUser(certificate.id, participantId);
+
+        setSelectedParticipants((current) =>
+          current.filter((participant) => participant.id !== participantId)
+        );
+        setCertificate((prev) => ({
+          ...prev,
+          assignedUserIds: prev.assignedUserIds?.filter(
+            (id) => id !== participantId
+          ),
+        }));
+
+        setAlertMessage(t("participantRemoved"));
+        setAlertType("success");
+        setAlertVisible(true);
+      } catch (error) {
+        console.error("Error removing participant:", error);
+        setAlertMessage(t("errorRemovingParticipant"));
+        setAlertType("error");
+        setAlertVisible(true);
+      }
+    },
+    [certificate.id, setAlertMessage, setAlertType, setAlertVisible, t]
+  );
 
   return (
     <div className="new-cert-form">
@@ -358,6 +379,7 @@ const CertificateForm: React.FC = () => {
                         <tr key={participant.email}>
                           <td>
                             <button
+                              type="button"
                               onClick={() => removeParticipant(participant.id)}
                             >
                               &#10005;

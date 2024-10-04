@@ -6,6 +6,7 @@ import gearIcon from "../icons/gearIcon";
 import { useTranslation } from "../../useTranslation";
 import { CertificateDto } from "../data/certificate";
 import { apiClient } from "../data/client";
+import Alert from "../base/Alert";
 
 const Example1: React.FC = () => {
   const { t } = useTranslation();
@@ -13,26 +14,14 @@ const Example1: React.FC = () => {
   const [openDropdownId, setOpenDropdownId] = useState<number | undefined>(
     undefined
   );
-  const [, setLoading] = useState(true);
-  const [, setError] = useState<Error | null>(null);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<Error | null>(null);
+  const [alert, setAlert] = useState<{
+    message: string;
+    type: "success" | "error";
+  } | null>(null);
   const dropdownRefs = useRef<(HTMLDivElement | null)[]>([]);
   const navigate = useNavigate();
-
-  useEffect(() => {
-    const fetchCertificates = async () => {
-      try {
-        setLoading(true);
-        const response = await apiClient.getCertificates$GET$certificates();
-        setCertificates(response.data);
-        setLoading(false);
-      } catch (err) {
-        setError(err instanceof Error ? err : new Error("An error occurred"));
-        setLoading(false);
-      }
-    };
-
-    fetchCertificates();
-  }, []);
 
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
@@ -51,6 +40,22 @@ const Example1: React.FC = () => {
     };
   }, []);
 
+  useEffect(() => {
+    const fetchCertificates = async () => {
+      try {
+        setLoading(true);
+        const response = await apiClient.getCertificates$GET$certificates();
+        setCertificates(response.data);
+        setLoading(false);
+      } catch (err) {
+        setError(err instanceof Error ? err : new Error("An error occurred"));
+        setLoading(false);
+      }
+    };
+
+    fetchCertificates();
+  }, []);
+
   const toggleDropdown = (certId: number | undefined) => {
     setOpenDropdownId(openDropdownId === certId ? undefined : certId);
   };
@@ -61,28 +66,22 @@ const Example1: React.FC = () => {
       setCertificates((prevCertificates) =>
         prevCertificates.filter((cert) => cert.id !== id)
       );
+      setAlert({ message: t("delete_success"), type: "success" });
     } catch (err) {
+      setAlert({ message: t("delete_failure"), type: "error" });
       throw err;
     }
   };
 
-  const confirmAndDelete = async (id: number) => {
-    if (window.confirm(t("confirm_delete"))) {
+  const handleDeleteClick = async (id: number | undefined) => {
+    if (id !== undefined) {
       try {
         await deleteCertificate(id);
-        alert(t("delete_success"));
       } catch (error) {
         console.error("Failed to delete the certificate", error);
-        alert(t("delete_failure"));
       }
-    }
-  };
-
-  const handleDeleteClick = (id: number | undefined) => {
-    if (id !== undefined) {
-      confirmAndDelete(id);
     } else {
-      alert(t("undefined_id"));
+      setAlert({ message: t("undefined_id"), type: "error" });
     }
   };
 
@@ -90,7 +89,7 @@ const Example1: React.FC = () => {
     if (id !== undefined) {
       navigate(`/CertificateForm/${id}`);
     } else {
-      alert(t("undefined_id"));
+      setAlert({ message: t("undefined_id"), type: "error" });
     }
   };
 
@@ -111,9 +110,24 @@ const Example1: React.FC = () => {
   const handleClick = (e: React.MouseEvent<HTMLDivElement>) => {
     e.stopPropagation();
   };
+
+  const handleAlertClose = () => {
+    setAlert(null);
+  };
+
+  if (loading) return <div>Loading...</div>;
+  if (error) return <div>Error: {error.message}</div>;
+
   return (
     <div className="container">
       <h2 className="header_h">{t("example1_header")}</h2>
+      {alert && (
+        <Alert
+          message={alert.message}
+          type={alert.type}
+          onClose={handleAlertClose}
+        />
+      )}
       <button className="btn-create" onClick={handleCreateClick}>
         {t("new_certificate")}
       </button>

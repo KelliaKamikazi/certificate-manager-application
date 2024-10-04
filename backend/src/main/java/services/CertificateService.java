@@ -112,4 +112,16 @@ public class CertificateService {
         }
     }
 
+    public void removeAssignedUser(Long certificateId, Long userId) {
+        CertificateEntity certificate = findCertificateById(certificateId);
+        UserEntity user = userRepository.findByIdOptional(userId)
+                .orElseThrow(() -> new NotFoundException("User with id " + userId + " not found"));
+
+        if (certificate.getAssignedUsers().remove(user)) {
+            certificateRepository.persist(certificate);
+        } else {
+            throw new NotFoundException("User with id " + userId + " is not assigned to certificate with id " + certificateId);
+        }
+    }
+
 }
