@@ -18,11 +18,19 @@ public class CertificateEntity {
     @ManyToOne
     @JoinColumn(name = "supplier_id", nullable = false)
     private SupplierEntity supplier;
+
     @Enumerated(EnumType.STRING)
+    @Column(name = "certificate_type")
     private CertificateType certificateType;
+
+    @Column(name = "valid_from")
     private LocalDateTime validFrom;
+
+    @Column(name = "valid_to")
     private LocalDateTime validTo;
+
     @Lob
+    @Column(name = "pdf_url")
     private String pdfUrl;
 
     @ManyToMany
