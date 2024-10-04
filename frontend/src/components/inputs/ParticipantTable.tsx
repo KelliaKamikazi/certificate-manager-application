@@ -36,8 +36,8 @@ const ParticipantTable: React.FC<ParticipantTableProps> = ({
           <tr>
             <th></th>
             <th>{t("id")}</th>
-            <th>{t("name")}</th>
-            <th>{t("firstname")}</th>
+            <th>{t("firstName")}</th>
+            <th>{t("lastName")}</th>
             <th>{t("userid")}</th>
             <th>{t("department")}</th>
             <th>{t("plant")}</th>
@@ -57,10 +57,10 @@ const ParticipantTable: React.FC<ParticipantTableProps> = ({
                 />
               </td>
               <td>{participant.id}</td>
-              <td>{participant.lastName}</td>
               <td>{participant.firstName}</td>
+              <td>{participant.lastName}</td>
               <td>{participant.userIndex}</td>
-              <td>{participant.departmentId}</td>
+              <td>{participant.department?.name || t("noDepartment")}</td>
               <td>{participant.plant}</td>
             </tr>
           ))}

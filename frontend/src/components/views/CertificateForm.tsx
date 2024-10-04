@@ -364,7 +364,9 @@ const CertificateForm: React.FC = () => {
                             </button>
                           </td>
                           <td>{participant.lastName}</td>
-                          <td>{participant.departmentId}</td>
+                          <td>
+                            {participant.department?.name || t("noDepartment")}
+                          </td>
                           <td>{participant.email}</td>
                         </tr>
                       ))}

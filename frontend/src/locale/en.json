@@ -85,5 +85,6 @@
   "userid": "User ID",
   "validToMustBeLaterThanValidFrom": "The end date (valid to) must be later than the start date (valid from).",
   "404_title": "404 - Page Not Found",
-  "404_message": "Not found, Not found!!!!"
+  "404_message": "Not found, Not found!!!!",
+  "noDepartment": "No Department"
 }

@@ -1,18 +1,18 @@
 package data.entities;
 
+
 import jakarta.persistence.*;
 
 import java.util.ArrayList;
 import java.util.List;
 
 @Entity
-@Table(name = "departments",schema = "application")
+@Table(name = "departments", schema = "application")
 public class DepartmentEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     private String name;
-
     @OneToMany(mappedBy = "department")
     private List<UserEntity> users = new ArrayList<>();
 

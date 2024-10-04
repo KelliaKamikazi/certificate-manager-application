@@ -21,9 +21,7 @@ import java.util.stream.Collectors;
 public class UserCriteriaSearch {
 
     private final EntityManager entityManager;
-
-    //    @Inject
-//    UserMapper userMapper;
+    
     @Inject
     public UserCriteriaSearch(EntityManager entityManager) {
         this.entityManager = entityManager;

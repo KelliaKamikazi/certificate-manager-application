@@ -1,5 +1,7 @@
 package web.dtos;
 
+import data.entities.DepartmentEntity;
+
 import java.util.List;
 import java.util.Set;
 
@@ -10,7 +12,7 @@ public class UserDto {
     private String firstName;
     private String lastName;
     private String email;
-    private Long departmentId;
+    private DepartmentDto department;
     private String plant;
     private Set<Long> assignedCertificateIds;
     private List<Long> commentIds;
@@ -18,13 +20,13 @@ public class UserDto {
     public UserDto() {
     }
 
-    public UserDto(Long id, String userIndex, String firstName, String lastName, String email, Long departmentId, String plant, Set<Long> assignedCertificateIds, List<Long> commentIds) {
+    public UserDto(Long id, String userIndex, String firstName, String lastName, String email, DepartmentDto department, String plant, Set<Long> assignedCertificateIds, List<Long> commentIds) {
         this.id = id;
         this.userIndex = userIndex;
         this.firstName = firstName;
         this.lastName = lastName;
         this.email = email;
-        this.departmentId = departmentId;
+        this.department = department;
         this.plant = plant;
         this.assignedCertificateIds = assignedCertificateIds;
         this.commentIds = commentIds;
@@ -70,12 +72,12 @@ public class UserDto {
         this.email = email;
     }
 
-    public Long getDepartmentId() {
-        return departmentId;
+    public DepartmentDto getDepartment() {
+        return department;
     }
 
-    public void setDepartmentId(Long departmentId) {
-        this.departmentId = departmentId;
+    public void setDepartment(DepartmentDto department) {
+        this.department = department;
     }
 
     public String getPlant() {
@@ -110,7 +112,7 @@ public class UserDto {
                 ", firstName='" + firstName + '\'' +
                 ", lastName='" + lastName + '\'' +
                 ", email='" + email + '\'' +
-                ", departmentId='" + departmentId + '\'' +
+                ", department='" + department + '\'' +
                 ", plant='" + plant + '\'' +
                 ", assignedCertificateIds=" + assignedCertificateIds +
                 ", commentIds=" + commentIds +
