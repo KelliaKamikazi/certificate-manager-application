@@ -9,11 +9,15 @@ interface CommentFormProps {
   certificateId?: number;
   comments?: CommentDto[];
   onAddComment: (newComment: CommentDto) => void;
+  isNewCertificate: boolean;
+  onNewCommentClick: () => void;
 }
 
 const CommentForm: React.FC<CommentFormProps> = ({
   comments,
   onAddComment,
+  isNewCertificate,
+  onNewCommentClick,
 }) => {
   const { t } = useTranslation();
   const user = useLocalStorageChange("participant");
@@ -59,16 +63,20 @@ const CommentForm: React.FC<CommentFormProps> = ({
     }
   };
 
-  const toggleCommentForm = useCallback(() => {
-    setShowCommentForm((prevState) => !prevState);
-  }, []);
+  const toggleCommentForm = () => {
+    if (isNewCertificate) {
+      onNewCommentClick();
+    } else {
+      setShowCommentForm((prevState) => !prevState);
+    }
+  };
 
   return (
     <div className="comment-form-container">
       <div className="form-header">
         <button
           type="button"
-          className="btn blue-btn"
+          className={`btn blue-btn ${isNewCertificate ? "disabled" : ""}`}
           onClick={toggleCommentForm}
         >
           {showCommentForm ? t("cancel") : t("newComment")}
@@ -87,10 +95,10 @@ const CommentForm: React.FC<CommentFormProps> = ({
             </div>
           ))
         ) : (
-          <div>{t("noComments")}</div>
+          <div>{t("commentSection")}</div>
         )}
       </div>
-      {showCommentForm && (
+      {showCommentForm && !isNewCertificate && (
         <div className="comment-form">
           <label htmlFor="comment">{user?.firstName || t("anonymous")}*</label>
           <textarea

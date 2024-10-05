@@ -6,7 +6,7 @@ VALUES ('ITM/FP'),
 
 INSERT INTO suppliers (name, city)
 VALUES ('ANDEMIS GmbH', 'Stuttgart'),
-       ('IMLER AG', 'Berlin');
+       ('DIMLER AG', 'Berlin');
 
 -- Seed USERS
 INSERT INTO users (user_index, first_name, last_name, email, plant, department_id)

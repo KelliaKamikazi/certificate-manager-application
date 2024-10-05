@@ -74,7 +74,7 @@
   "newComment": "New comment",
   "send": "Send",
   "comment": "Comment",
-  "noComments": "No Comments",
+  "commentSection": "Comment Section",
   "anonymous": "Anonymous",
   "commentPlaceholder": "Enter your comment here",
   "assigned_users": "Assigned Users",
@@ -88,5 +88,6 @@
   "404_message": "Not found, Not found!!!!",
   "noDepartment": "No Department",
   "participantRemoved": "Participant successfully removed",
-  "errorRemovingParticipant": "Error removing participant"
+  "errorRemovingParticipant": "Error removing participant",
+  "commentsOnlyForEdit": "Comments are only available after saving the certificate."
 }

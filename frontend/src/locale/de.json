@@ -71,7 +71,7 @@
   "newComment": "Neuer Kommentar",
   "send": "Senden",
   "comment": "Kommentar",
-  "noComments": "Keine Kommentare",
+  "commentSection": "Kommentarbereich",
   "anonymous": "Anonym",
   "commentPlaceholder": "Geben Sie hier Ihren Kommentar ein",
   "assigned_users": "Zugewiesene Benutzer",
@@ -85,5 +85,6 @@
   "404_message": "Nicht gefunden, nicht gefunden!!!!",
   "noDepartment": "Keine Abteilung",
   "participantRemoved": "Teilnehmer erfolgreich entfernt",
-  "errorRemovingParticipant": "Fehler beim Entfernen des Teilnehmers"
+  "errorRemovingParticipant": "Fehler beim Entfernen des Teilnehmers",
+  "commentsOnlyForEdit": "Kommentare sind nach dem Speichern des Zertifikats verfügbar."
 }

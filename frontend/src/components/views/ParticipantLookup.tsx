@@ -10,11 +10,13 @@ import { apiClient } from "../data/client";
 interface ParticipantLookupProps {
   onClose: () => void;
   onParticipantSelect: (participants: UserDto[]) => void;
+  onParticipantUnselect: (participantId: number) => void;
   initialSelectedParticipants: UserDto[];
 }
 const ParticipantLookup: React.FC<ParticipantLookupProps> = ({
   onClose,
   onParticipantSelect,
+  onParticipantUnselect,
   initialSelectedParticipants,
 }) => {
   const { t } = useTranslation();
@@ -32,7 +34,11 @@ const ParticipantLookup: React.FC<ParticipantLookupProps> = ({
   );
 
   useEffect(() => {
-    fetchAllUsers();
+    if (initialSelectedParticipants.length > 0) {
+      setParticipants(initialSelectedParticipants);
+    } else {
+      fetchAllUsers();
+    }
   }, []);
 
   const fetchAllUsers = async () => {
@@ -52,10 +58,18 @@ const ParticipantLookup: React.FC<ParticipantLookupProps> = ({
     setSelectedParticipants(updatedParticipants);
   };
 
+  const handleUnselectParticipant = (participantId: number) => {
+    setSelectedParticipants((prev) =>
+      prev.filter((p) => p.id !== participantId)
+    );
+    onParticipantUnselect(participantId);
+  };
+
   const handleParticipantSelect = () => {
     onParticipantSelect(selectedParticipants);
-    handleClose();
+    onClose();
   };
+
   const handleSearch = async (e: React.FormEvent) => {
     e.preventDefault();
     try {
@@ -66,12 +80,29 @@ const ParticipantLookup: React.FC<ParticipantLookupProps> = ({
         department,
         plant,
       });
-      setParticipants(response.data);
+      const searchResults = response.data;
+
+      if (selectedParticipants.length > 0) {
+        const combinedResults = [
+          ...selectedParticipants,
+          ...searchResults.filter(
+            (result: UserDto) =>
+              !selectedParticipants.some(
+                (selected) => selected.id === result.id
+              )
+          ),
+        ];
+        setParticipants(combinedResults);
+      } else {
+        setParticipants(searchResults);
+      }
+
       setShowTable(true);
     } catch (error) {
       console.error("Error searching users:", error);
     }
   };
+
   const handleReset = () => {
     setName("");
     setFirstName("");
@@ -201,6 +232,7 @@ const ParticipantLookup: React.FC<ParticipantLookupProps> = ({
                 participants={participants}
                 selectedParticipants={selectedParticipants}
                 onSelectParticipants={handleSelectParticipants}
+                onUnselectParticipant={handleUnselectParticipant}
               />
             </div>
           )}

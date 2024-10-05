@@ -58,11 +58,15 @@ const CertificateForm: React.FC = () => {
     "success" | "error" | "info" | "warning"
   >("info");
   const [isAlertVisible, setAlertVisible] = useState(false);
+  const [isNewCertificate, setIsNewCertificate] = useState(true);
   const navigate = useNavigate();
 
   useEffect(() => {
     if (certificateId && certificateId !== "0") {
+      setIsNewCertificate(false);
       fetchCertificate(parseInt(certificateId));
+    } else {
+      setIsNewCertificate(true);
     }
   }, [certificateId]);
 
@@ -134,7 +138,6 @@ const CertificateForm: React.FC = () => {
       const certificateToSend: CertificateDto = {
         ...(certificate as CertificateDto),
       };
-
       if (certificateId && certificateId !== "0") {
         await apiClient.updateCertificate(
           parseInt(certificateId),
@@ -143,15 +146,15 @@ const CertificateForm: React.FC = () => {
         setAlertMessage(t("certificateUpdated"));
         setAlertType("success");
         setAlertVisible(true);
+        setTimeout(() => {
+          navigate("/example1");
+        }, 5000);
       } else {
         await apiClient.createCertificate(certificateToSend);
         setAlertMessage(t("certificateSaved"));
         setAlertType("success");
         setAlertVisible(true);
       }
-      setTimeout(() => {
-        navigate("/example1");
-      }, 5000);
     } catch (err) {
       setAlertMessage(t("certificateNotAddedOrUpdated"));
       setAlertType("error");
@@ -160,6 +163,7 @@ const CertificateForm: React.FC = () => {
       setLoading(false);
     }
   };
+
   const handleInputChange = (
     e: ChangeEvent<HTMLInputElement | HTMLSelectElement>
   ) => {
@@ -194,8 +198,13 @@ const CertificateForm: React.FC = () => {
   const handleResetFields = () => {
     if (certificateId === "0") {
       setCertificate(INITIAL_CERTIFICATE);
+      setSelectedParticipants([]);
     } else if (certificate) {
       setCertificate(fetchedCertificate as CertificateDto);
+      const originalParticipants = users.filter((user) =>
+        fetchedCertificate?.assignedUserIds?.includes(user.id)
+      );
+      setSelectedParticipants(originalParticipants);
     }
   };
 
@@ -267,7 +276,6 @@ const CertificateForm: React.FC = () => {
         console.error("Certificate ID is not available");
         return;
       }
-
       try {
         await apiClient.removeAssignedUser(certificate.id, participantId);
 
@@ -280,19 +288,20 @@ const CertificateForm: React.FC = () => {
             (id) => id !== participantId
           ),
         }));
-
-        setAlertMessage(t("participantRemoved"));
-        setAlertType("success");
-        setAlertVisible(true);
       } catch (error) {
-        console.error("Error removing participant:", error);
-        setAlertMessage(t("errorRemovingParticipant"));
-        setAlertType("error");
-        setAlertVisible(true);
+        console.log("Error removing participants");
       }
     },
-    [certificate.id, setAlertMessage, setAlertType, setAlertVisible, t]
+    [certificate.id, setAlertMessage, setAlertType, setAlertVisible]
   );
+
+  const handleNewCommentClick = useCallback(() => {
+    if (isNewCertificate) {
+      setAlertMessage(t("commentsOnlyForEdit"));
+      setAlertType("warning");
+      setAlertVisible(true);
+    }
+  }, [isNewCertificate]);
 
   return (
     <div className="new-cert-form">
@@ -305,6 +314,7 @@ const CertificateForm: React.FC = () => {
       {showParticipantLookup && (
         <ParticipantLookup
           onParticipantSelect={handleSelectedParticipants}
+          onParticipantUnselect={removeParticipant}
           onClose={handleCloseParticipantLookup}
           initialSelectedParticipants={selectedParticipants}
         />
@@ -399,6 +409,8 @@ const CertificateForm: React.FC = () => {
                   certificateId={certificate.id}
                   comments={certificate.comments}
                   onAddComment={handleAddComment}
+                  isNewCertificate={isNewCertificate}
+                  onNewCommentClick={handleNewCommentClick}
                 />
               </div>
             </div>

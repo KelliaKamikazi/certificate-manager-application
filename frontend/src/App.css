@@ -21,6 +21,7 @@
   --shadow: #0000001a;
   --supplierlookupcolor: #e0eaf1;
   --alert-error-color: #a82d2d;
+  --warning-color: #ffa500;
 }
 
 html,

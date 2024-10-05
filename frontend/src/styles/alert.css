@@ -26,11 +26,18 @@
   border: 1px solid var(--alert-error-color);
 }
 
+.alert-warning {
+  background-color: var(--warning-color);
+  color: var(--title-color);
+  border: 1px solid var(--border-color);
+}
+
 .alert-info {
   background-color: var(--light-blue);
   color: var(--title-color);
   border: 1px solid var(--border-color);
 }
+
 .alert .close-btn {
   background: none;
   border: none;
