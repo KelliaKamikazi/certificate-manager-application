@@ -9,11 +9,10 @@ import jakarta.ws.rs.NotFoundException;
 import web.dtos.CertificateDto;
 import web.dtos.CommentDto;
 
+import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
-
-import static data.entities.CertificateType.convertor;
 
 @ApplicationScoped
 public class CertificateMapper {
@@ -36,7 +35,7 @@ public class CertificateMapper {
         CertificateDto dto = new CertificateDto();
         dto.setId(certificateEntity.getId());
         dto.setSupplier(supplierMapper.toDTO(certificateEntity.getSupplier()));
-        dto.setCertificateType(convertor(certificateEntity.getCertificateType().getDisplayName()));
+        dto.setCertificateType(certificateEntity.getCertificateType());
         dto.setValidFrom(certificateEntity.getValidFrom());
         dto.setValidTo(certificateEntity.getValidTo());
         dto.setPdfUrl(certificateEntity.getPdfUrl());
@@ -86,6 +85,11 @@ public class CertificateMapper {
                     .filter(userEntity -> userEntity != null)
                     .collect(Collectors.toSet());
             entity.setAssignedUsers(assignedUserEntities);
+        }
+
+        if (certificateDto.getAssignedUserIds() != null && !certificateDto.getAssignedUserIds().isEmpty()) {
+            List<UserEntity> assignedUserEntities = userRepository.findAllById(certificateDto.getAssignedUserIds());
+            entity.setAssignedUsers(new HashSet<>(assignedUserEntities));
         }
 
         return entity;

@@ -59,6 +59,7 @@ const CertificateForm: React.FC = () => {
   >("info");
   const [isAlertVisible, setAlertVisible] = useState(false);
   const [isNewCertificate, setIsNewCertificate] = useState(true);
+
   const navigate = useNavigate();
 
   useEffect(() => {

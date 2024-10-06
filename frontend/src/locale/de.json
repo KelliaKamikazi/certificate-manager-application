@@ -86,5 +86,7 @@
   "noDepartment": "Keine Abteilung",
   "participantRemoved": "Teilnehmer erfolgreich entfernt",
   "errorRemovingParticipant": "Fehler beim Entfernen des Teilnehmers",
-  "commentsOnlyForEdit": "Kommentare sind nach dem Speichern des Zertifikats verfügbar."
+  "commentsOnlyForEdit": "Kommentare sind nach dem Speichern des Zertifikats verfügbar.",
+  "Permission of Printing": "Druckgenehmigung",
+  "CCC certificate": "CCC Zertifikat"
 }

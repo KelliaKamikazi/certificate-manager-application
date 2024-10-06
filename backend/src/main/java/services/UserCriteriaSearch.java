@@ -21,7 +21,7 @@ import java.util.stream.Collectors;
 public class UserCriteriaSearch {
 
     private final EntityManager entityManager;
-    
+
     @Inject
     public UserCriteriaSearch(EntityManager entityManager) {
         this.entityManager = entityManager;
@@ -36,13 +36,12 @@ public class UserCriteriaSearch {
         root.fetch(UserEntity_.assignedCertificates, JoinType.LEFT);
 
         List<Predicate> predicates = new ArrayList<>();
-
-        addPredicateIfNotEmpty(predicates, userIndex, value -> cb.equal(root.get(UserEntity_.userIndex), value));
+        addLikePredicateIfNotEmpty(predicates, userIndex, UserEntity_.userIndex, cb, root);
         addLikePredicateIfNotEmpty(predicates, firstName, UserEntity_.firstName, cb, root);
         addLikePredicateIfNotEmpty(predicates, lastName, UserEntity_.lastName, cb, root);
         addLikePredicateIfNotEmpty(predicates, email, UserEntity_.email, cb, root);
         addDepartmentPredicateIfNotEmpty(predicates, department, cb, root);
-        addPredicateIfNotEmpty(predicates, plant, value -> cb.equal(root.get(UserEntity_.plant), value));
+        addLikePredicateIfNotEmpty(predicates, plant, UserEntity_.plant, cb, root);
 
         query.where(predicates.toArray(new Predicate[0]));
 

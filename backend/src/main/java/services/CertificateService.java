@@ -106,7 +106,7 @@ public class CertificateService {
         if (userIds != null) {
             Set<UserEntity> assignedUserEntities = userIds.stream()
                     .map(userRepository::findById)
-                    .filter(Objects::nonNull) // Ensure the user is found
+                    .filter(Objects::nonNull)
                     .collect(Collectors.toSet());
             certificateEntity.setAssignedUsers(assignedUserEntities);
         }

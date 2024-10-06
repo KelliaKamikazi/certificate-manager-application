@@ -89,5 +89,7 @@
   "noDepartment": "No Department",
   "participantRemoved": "Participant successfully removed",
   "errorRemovingParticipant": "Error removing participant",
-  "commentsOnlyForEdit": "Comments are only available after saving the certificate."
+  "commentsOnlyForEdit": "Comments are only available after saving the certificate.",
+  "Permission of Printing": "Permission of Printing",
+  "CCC certificate": "CCC Certificate"
 }

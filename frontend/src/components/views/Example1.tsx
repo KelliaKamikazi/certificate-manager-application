@@ -7,6 +7,7 @@ import { useTranslation } from "../../useTranslation";
 import { CertificateDto } from "../data/certificate";
 import { apiClient } from "../data/client";
 import Alert from "../base/Alert";
+import { useCertificateTypeTranslations } from "../helpers/CertificateTypeDisplay";
 
 const Example1: React.FC = () => {
   const { t } = useTranslation();
@@ -21,6 +22,7 @@ const Example1: React.FC = () => {
     type: "success" | "error";
   } | null>(null);
   const dropdownRefs = useRef<(HTMLDivElement | null)[]>([]);
+  const CertificateTypeDisplay = useCertificateTypeTranslations();
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -177,7 +179,7 @@ const Example1: React.FC = () => {
                   </div>
                 </td>
                 <td>{cert.supplier.name}</td>
-                <td>{cert.certificateType}</td>
+                <td>{CertificateTypeDisplay[cert.certificateType]}</td>
                 <td>{new Date(cert.validFrom).toLocaleDateString("de-DE")}</td>
                 <td>{new Date(cert.validTo).toLocaleDateString("de-DE")}</td>
               </tr>
