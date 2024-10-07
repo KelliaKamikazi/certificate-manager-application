@@ -24,7 +24,7 @@ const CommentForm: React.FC<CommentFormProps> = ({
   const [comment, setComment] = useState("");
   const [showCommentForm, setShowCommentForm] = useState(false);
   const [users, setUsers] = useState<UserDto[]>([]);
-
+  const [, setError] = useState<string | null>(null);
   useEffect(() => {
     const fetchData = async () => {
       try {
@@ -32,7 +32,7 @@ const CommentForm: React.FC<CommentFormProps> = ({
         const fetchedParticipants = await response.getAllUsers();
         setUsers(fetchedParticipants.data);
       } catch (error) {
-        console.error("Error fetching participants:", error);
+        setError("Error fetching participants:");
       }
     };
     fetchData();

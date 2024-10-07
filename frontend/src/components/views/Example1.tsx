@@ -23,6 +23,7 @@ const Example1: React.FC = () => {
   } | null>(null);
   const dropdownRefs = useRef<(HTMLDivElement | null)[]>([]);
   const CertificateTypeDisplay = useCertificateTypeTranslations();
+
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -80,7 +81,7 @@ const Example1: React.FC = () => {
       try {
         await deleteCertificate(id);
       } catch (error) {
-        console.error("Failed to delete the certificate", error);
+        setAlert({ message: t("Failed to delete certificate"), type: "error" });
       }
     } else {
       setAlert({ message: t("undefined_id"), type: "error" });

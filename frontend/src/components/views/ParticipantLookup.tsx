@@ -29,6 +29,10 @@ const ParticipantLookup: React.FC<ParticipantLookupProps> = ({
   const [selectedParticipants, setSelectedParticipants] = useState<UserDto[]>(
     initialSelectedParticipants
   );
+  const [, setAlert] = useState<{
+    message: string;
+    type: "success" | "error";
+  } | null>(null);
   const [showTable, setShowTable] = useState(
     initialSelectedParticipants.length > 0
   );
@@ -46,7 +50,7 @@ const ParticipantLookup: React.FC<ParticipantLookupProps> = ({
       const fetchedParticipants = await apiClient.getAllUsers();
       setParticipants(fetchedParticipants.data);
     } catch (error) {
-      console.error("Error fetching all users:", error);
+      setAlert({ message: t("Error fetching all users:"), type: "error" });
     }
   };
 
@@ -99,7 +103,7 @@ const ParticipantLookup: React.FC<ParticipantLookupProps> = ({
 
       setShowTable(true);
     } catch (error) {
-      console.error("Error searching users:", error);
+      setAlert({ message: t("Error searching users:"), type: "error" });
     }
   };
 

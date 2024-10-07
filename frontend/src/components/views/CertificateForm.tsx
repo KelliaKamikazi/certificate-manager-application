@@ -97,7 +97,7 @@ const CertificateForm: React.FC = () => {
         const fetchedUsers = await response.getAllUsers();
         setUsers(fetchedUsers.data);
       } catch (error) {
-        console.error("Error fetching users:", error);
+        setError("Error fetching users:");
       }
     };
 
@@ -276,7 +276,7 @@ const CertificateForm: React.FC = () => {
   const removeParticipant = useCallback(
     async (participantId: number) => {
       if (!certificate.id) {
-        console.error("Certificate ID is not available");
+        setError("Certificate ID is not available");
         return;
       }
       try {
@@ -292,7 +292,7 @@ const CertificateForm: React.FC = () => {
           ),
         }));
       } catch (error) {
-        console.log("Error removing participants");
+        setError("Error removing participants");
       }
     },
     [certificate.id, setAlertMessage, setAlertType, setAlertVisible]

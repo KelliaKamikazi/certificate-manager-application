@@ -9,7 +9,10 @@ const Header: React.FC = () => {
   const { t, changeLanguage } = useTranslation();
   const [language, setLanguage] = useState("English");
   const [participants, setParticipants] = useState<UserDto[]>([]);
-
+  const [, setAlert] = useState<{
+    message: string;
+    type: "success" | "error";
+  } | null>(null);
   const selectedParticipant = useLocalStorageChange("participant");
 
   const handleLanguageChange = (lang: string) => {
@@ -35,7 +38,7 @@ const Header: React.FC = () => {
         const fetchedParticipants = await response.getAllUsers();
         setParticipants(fetchedParticipants.data);
       } catch (error) {
-        console.error("Error fetching participants:", error);
+        setAlert({ message: t("Failed to delete certificate"), type: "error" });
       }
     };
 
