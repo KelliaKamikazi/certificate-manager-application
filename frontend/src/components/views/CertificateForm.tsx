@@ -114,6 +114,7 @@ const CertificateForm: React.FC = () => {
 
   const handleSubmit = async (event: FormEvent) => {
     event.preventDefault();
+
     if (
       !certificate.supplier ||
       !certificate.certificateType ||
@@ -152,6 +153,7 @@ const CertificateForm: React.FC = () => {
         }, 5000);
       } else {
         await apiClient.createCertificate(certificateToSend);
+
         setAlertMessage(t("certificateSaved"));
         setAlertType("success");
         setAlertVisible(true);
@@ -336,10 +338,7 @@ const CertificateForm: React.FC = () => {
               onOpenLookup={() => setShowSupplierLookup(true)}
             />
             <CertificateTypes
-              value={
-                certificate.certificateType ||
-                CertificateType.PERMISSION_OF_PRINTING
-              }
+              value={certificate.certificateType as CertificateType}
               onChange={handleInputChange}
             />
             <div className="form-input-container">

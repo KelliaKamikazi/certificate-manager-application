@@ -29,7 +29,7 @@ CREATE TABLE IF NOT EXISTS certificates (
                                             certificate_type VARCHAR(50) NOT NULL,
     valid_from TIMESTAMP NOT NULL,
     valid_to TIMESTAMP NOT NULL,
-    pdf_url TEXT,
+    pdf_url OID,
     CONSTRAINT fk_supplier FOREIGN KEY (supplier_id) REFERENCES suppliers(id)
     );
 
