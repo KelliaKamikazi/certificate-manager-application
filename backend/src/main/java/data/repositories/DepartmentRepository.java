@@ -8,6 +8,6 @@ import jakarta.transaction.Transactional;
 @ApplicationScoped
 @Transactional(Transactional.TxType.MANDATORY)
 public class DepartmentRepository implements PanacheRepository<DepartmentEntity> {
-//Additional methods
+  // Additional methods
 
 }
