@@ -10,10 +10,14 @@ import { apiClient } from "../data/client";
 interface ParticipantLookupProps {
   onClose: () => void;
   onParticipantSelect: (participants: UserDto[]) => void;
+  onParticipantUnselect: (participantId: number) => void;
+  initialSelectedParticipants: UserDto[];
 }
 const ParticipantLookup: React.FC<ParticipantLookupProps> = ({
   onClose,
   onParticipantSelect,
+  onParticipantUnselect,
+  initialSelectedParticipants,
 }) => {
   const { t } = useTranslation();
   const [name, setName] = useState("");
@@ -23,12 +27,22 @@ const ParticipantLookup: React.FC<ParticipantLookupProps> = ({
   const [plant, setPlant] = useState("");
   const [participants, setParticipants] = useState<UserDto[]>([]);
   const [selectedParticipants, setSelectedParticipants] = useState<UserDto[]>(
-    []
+    initialSelectedParticipants
   );
-  const [showTable, setShowTable] = useState(false);
+  const [, setAlert] = useState<{
+    message: string;
+    type: "success" | "error";
+  } | null>(null);
+  const [showTable, setShowTable] = useState(
+    initialSelectedParticipants.length > 0
+  );
 
   useEffect(() => {
-    fetchAllUsers();
+    if (initialSelectedParticipants.length > 0) {
+      setParticipants(initialSelectedParticipants);
+    } else {
+      fetchAllUsers();
+    }
   }, []);
 
   const fetchAllUsers = async () => {
@@ -36,7 +50,7 @@ const ParticipantLookup: React.FC<ParticipantLookupProps> = ({
       const fetchedParticipants = await apiClient.getAllUsers();
       setParticipants(fetchedParticipants.data);
     } catch (error) {
-      console.error("Error fetching all users:", error);
+      setAlert({ message: t("Error fetching all users:"), type: "error" });
     }
   };
 
@@ -48,10 +62,18 @@ const ParticipantLookup: React.FC<ParticipantLookupProps> = ({
     setSelectedParticipants(updatedParticipants);
   };
 
+  const handleUnselectParticipant = (participantId: number) => {
+    setSelectedParticipants((prev) =>
+      prev.filter((p) => p.id !== participantId)
+    );
+    onParticipantUnselect(participantId);
+  };
+
   const handleParticipantSelect = () => {
     onParticipantSelect(selectedParticipants);
-    handleClose();
+    onClose();
   };
+
   const handleSearch = async (e: React.FormEvent) => {
     e.preventDefault();
     try {
@@ -62,12 +84,29 @@ const ParticipantLookup: React.FC<ParticipantLookupProps> = ({
         department,
         plant,
       });
-      setParticipants(response.data);
+      const searchResults = response.data;
+
+      if (selectedParticipants.length > 0) {
+        const combinedResults = [
+          ...selectedParticipants,
+          ...searchResults.filter(
+            (result: UserDto) =>
+              !selectedParticipants.some(
+                (selected) => selected.id === result.id
+              )
+          ),
+        ];
+        setParticipants(combinedResults);
+      } else {
+        setParticipants(searchResults);
+      }
+
       setShowTable(true);
     } catch (error) {
-      console.error("Error searching users:", error);
+      setAlert({ message: t("Error searching users:"), type: "error" });
     }
   };
+
   const handleReset = () => {
     setName("");
     setFirstName("");
@@ -75,7 +114,6 @@ const ParticipantLookup: React.FC<ParticipantLookupProps> = ({
     setDepartment("");
     setPlant("");
     setParticipants([]);
-    setShowTable(false);
   };
 
   const handleShowTable = () => {
@@ -123,22 +161,22 @@ const ParticipantLookup: React.FC<ParticipantLookupProps> = ({
 
             <div className="input-container-participant">
               <div className="input-container-one">
-                <label className="input-label">{t("participantName")}</label>
-                <Textfield
-                  name="name"
-                  type="text"
-                  value={name}
-                  onChange={handleNameChange}
-                  className="input-container"
-                />
-              </div>
-              <div className="input-container-one">
                 <label className="input-label">{t("firstName")}</label>
                 <Textfield
                   name="firstName"
                   type="text"
                   value={firstName}
                   onChange={handleFirstNameChange}
+                  className="input-container"
+                />
+              </div>
+              <div className="input-container-one">
+                <label className="input-label">{t("lastName")}</label>
+                <Textfield
+                  name="name"
+                  type="text"
+                  value={name}
+                  onChange={handleNameChange}
                   className="input-container"
                 />
               </div>
@@ -198,6 +236,7 @@ const ParticipantLookup: React.FC<ParticipantLookupProps> = ({
                 participants={participants}
                 selectedParticipants={selectedParticipants}
                 onSelectParticipants={handleSelectParticipants}
+                onUnselectParticipant={handleUnselectParticipant}
               />
             </div>
           )}

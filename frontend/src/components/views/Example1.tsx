@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import "../../styles/example1.css";
 import { useNavigate } from "react-router-dom";
 import IconSvg from "../icons/icons";
@@ -6,15 +6,42 @@ import gearIcon from "../icons/gearIcon";
 import { useTranslation } from "../../useTranslation";
 import { CertificateDto } from "../data/certificate";
 import { apiClient } from "../data/client";
+import Alert from "../base/Alert";
+import { useCertificateTypeTranslations } from "../helpers/CertificateTypeDisplay";
+
 const Example1: React.FC = () => {
   const { t } = useTranslation();
   const [certificates, setCertificates] = useState<CertificateDto[]>([]);
   const [openDropdownId, setOpenDropdownId] = useState<number | undefined>(
     undefined
   );
-  const [, setLoading] = useState(true);
-  const [, setError] = useState<Error | null>(null);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<Error | null>(null);
+  const [alert, setAlert] = useState<{
+    message: string;
+    type: "success" | "error";
+  } | null>(null);
+  const dropdownRefs = useRef<(HTMLDivElement | null)[]>([]);
+  const CertificateTypeDisplay = useCertificateTypeTranslations();
+
   const navigate = useNavigate();
+
+  useEffect(() => {
+    const handleClickOutside = (event: MouseEvent) => {
+      if (
+        dropdownRefs.current.some(
+          (ref) => ref && ref.contains(event.target as Node)
+        )
+      ) {
+        return;
+      }
+      setOpenDropdownId(undefined);
+    };
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => {
+      document.removeEventListener("mousedown", handleClickOutside);
+    };
+  }, []);
 
   useEffect(() => {
     const fetchCertificates = async () => {
@@ -42,28 +69,22 @@ const Example1: React.FC = () => {
       setCertificates((prevCertificates) =>
         prevCertificates.filter((cert) => cert.id !== id)
       );
+      setAlert({ message: t("delete_success"), type: "success" });
     } catch (err) {
+      setAlert({ message: t("delete_failure"), type: "error" });
       throw err;
     }
   };
 
-  const confirmAndDelete = async (id: number) => {
-    if (window.confirm(t("confirm_delete"))) {
+  const handleDeleteClick = async (id: number | undefined) => {
+    if (id !== undefined) {
       try {
         await deleteCertificate(id);
-        alert(t("delete_success"));
       } catch (error) {
-        console.error("Failed to delete the certificate", error);
-        alert(t("delete_failure"));
+        setAlert({ message: t("Failed to delete certificate"), type: "error" });
       }
-    }
-  };
-
-  const handleDeleteClick = (id: number | undefined) => {
-    if (id !== undefined) {
-      confirmAndDelete(id);
     } else {
-      alert(t("undefined_id"));
+      setAlert({ message: t("undefined_id"), type: "error" });
     }
   };
 
@@ -71,7 +92,7 @@ const Example1: React.FC = () => {
     if (id !== undefined) {
       navigate(`/CertificateForm/${id}`);
     } else {
-      alert(t("undefined_id"));
+      setAlert({ message: t("undefined_id"), type: "error" });
     }
   };
 
@@ -82,14 +103,34 @@ const Example1: React.FC = () => {
   const handleEdit = (cert: CertificateDto) => () => {
     handleEditClick(cert.id);
   };
+
   const handleDelete = (cert: CertificateDto) => () =>
     handleDeleteClick(cert.id);
+
   const handleToggleDropdown = (cert: CertificateDto) => () =>
     toggleDropdown(cert.id);
+
+  const handleClick = (e: React.MouseEvent<HTMLDivElement>) => {
+    e.stopPropagation();
+  };
+
+  const handleAlertClose = () => {
+    setAlert(null);
+  };
+
+  if (loading) return <div>Loading...</div>;
+  if (error) return <div>Error: {error.message}</div>;
 
   return (
     <div className="container">
       <h2 className="header_h">{t("example1_header")}</h2>
+      {alert && (
+        <Alert
+          message={alert.message}
+          type={alert.type}
+          onClose={handleAlertClose}
+        />
+      )}
       <button className="btn-create" onClick={handleCreateClick}>
         {t("new_certificate")}
       </button>
@@ -105,7 +146,7 @@ const Example1: React.FC = () => {
             </tr>
           </thead>
           <tbody>
-            {certificates.map((cert) => (
+            {certificates.map((cert, index) => (
               <tr key={cert.id}>
                 <td>
                   <div className="dropdown-container">
@@ -115,7 +156,11 @@ const Example1: React.FC = () => {
                       onClick={handleToggleDropdown(cert)}
                     />
                     {openDropdownId === cert.id && (
-                      <div className="dropdown-menu">
+                      <div
+                        className="dropdown-menu"
+                        ref={(el) => (dropdownRefs.current[index] = el)}
+                        onClick={handleClick}
+                      >
                         <div className="dropdown-options">
                           <button
                             className="dropdown-button"
@@ -135,9 +180,9 @@ const Example1: React.FC = () => {
                   </div>
                 </td>
                 <td>{cert.supplier.name}</td>
-                <td>{cert.certificateType}</td>
-                <td>{new Date(cert.validFrom).toDateString()}</td>
-                <td>{new Date(cert.validTo).toDateString()}</td>
+                <td>{CertificateTypeDisplay[cert.certificateType]}</td>
+                <td>{new Date(cert.validFrom).toLocaleDateString("de-DE")}</td>
+                <td>{new Date(cert.validTo).toLocaleDateString("de-DE")}</td>
               </tr>
             ))}
           </tbody>

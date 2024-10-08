@@ -24,6 +24,10 @@ const SupplierLookup: React.FC<SupplierLookupProps> = ({
   const [selectedSupplierId, setSelectedSupplierId] = useState<
     number | undefined
   >(undefined);
+  const [, setAlert] = useState<{
+    message: string;
+    type: "success" | "error";
+  } | null>(null);
 
   const handleNameChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     setName(event.target.value);
@@ -59,7 +63,7 @@ const SupplierLookup: React.FC<SupplierLookupProps> = ({
 
       setFilteredSuppliers(suppliers);
     } catch (error) {
-      console.error("Error fetching suppliers:", error);
+      setAlert({ message: t("Error fetching suppliers::"), type: "error" });
       setFilteredSuppliers([]);
     }
   };

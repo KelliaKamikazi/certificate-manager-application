@@ -24,7 +24,9 @@ import {
   SupplierDto,
   UserDto,
 } from "../data/certificate";
+import "../../styles/globalbtn.css";
 import { apiClient } from "../data/client";
+import Alert from "../base/Alert";
 
 const INITIAL_CERTIFICATE: Partial<CertificateDto> = {
   supplier: { id: 0, name: "", city: "" },
@@ -41,6 +43,8 @@ const CertificateForm: React.FC = () => {
   const { certificateId } = useParams<{ certificateId: string }>();
   const [certificate, setCertificate] =
     useState<Partial<CertificateDto>>(INITIAL_CERTIFICATE);
+  const [fetchedCertificate, setFetchedCertificate] =
+    useState<Partial<CertificateDto> | null>(null);
   const [showSupplierLookup, setShowSupplierLookup] = useState(false);
   const [showParticipantLookup, setShowParticipantLookup] = useState(false);
   const [, setLoading] = useState(false);
@@ -48,42 +52,86 @@ const CertificateForm: React.FC = () => {
   const [selectedParticipants, setSelectedParticipants] = useState<UserDto[]>(
     []
   );
+  const [users, setUsers] = useState<UserDto[]>([]);
+  const [alertMessage, setAlertMessage] = useState("");
+  const [alertType, setAlertType] = useState<
+    "success" | "error" | "info" | "warning"
+  >("info");
+  const [isAlertVisible, setAlertVisible] = useState(false);
+  const [isNewCertificate, setIsNewCertificate] = useState(true);
+
   const navigate = useNavigate();
 
   useEffect(() => {
     if (certificateId && certificateId !== "0") {
+      setIsNewCertificate(false);
       fetchCertificate(parseInt(certificateId));
+    } else {
+      setIsNewCertificate(true);
     }
   }, [certificateId]);
+
   const fetchCertificate = async (id: number) => {
     try {
       setLoading(true);
       const response = await apiClient;
       const fetchedCertificate = await response.getCertificateById(id);
-      setCertificate({
+      const certificateData = {
         ...(await fetchedCertificate).data,
         validFrom: new Date(fetchedCertificate.data.validFrom),
         validTo: new Date(fetchedCertificate.data.validTo),
-      });
+      };
+      setCertificate(certificateData);
+      setFetchedCertificate(certificateData);
     } catch (err) {
       setError("Failed to fetch certificate");
-      console.error("Error fetching certificate:", err);
     } finally {
       setLoading(false);
     }
   };
 
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const response = await apiClient;
+        const fetchedUsers = await response.getAllUsers();
+        setUsers(fetchedUsers.data);
+      } catch (error) {
+        setError("Error fetching users:");
+      }
+    };
+
+    fetchData();
+  }, []);
+
+  useEffect(() => {
+    const assignedUserIds = certificate.assignedUserIds as number[];
+    const selectedParticipants = users.filter((user) =>
+      assignedUserIds.includes(user.id)
+    );
+    setSelectedParticipants(selectedParticipants);
+  }, [users]);
+
   const handleSubmit = async (event: FormEvent) => {
     event.preventDefault();
+
     if (
       !certificate.supplier ||
       !certificate.certificateType ||
       !certificate.validFrom ||
       !certificate.validTo ||
-      !certificate.assignedUserIds ||
+      !certificate.assignedUserIds?.length ||
       !certificate.comments
     ) {
-      setError(t("allFieldsRequired"));
+      setAlertMessage(t("allFieldsRequired"));
+      setAlertType("error");
+      setAlertVisible(true);
+      return;
+    }
+    if (certificate.validTo <= certificate.validFrom) {
+      setAlertMessage(t("validToMustBeLaterThanValidFrom"));
+      setAlertType("error");
+      setAlertVisible(true);
       return;
     }
 
@@ -92,24 +140,33 @@ const CertificateForm: React.FC = () => {
       const certificateToSend: CertificateDto = {
         ...(certificate as CertificateDto),
       };
-
       if (certificateId && certificateId !== "0") {
         await apiClient.updateCertificate(
           parseInt(certificateId),
           certificateToSend
         );
-        alert(t("certificateUpdated"));
+        setAlertMessage(t("certificateUpdated"));
+        setAlertType("success");
+        setAlertVisible(true);
+        setTimeout(() => {
+          navigate("/example1");
+        }, 5000);
       } else {
         await apiClient.createCertificate(certificateToSend);
-        alert(t("certificateSaved"));
+
+        setAlertMessage(t("certificateSaved"));
+        setAlertType("success");
+        setAlertVisible(true);
       }
-      navigate("/example1");
     } catch (err) {
-      setError(t("certificateNotAddedOrUpdated"));
+      setAlertMessage(t("certificateNotAddedOrUpdated"));
+      setAlertType("error");
+      setAlertVisible(true);
     } finally {
       setLoading(false);
     }
   };
+
   const handleInputChange = (
     e: ChangeEvent<HTMLInputElement | HTMLSelectElement>
   ) => {
@@ -133,11 +190,25 @@ const CertificateForm: React.FC = () => {
       };
       reader.readAsDataURL(file);
     } else {
-      alert(t("onlyPDFAllowed"));
+      setAlertMessage(t("onlyPDFAllowed"));
+      setAlertType("error");
+      setAlertVisible(true);
     }
   };
+  const handleCloseAlert = () => {
+    setAlertVisible(false);
+  };
   const handleResetFields = () => {
-    setCertificate(INITIAL_CERTIFICATE);
+    if (certificateId === "0") {
+      setCertificate(INITIAL_CERTIFICATE);
+      setSelectedParticipants([]);
+    } else if (certificate) {
+      setCertificate(fetchedCertificate as CertificateDto);
+      const originalParticipants = users.filter((user) =>
+        fetchedCertificate?.assignedUserIds?.includes(user.id)
+      );
+      setSelectedParticipants(originalParticipants);
+    }
   };
 
   const handleCloseSupplierLookup = useCallback(() => {
@@ -145,9 +216,26 @@ const CertificateForm: React.FC = () => {
   }, []);
 
   const handleSelectedParticipants = useCallback(
-    (allparticipants: UserDto[]) => {
-      setSelectedParticipants((prev) => [...prev, ...allparticipants]);
-      setShowParticipantLookup(false);
+    (newParticipants: UserDto[]) => {
+      setSelectedParticipants((currentParticipants) => {
+        const updatedParticipants = [...currentParticipants];
+        newParticipants.forEach((newParticipant) => {
+          if (!updatedParticipants.some((p) => p.id === newParticipant.id)) {
+            updatedParticipants.push(newParticipant);
+          }
+        });
+        return updatedParticipants;
+      });
+
+      setCertificate((prev) => ({
+        ...prev,
+        assignedUserIds: Array.from(
+          new Set([
+            ...(prev.assignedUserIds || []),
+            ...newParticipants.map((p) => p.id),
+          ])
+        ),
+      }));
     },
     []
   );
@@ -185,6 +273,39 @@ const CertificateForm: React.FC = () => {
     }));
   };
 
+  const removeParticipant = useCallback(
+    async (participantId: number) => {
+      if (!certificate.id) {
+        setError("Certificate ID is not available");
+        return;
+      }
+      try {
+        await apiClient.removeAssignedUser(certificate.id, participantId);
+
+        setSelectedParticipants((current) =>
+          current.filter((participant) => participant.id !== participantId)
+        );
+        setCertificate((prev) => ({
+          ...prev,
+          assignedUserIds: prev.assignedUserIds?.filter(
+            (id) => id !== participantId
+          ),
+        }));
+      } catch (error) {
+        setError("Error removing participants");
+      }
+    },
+    [certificate.id, setAlertMessage, setAlertType, setAlertVisible]
+  );
+
+  const handleNewCommentClick = useCallback(() => {
+    if (isNewCertificate) {
+      setAlertMessage(t("commentsOnlyForEdit"));
+      setAlertType("warning");
+      setAlertVisible(true);
+    }
+  }, [isNewCertificate]);
+
   return (
     <div className="new-cert-form">
       {showSupplierLookup && (
@@ -196,10 +317,19 @@ const CertificateForm: React.FC = () => {
       {showParticipantLookup && (
         <ParticipantLookup
           onParticipantSelect={handleSelectedParticipants}
+          onParticipantUnselect={removeParticipant}
           onClose={handleCloseParticipantLookup}
+          initialSelectedParticipants={selectedParticipants}
         />
       )}
       <form onSubmit={handleSubmit}>
+        {isAlertVisible && (
+          <Alert
+            message={alertMessage}
+            type={alertType}
+            onClose={handleCloseAlert}
+          />
+        )}
         <div className="form-container">
           <div className="left-side">
             <SupplierField
@@ -208,10 +338,7 @@ const CertificateForm: React.FC = () => {
               onOpenLookup={() => setShowSupplierLookup(true)}
             />
             <CertificateTypes
-              value={
-                certificate.certificateType ||
-                CertificateType.PERMISSION_OF_PRINTING
-              }
+              value={certificate.certificateType as CertificateType}
               onChange={handleInputChange}
             />
             <div className="form-input-container">
@@ -234,30 +361,44 @@ const CertificateForm: React.FC = () => {
                 onChange={handleInputChange}
               />
               <div className="form-input-container">
-                <label className="form-input-label mb-1">Assigned Users</label>
-                <span
-                  className="btn gray-btn"
+                <label className="form-input-label mb-1">
+                  {t("assigned_users")}
+                </label>
+                <button
+                  type="button"
+                  className="big-btn"
                   onClick={handleOpenParticipantLookup}
                 >
-                  <IconSvg Icon={searchIcon} />
-                  <span>Add participant</span>
-                </span>
+                  <span>
+                    <IconSvg Icon={searchIcon} />
+                    {t("add_participant")}
+                  </span>
+                </button>
                 <div className="suppliers-results-container mt-1">
                   <table>
                     <thead>
                       <tr>
                         <th></th>
-                        <th>Name</th>
-                        <th>Department</th>
-                        <th>E-mail</th>
+                        <th>{t("name")}</th>
+                        <th>{t("department")}</th>
+                        <th>{t("email")}</th>
                       </tr>
                     </thead>
                     <tbody>
                       {selectedParticipants.map((participant) => (
                         <tr key={participant.email}>
-                          <td></td>
+                          <td>
+                            <button
+                              type="button"
+                              onClick={() => removeParticipant(participant.id)}
+                            >
+                              &#10005;
+                            </button>
+                          </td>
                           <td>{participant.lastName}</td>
-                          <td>{participant.departmentId}</td>
+                          <td>
+                            {participant.department?.name || t("noDepartment")}
+                          </td>
                           <td>{participant.email}</td>
                         </tr>
                       ))}
@@ -268,6 +409,8 @@ const CertificateForm: React.FC = () => {
                   certificateId={certificate.id}
                   comments={certificate.comments}
                   onAddComment={handleAddComment}
+                  isNewCertificate={isNewCertificate}
+                  onNewCommentClick={handleNewCommentClick}
                 />
               </div>
             </div>

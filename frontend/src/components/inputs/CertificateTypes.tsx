@@ -1,6 +1,7 @@
 import { useTranslation } from "../../useTranslation";
 import { CertificateType } from "../data/certificate";
 import "../../styles/certificateForm.css";
+import { useCertificateTypeTranslations } from "../helpers/CertificateTypeDisplay";
 
 interface CertificateTypeProps {
   value: CertificateType;
@@ -9,7 +10,7 @@ interface CertificateTypeProps {
 
 export function CertificateTypes(props: CertificateTypeProps) {
   const { t } = useTranslation();
-
+  const CertificateTypeDisplay = useCertificateTypeTranslations();
   return (
     <div className="form-input-container">
       <label className="form-input-label">{t("certificateTypeLabel")}</label>
@@ -22,10 +23,10 @@ export function CertificateTypes(props: CertificateTypeProps) {
       >
         <option value="">{t("selectOption")}</option>
         <option value={CertificateType.PERMISSION_OF_PRINTING}>
-          {t("printingOfPermission")}
+          {CertificateTypeDisplay[CertificateType.PERMISSION_OF_PRINTING]}
         </option>
         <option value={CertificateType.CCC_CERTIFICATE}>
-          {t("ohsas18001")}
+          {CertificateTypeDisplay[CertificateType.CCC_CERTIFICATE]}
         </option>
       </select>
     </div>

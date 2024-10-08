@@ -8,12 +8,13 @@ import IconSvg from "./icons/icons";
 import { useTranslation } from "../useTranslation";
 
 const Sidebar: React.FC = () => {
-  const { t, currentLanguage } = useTranslation();
+  const { t } = useTranslation();
   const [isSubmenuOpen, setIsSubmenuOpen] = useState<boolean>(false);
   const [isSidebarVisible, setIsSidebarVisible] = useState<boolean>(false);
   const [isMobile, setIsMobile] = useState<boolean>(window.innerWidth < 1200);
-  console.log(currentLanguage, "language");
-  const sidebarRef = useRef<HTMLDivElement>(null); // Ref to sidebar element
+  const sidebarRef = useRef<HTMLDivElement>(null);
+  const [activeSection, setActiveSection] = useState<string>("start");
+
   const handleMenuClick = () => {
     setIsSubmenuOpen((prev) => !prev);
   };
@@ -21,13 +22,14 @@ const Sidebar: React.FC = () => {
   const handleSidebarOpen = () => {
     setIsSidebarVisible((prev) => !prev);
   };
+
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
       if (
         sidebarRef.current &&
         !sidebarRef.current.contains(event.target as Node)
       ) {
-        setIsSubmenuOpen(false); // Close submenu
+        setIsSubmenuOpen(false);
       }
     };
 
@@ -37,7 +39,15 @@ const Sidebar: React.FC = () => {
     };
   }, []);
 
-  // Handle window resize
+  const handleSectionClick = (section: string) => {
+    setActiveSection(section);
+    if (section === "machineLearning") {
+      setIsSubmenuOpen((prev) => !prev);
+    } else {
+      setIsSubmenuOpen(false);
+    }
+  };
+
   useEffect(() => {
     const handleResize = () => {
       setIsMobile(window.innerWidth < 1200);
@@ -52,20 +62,20 @@ const Sidebar: React.FC = () => {
     };
   }, []);
 
-  // Handle sidebar overlay click
   const handleSidebarOverlayClick = () => {
     setIsSidebarVisible(false);
   };
 
-  // Stop propagation in submenu
   const handleSubmenuClick = (e: React.MouseEvent) => {
     e.stopPropagation();
   };
+
   const handleKeyDown = (e: { key: string }) => {
     if (e.key === "Enter" || e.key === " ") {
       handleMenuClick();
     }
   };
+
   return (
     <>
       <a href="#main-content" className="skip-link">
@@ -88,38 +98,43 @@ const Sidebar: React.FC = () => {
         className={`sidebar ${isSidebarVisible ? "visible" : ""}`}
         ref={sidebarRef}
       >
-        <div className="sidebarStart">
+        <div
+          className={`sidebarStart ${activeSection === "start" ? "active" : ""}`}
+          onClick={() => handleSectionClick("start")}
+        >
           <Link to="/">
             <IconSvg Icon={HomeIcon} className="homeIcon" />
             <span>{t("start")}</span>
           </Link>
         </div>
         <div
-          className={`sidebarMenu ${isSubmenuOpen ? "show" : ""}`}
-          onClick={handleMenuClick}
+          className={`sidebarMenu ${
+            activeSection === "machineLearning" ? "active" : ""
+          } ${isSubmenuOpen ? "show" : ""}`}
+          onClick={() => handleSectionClick("machineLearning")}
           role="button"
           aria-expanded={isSubmenuOpen}
           tabIndex={0}
           onKeyDown={handleKeyDown}
         >
-          <IconSvg Icon={ThreeLineMenu} className="menuIcon" />
-          <div>
+          <div className="menuContent">
+            <IconSvg Icon={ThreeLineMenu} className="menuIcon" />
             <span>{t("machineLearning")}</span>
-            {isSubmenuOpen && (
-              <div className="submenu" onClick={handleSubmenuClick}>
-                <Link to="/example1">
-                  <span>{t("example1")}</span>
-                </Link>
-                <Link to="/example2">
-                  <span>{t("example2")}</span>
-                </Link>
-                <Link to="/example3">
-                  <span>{t("example3")}</span>
-                </Link>
-              </div>
-            )}
+            <IconSvg Icon={AngleDown} className="angledownIcon" />
           </div>
-          <IconSvg Icon={AngleDown} className="angledownIcon" />
+          {isSubmenuOpen && (
+            <div className="submenu" onClick={handleSubmenuClick}>
+              <Link to="/example1">
+                <span>{t("example1")}</span>
+              </Link>
+              <Link to="/example2">
+                <span>{t("example2")}</span>
+              </Link>
+              <Link to="/example3">
+                <span>{t("example3")}</span>
+              </Link>
+            </div>
+          )}
         </div>
       </div>
     </>

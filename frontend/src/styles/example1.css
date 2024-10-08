@@ -3,6 +3,7 @@
   flex-direction: column;
   overflow: hidden;
   margin-top: 10%;
+  height: 100vh;
 }
 
 .header_h {
@@ -14,13 +15,15 @@
 }
 
 .table-wrapper {
+  flex-grow: 1;
   margin-top: 1rem;
   border: 1px solid var(--background-color);
   border-radius: 0.25rem;
-  overflow-y: auto; /* Allow vertical scrolling */
+  overflow-y: auto;
   margin-bottom: 20px;
   padding: 0 6rem;
   max-height: 60vh;
+  max-height: calc(100vh - 12rem);
 }
 
 .table-wrapper table {
@@ -43,7 +46,8 @@ table {
 
 .table-wrapper th,
 td {
-  padding: 8px; /* Adjust padding for better fit */
+  padding: 12px;
+  padding: 8px;
   text-align: left;
   border-bottom: 1px solid var(--almost-black);
 }
@@ -61,28 +65,27 @@ thead th {
   position: sticky;
   top: 0;
   background-color: var(--sidebar-background-color);
-  z-index: 1; /* Ensure the header stays at the top when scrolling */
+  z-index: 1;
 }
 
-/* New additions to ensure the scrollbar appears at the end of the table */
 .table-wrapper::-webkit-scrollbar {
-  width: 30px; /* Set width of the scrollbar */
+  width: 30px;
 }
 
 .table-wrapper::-webkit-scrollbar-thumb {
-  background-color: var(--grayBorder); /* Color of the scrollbar thumb */
-  border-radius: 6px; /* Round the scrollbar thumb */
+  background-color: var(--grayBorder);
+  border-radius: 6px;
 }
 
 .table-wrapper::-webkit-scrollbar-track {
-  background: var(--background-color); /* Color of the scrollbar track */
+  background: var(--background-color);
 }
 .btn-create {
   font-size: 1.3rem;
   padding: 1rem 2rem;
   height: 2.9rem;
   width: 13rem;
-  background-color: var(--button-color1);
+  background-color: var(--button-color);
   border: none;
   border-radius: 0.25rem;
   cursor: pointer;
@@ -92,14 +95,7 @@ thead th {
   align-items: center;
 }
 .btn-create-large:hover {
-  background-color: var(--button-color);
-}
-
-.gearIcon {
-  width: 30px;
-  height: 25px;
-  fill: var(--secondarycolor);
-  margin-top: 12px;
+  background-color: var(--button-color1);
 }
 
 .dropdown-container {
@@ -109,8 +105,13 @@ thead th {
 
 .gear-icon {
   width: 20px;
+  fill: var(--primary-color);
   height: 20px;
   cursor: pointer;
+}
+
+.gear-icon:hover {
+  fill: var(--secondarycolor);
 }
 
 .dropdown-menu {
@@ -133,7 +134,7 @@ thead th {
 .dropdown-button {
   background: none;
   border: none;
-  padding: 8px 12px;
+  padding: 6px 8px;
   text-align: left;
   cursor: pointer;
   font-size: 1rem;
@@ -155,12 +156,12 @@ thead th {
 /* Media query for screens smaller than 1200px */
 @media (max-width: 1200px) {
   .table-wrapper {
-    margin: 2rem auto 20px auto; /* Center the table-wrapper horizontally */
-    padding: 0 1rem; /* Reduce padding to fit better on smaller screens */
+    margin: 2rem auto 20px auto;
+    padding: 0 1rem;
   }
 
   .header_h {
-    text-align: center; /* Center the header text */
-    padding-left: 0; /* Remove left padding */
+    text-align: center;
+    padding-left: 0;
   }
 }

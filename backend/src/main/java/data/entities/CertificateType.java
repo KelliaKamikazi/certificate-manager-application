@@ -1,19 +1,16 @@
 package data.entities;
 
 public enum CertificateType {
+  PERMISSION_OF_PRINTING("Permission of Printing"),
+  CCC_CERTIFICATE("CCC certificate");
 
-    PERMISSION_OF_PRINTING("Permission of Printing"),
-    CCC_CERTIFICATE("CCC certificate");
+  private final String displayName;
 
-    private final String displayName;
-    CertificateType(String displayName) {
-        this.displayName = displayName;
-    }
-    public String getDisplayName() {
-        return displayName;
-    }
-    @Override
-    public String toString() {
-        return displayName;
-    }
+  CertificateType(String displayName) {
+    this.displayName = displayName;
+  }
+
+  public String getDisplayName() {
+    return displayName;
+  }
 }

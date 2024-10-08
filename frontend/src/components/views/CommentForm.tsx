@@ -3,23 +3,28 @@ import "../../styles/commentForm.css";
 import { useLocalStorageChange } from "../../useLocalStorageChange";
 import { apiClient } from "../data/client";
 import { CommentDto, UserDto } from "../data/certificate";
+import { useTranslation } from "../../useTranslation";
 
 interface CommentFormProps {
   certificateId?: number;
   comments?: CommentDto[];
   onAddComment: (newComment: CommentDto) => void;
+  isNewCertificate: boolean;
+  onNewCommentClick: () => void;
 }
 
 const CommentForm: React.FC<CommentFormProps> = ({
   comments,
   onAddComment,
+  isNewCertificate,
+  onNewCommentClick,
 }) => {
+  const { t } = useTranslation();
   const user = useLocalStorageChange("participant");
   const [comment, setComment] = useState("");
-
   const [showCommentForm, setShowCommentForm] = useState(false);
   const [users, setUsers] = useState<UserDto[]>([]);
-
+  const [, setError] = useState<string | null>(null);
   useEffect(() => {
     const fetchData = async () => {
       try {
@@ -27,14 +32,15 @@ const CommentForm: React.FC<CommentFormProps> = ({
         const fetchedParticipants = await response.getAllUsers();
         setUsers(fetchedParticipants.data);
       } catch (error) {
-        console.error("Error fetching participants:", error);
+        setError("Error fetching participants:");
       }
     };
     fetchData();
   }, []);
+
   const getUserName = (userId: number, users: UserDto[]) => {
     const user = users.find((user) => user.id === userId);
-    return user ? user.firstName : "Invalid User";
+    return user ? `${user.firstName} ${user.lastName}` : t("anonymous");
   };
 
   const handleCommentChange = useCallback(
@@ -43,30 +49,37 @@ const CommentForm: React.FC<CommentFormProps> = ({
     },
     []
   );
-  const handleAddComment = () => {
-    const newComment = {
-      userId: user?.id || 0,
-      content: comment,
-    } as CommentDto;
 
-    onAddComment(newComment);
-    setComment("");
-    setShowCommentForm(false);
+  const handleAddComment = () => {
+    if (comment) {
+      const newComment = {
+        userId: user?.id || 0,
+        content: comment,
+      } as CommentDto;
+
+      onAddComment(newComment);
+      setComment("");
+      setShowCommentForm(false);
+    }
   };
 
-  const toggleCommentForm = useCallback(() => {
-    setShowCommentForm((prevState) => !prevState);
-  }, []);
+  const toggleCommentForm = () => {
+    if (isNewCertificate) {
+      onNewCommentClick();
+    } else {
+      setShowCommentForm((prevState) => !prevState);
+    }
+  };
 
   return (
     <div className="comment-form-container">
       <div className="form-header">
         <button
           type="button"
-          className="btn blue-btn"
+          className={`btn blue-btn ${isNewCertificate ? "disabled" : ""}`}
           onClick={toggleCommentForm}
         >
-          {showCommentForm ? "Cancel" : "New comment"}
+          {showCommentForm ? t("cancel") : t("newComment")}
         </button>
       </div>
       <div className="comment-body">
@@ -74,26 +87,26 @@ const CommentForm: React.FC<CommentFormProps> = ({
           comments.map((comment) => (
             <div className="comment" key={comment.id}>
               <h2>
-                User: <span>{getUserName(comment.userId, users)}</span>
+                {t("user")}: <span>{getUserName(comment.userId, users)}</span>
               </h2>
               <h4>
-                Comment: <span>{comment.content}</span>
+                {t("comment")}: <span>{comment.content}</span>
               </h4>
             </div>
           ))
         ) : (
-          <div>No Comments</div>
+          <div>{t("commentSection")}</div>
         )}
       </div>
-      {showCommentForm && (
+      {showCommentForm && !isNewCertificate && (
         <div className="comment-form">
-          <label htmlFor="comment">{user?.firstName || "Anonymous"}*</label>
+          <label htmlFor="comment">{user?.firstName || t("anonymous")}*</label>
           <textarea
             id="comment"
             name="comment"
             rows={4}
             cols={50}
-            placeholder="comment"
+            placeholder={t("commentPlaceholder")}
             value={comment}
             onChange={handleCommentChange}
           />
@@ -102,7 +115,7 @@ const CommentForm: React.FC<CommentFormProps> = ({
             className="btn red-btn"
             onClick={handleAddComment}
           >
-            Send
+            {t("send")}
           </button>
         </div>
       )}

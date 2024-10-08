@@ -1,42 +1,42 @@
 package data.entities;
 
 import jakarta.persistence.*;
-
 import java.util.ArrayList;
 import java.util.List;
 
 @Entity
-@Table(name = "departments",schema = "application")
+@Table(name = "departments", schema = "application")
 public class DepartmentEntity {
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
-    private String name;
+  @Id
+  @GeneratedValue(strategy = GenerationType.IDENTITY)
+  private Long id;
 
-    @OneToMany(mappedBy = "department")
-    private List<UserEntity> users = new ArrayList<>();
+  private String name;
 
-    public Long getId() {
-        return id;
-    }
+  @OneToMany(mappedBy = "department")
+  private List<UserEntity> users = new ArrayList<>();
 
-    public void setId(Long id) {
-        this.id = id;
-    }
+  public Long getId() {
+    return id;
+  }
 
-    public String getName() {
-        return name;
-    }
+  public void setId(Long id) {
+    this.id = id;
+  }
 
-    public void setName(String name) {
-        this.name = name;
-    }
+  public String getName() {
+    return name;
+  }
 
-    public List<UserEntity> getUsers() {
-        return users;
-    }
+  public void setName(String name) {
+    this.name = name;
+  }
 
-    public void setUsers(List<UserEntity> users) {
-        this.users = users;
-    }
+  public List<UserEntity> getUsers() {
+    return users;
+  }
+
+  public void setUsers(List<UserEntity> users) {
+    this.users = users;
+  }
 }

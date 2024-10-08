@@ -6,24 +6,27 @@ interface ParticipantTableProps {
   participants: UserDto[];
   selectedParticipants: UserDto[];
   onSelectParticipants: (selectedParticipants: UserDto[]) => void;
+  onUnselectParticipant: (participantId: number) => void;
 }
 
 const ParticipantTable: React.FC<ParticipantTableProps> = ({
   participants,
   selectedParticipants,
   onSelectParticipants,
+  onUnselectParticipant,
 }) => {
   const { t } = useTranslation();
-  const handleSelectParticipant = (participant: UserDto) => {
-    let updatedSelectedParticipants;
-    if (selectedParticipants.some((p) => p.id === participant.id)) {
-      updatedSelectedParticipants = selectedParticipants.filter(
-        (p) => p.id !== participant.id
-      );
+
+  const handleParticipantToggle = (participant: UserDto) => {
+    const isSelectedAlready = selectedParticipants.some(
+      (p) => p.id === participant.id
+    );
+
+    if (isSelectedAlready) {
+      onUnselectParticipant(participant.id);
     } else {
-      updatedSelectedParticipants = [...selectedParticipants, participant];
+      onSelectParticipants([...selectedParticipants, participant]);
     }
-    onSelectParticipants(updatedSelectedParticipants);
   };
 
   return (
@@ -36,8 +39,8 @@ const ParticipantTable: React.FC<ParticipantTableProps> = ({
           <tr>
             <th></th>
             <th>{t("id")}</th>
-            <th>{t("name")}</th>
-            <th>{t("firstname")}</th>
+            <th>{t("firstName")}</th>
+            <th>{t("lastName")}</th>
             <th>{t("userid")}</th>
             <th>{t("department")}</th>
             <th>{t("plant")}</th>
@@ -49,18 +52,17 @@ const ParticipantTable: React.FC<ParticipantTableProps> = ({
               <td>
                 <input
                   type="checkbox"
-                  name="participant"
                   checked={selectedParticipants.some(
                     (p) => p.id === participant.id
                   )}
-                  onChange={() => handleSelectParticipant(participant)}
+                  onChange={() => handleParticipantToggle(participant)}
                 />
               </td>
               <td>{participant.id}</td>
-              <td>{participant.lastName}</td>
               <td>{participant.firstName}</td>
+              <td>{participant.lastName}</td>
               <td>{participant.userIndex}</td>
-              <td>{participant.departmentId}</td>
+              <td>{participant.department?.name || t("noDepartment")}</td>
               <td>{participant.plant}</td>
             </tr>
           ))}
