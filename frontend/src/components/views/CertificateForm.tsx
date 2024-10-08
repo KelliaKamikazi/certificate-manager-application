@@ -83,6 +83,15 @@ const CertificateForm: React.FC = () => {
       };
       setCertificate(certificateData);
       setFetchedCertificate(certificateData);
+      if (
+        certificateData.assignedUserIds &&
+        certificateData.assignedUserIds.length > 0
+      ) {
+        const selectedParticipants = users.filter((user) =>
+          certificateData.assignedUserIds.includes(user.id)
+        );
+        setSelectedParticipants(selectedParticipants);
+      }
     } catch (err) {
       setError("Failed to fetch certificate");
     } finally {
@@ -140,24 +149,26 @@ const CertificateForm: React.FC = () => {
       const certificateToSend: CertificateDto = {
         ...(certificate as CertificateDto),
       };
-      if (certificateId && certificateId !== "0") {
+
+      const isUpdate = certificateId && certificateId !== "0";
+
+      if (isUpdate) {
         await apiClient.updateCertificate(
           parseInt(certificateId),
           certificateToSend
         );
         setAlertMessage(t("certificateUpdated"));
-        setAlertType("success");
-        setAlertVisible(true);
-        setTimeout(() => {
-          navigate("/example1");
-        }, 5000);
       } else {
         await apiClient.createCertificate(certificateToSend);
-
         setAlertMessage(t("certificateSaved"));
-        setAlertType("success");
-        setAlertVisible(true);
       }
+
+      setAlertType("success");
+      setAlertVisible(true);
+
+      setTimeout(() => {
+        navigate("/example1");
+      }, 5000);
     } catch (err) {
       setAlertMessage(t("certificateNotAddedOrUpdated"));
       setAlertType("error");

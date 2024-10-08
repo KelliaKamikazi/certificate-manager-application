@@ -3,7 +3,7 @@ package data.entities;
 import jakarta.persistence.*;
 
 @Entity
-@Table(name = "comments", schema = "application")
+@Table(name = "comments", schema = "certificates")
 public class CommentEntity {
   @Id
   @GeneratedValue(strategy = GenerationType.IDENTITY)
