@@ -8,7 +8,7 @@ import java.util.List;
 import java.util.Set;
 
 @Entity
-@Table(name = "certificates", schema = "application")
+@Table(name = "certificates", schema = "certificates")
 public class CertificateEntity {
   @Id
   @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -35,7 +35,7 @@ public class CertificateEntity {
   @ManyToMany
   @JoinTable(
       name = "assigned_users",
-      schema = "application",
+      schema = "certificates",
       joinColumns = @JoinColumn(name = "certificate_id"),
       inverseJoinColumns = @JoinColumn(name = "user_id"))
   private Set<UserEntity> assignedUsers = new HashSet<>();
