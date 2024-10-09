@@ -88,5 +88,6 @@
   "errorRemovingParticipant": "Fehler beim Entfernen des Teilnehmers",
   "commentsOnlyForEdit": "Kommentare sind nach dem Speichern des Zertifikats verfügbar.",
   "Permission of Printing": "Druckgenehmigung",
-  "CCC certificate": "CCC Zertifikat"
+  "CCC certificate": "CCC Zertifikat",
+  "selectUser": "Benutzer"
 }

@@ -91,5 +91,6 @@
   "errorRemovingParticipant": "Error removing participant",
   "commentsOnlyForEdit": "Comments are only available after saving the certificate.",
   "Permission of Printing": "Permission of Printing",
-  "CCC certificate": "CCC Certificate"
+  "CCC certificate": "CCC Certificate",
+  "selectUser": "Select User"
 }

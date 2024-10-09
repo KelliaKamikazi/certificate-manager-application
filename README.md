@@ -62,50 +62,7 @@ Running on port: http://localhost:8080
 
 *Project structure*
 
-certificate-app/
-│
-├── backend/
-│ └── src/
-│ ├── main/
-│ │ ├── java/
-│ │ │ ├── docker/
-│ │ │ ├── data/
-│ │ │ │ ├── entities/
-│ │ │ │ │ └── Certificate.java
-│ │ │ │ └── repositories/
-│ │ │ │ └── CertificateRepository.java
-│ │ │ ├── services/
-│ │ │ │ └── CertificateService.java
-│ │ │ └── web/
-│ │ │ ├── dtos/
-│ │ │ │ └── CertificateDto.java
-│ │ │ ├── mappers/
-│ │ │ │ └── CertificateMapper.java
-│ │ │ └── resources/
-│ │ │ └── CertificateResource.java
-│ │ └── resources/
-│ │ ├── db/
-│ │ │ ├── changeLog.xml
-│ │ │ ├── create_tables.sql
-│ │ │ └── seed_data.sql
-│ │ └── application.properties
-│
-└── frontend/
-└── src/
-├── components/
-│ ├── base/
-│ ├── data/
-│ ├── helpers/
-│ │ └── CertificateTypeDisplay.ts
-│ ├── icons/
-│ ├── inputs/
-│ └── views/
-│ ├── CertificateForm.tsx
-│ ├── Header.tsx
-│ ├── Home.tsx
-│ └── Sidebar.tsx
-├── locale/
-│ ├── de.json
-│ └── en.json
-└── styles/
-└── items/
+
+
+<img width="551" alt="Screenshot 2024-10-09 at 05 52 50" src="https://github.com/user-attachments/assets/28637aa8-04ff-4b2e-8d4f-f84ace6d551e">
+
