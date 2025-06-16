@@ -1,4 +1,4 @@
-
+CREATE SCHEMA IF NOT EXISTS certificates;
 CREATE TABLE IF NOT EXISTS suppliers (
                                          id BIGSERIAL PRIMARY KEY,
                                          name VARCHAR(255) NOT NULL,
